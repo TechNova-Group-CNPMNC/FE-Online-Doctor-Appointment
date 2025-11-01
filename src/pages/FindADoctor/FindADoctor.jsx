@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import './FindADoctor.css'
 
 const FindADoctor = () => {
@@ -10,6 +10,7 @@ const FindADoctor = () => {
   const [hasSearched, setHasSearched] = useState(false)
 
   const doctors = [
+    // Cardiologists
     {
       id: 1,
       name: 'Patrik Cortez',
@@ -22,6 +23,48 @@ const FindADoctor = () => {
     },
     {
       id: 2,
+      name: 'Sarah Wilson',
+      specialty: 'Cardiologist',
+      rating: 4.9,
+      reviews: 203,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'tuesday', 'thursday', 'saturday'],
+      availableTimeSlots: ['10:00 - 11:00', '12:00 - 13:00', '15:00 - 16:00', '16:00 - 17:00']
+    },
+    {
+      id: 3,
+      name: 'Robert Taylor',
+      specialty: 'Cardiologist',
+      rating: 4.7,
+      reviews: 178,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['wednesday', 'friday', 'saturday', 'sunday'],
+      availableTimeSlots: ['08:00 - 09:00', '11:00 - 12:00', '14:00 - 15:00', '18:00 - 19:00']
+    },
+    {
+      id: 4,
+      name: 'Amanda Garcia',
+      specialty: 'Cardiologist',
+      rating: 4.8,
+      reviews: 192,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'wednesday', 'thursday', 'sunday'],
+      availableTimeSlots: ['07:00 - 08:00', '11:00 - 12:00', '17:00 - 18:00', '18:00 - 19:00']
+    },
+    {
+      id: 5,
+      name: 'Thomas Anderson',
+      specialty: 'Cardiologist',
+      rating: 4.9,
+      reviews: 245,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'wednesday', 'thursday', 'friday'],
+      availableTimeSlots: ['09:00 - 10:00', '13:00 - 14:00', '16:00 - 17:00', '19:00 - 20:00']
+    },
+
+    // Dermatologists
+    {
+      id: 6,
       name: 'Maria Rodriguez',
       specialty: 'Dermatologist',
       rating: 4.8,
@@ -31,104 +74,254 @@ const FindADoctor = () => {
       availableTimeSlots: ['08:00 - 09:00', '11:00 - 12:00', '16:00 - 17:00', '17:00 - 18:00']
     },
     {
-      id: 3,
-      name: 'John Smith',
-      specialty: 'Neurologist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['tuesday', 'thursday', 'friday', 'sunday'],
-      availableTimeSlots: ['07:00 - 08:00', '13:00 - 14:00', '18:00 - 19:00', '19:00 - 20:00']
-    },
-    {
-      id: 4,
-      name: 'Sarah Wilson',
-      specialty: 'Cardiologist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['monday', 'tuesday', 'thursday', 'saturday'],
-      availableTimeSlots: ['10:00 - 11:00', '12:00 - 13:00', '15:00 - 16:00', '16:00 - 17:00']
-    },
-    {
-      id: 5,
-      name: 'Michael Brown',
-      specialty: 'Orthopedist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['wednesday', 'thursday', 'friday', 'saturday'],
-      availableTimeSlots: ['08:00 - 09:00', '09:00 - 10:00', '14:00 - 15:00', '20:00 - 21:00']
-    },
-    {
-      id: 6,
-      name: 'Emily Davis',
-      specialty: 'Gastroenterologist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['monday', 'tuesday', 'wednesday', 'sunday'],
-      availableTimeSlots: ['11:00 - 12:00', '13:00 - 14:00', '17:00 - 18:00', '18:00 - 19:00']
-    },
-    {
       id: 7,
-      name: 'David Miller',
-      specialty: 'Psychiatrist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['tuesday', 'wednesday', 'thursday', 'friday'],
-      availableTimeSlots: ['09:00 - 10:00', '10:00 - 11:00', '15:00 - 16:00', '19:00 - 20:00']
-    },
-    {
-      id: 8,
-      name: 'Lisa Anderson',
-      specialty: 'Ophthalmologist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['monday', 'thursday', 'friday', 'saturday'],
-      availableTimeSlots: ['07:00 - 08:00', '12:00 - 13:00', '16:00 - 17:00', '17:00 - 18:00']
-    },
-    {
-      id: 9,
-      name: 'Robert Taylor',
-      specialty: 'Cardiologist',
-      rating: 4.8,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['wednesday', 'friday', 'saturday', 'sunday'],
-      availableTimeSlots: ['08:00 - 09:00', '11:00 - 12:00', '14:00 - 15:00', '18:00 - 19:00']
-    },
-    {
-      id: 10,
       name: 'Jennifer White',
       specialty: 'Dermatologist',
-      rating: 4.8,
-      reviews: 156,
+      rating: 4.7,
+      reviews: 134,
       image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
       availableDays: ['monday', 'tuesday', 'thursday', 'sunday'],
       availableTimeSlots: ['10:00 - 11:00', '13:00 - 14:00', '15:00 - 16:00', '20:00 - 21:00']
     },
     {
+      id: 8,
+      name: 'Daniel Kim',
+      specialty: 'Dermatologist',
+      rating: 4.9,
+      reviews: 201,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'thursday', 'friday', 'saturday'],
+      availableTimeSlots: ['08:00 - 09:00', '12:00 - 13:00', '14:00 - 15:00', '18:00 - 19:00']
+    },
+    {
+      id: 9,
+      name: 'Rebecca Chen',
+      specialty: 'Dermatologist',
+      rating: 4.8,
+      reviews: 167,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['wednesday', 'friday', 'saturday', 'sunday'],
+      availableTimeSlots: ['09:00 - 10:00', '11:00 - 12:00', '16:00 - 17:00', '19:00 - 20:00']
+    },
+
+    // Neurologists
+    {
+      id: 10,
+      name: 'John Smith',
+      specialty: 'Neurologist',
+      rating: 4.8,
+      reviews: 189,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'thursday', 'friday', 'sunday'],
+      availableTimeSlots: ['07:00 - 08:00', '13:00 - 14:00', '18:00 - 19:00', '19:00 - 20:00']
+    },
+    {
       id: 11,
       name: 'James Johnson',
       specialty: 'Neurologist',
-      rating: 4.8,
-      reviews: 156,
+      rating: 4.7,
+      reviews: 145,
       image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
       availableDays: ['tuesday', 'wednesday', 'friday', 'saturday'],
       availableTimeSlots: ['09:00 - 10:00', '12:00 - 13:00', '16:00 - 17:00', '19:00 - 20:00']
     },
     {
       id: 12,
-      name: 'Amanda Garcia',
-      specialty: 'Cardiologist',
-      rating: 4.8,
-      reviews: 156,
+      name: 'Michelle Thompson',
+      specialty: 'Neurologist',
+      rating: 4.9,
+      reviews: 223,
       image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
-      availableDays: ['monday', 'wednesday', 'thursday', 'sunday'],
-      availableTimeSlots: ['07:00 - 08:00', '11:00 - 12:00', '17:00 - 18:00', '18:00 - 19:00']
+      availableDays: ['monday', 'wednesday', 'thursday', 'friday'],
+      availableTimeSlots: ['08:00 - 09:00', '10:00 - 11:00', '15:00 - 16:00', '17:00 - 18:00']
+    },
+    {
+      id: 13,
+      name: 'Christopher Lee',
+      specialty: 'Neurologist',
+      rating: 4.8,
+      reviews: 198,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'tuesday', 'thursday', 'saturday'],
+      availableTimeSlots: ['11:00 - 12:00', '13:00 - 14:00', '16:00 - 17:00', '20:00 - 21:00']
+    },
+
+    // Orthopedists
+    {
+      id: 14,
+      name: 'Michael Brown',
+      specialty: 'Orthopedist',
+      rating: 4.8,
+      reviews: 176,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['wednesday', 'thursday', 'friday', 'saturday'],
+      availableTimeSlots: ['08:00 - 09:00', '09:00 - 10:00', '14:00 - 15:00', '20:00 - 21:00']
+    },
+    {
+      id: 15,
+      name: 'William Martinez',
+      specialty: 'Orthopedist',
+      rating: 4.7,
+      reviews: 154,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'tuesday', 'wednesday', 'friday'],
+      availableTimeSlots: ['07:00 - 08:00', '10:00 - 11:00', '15:00 - 16:00', '18:00 - 19:00']
+    },
+    {
+      id: 16,
+      name: 'Patricia Davis',
+      specialty: 'Orthopedist',
+      rating: 4.9,
+      reviews: 212,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'thursday', 'saturday', 'sunday'],
+      availableTimeSlots: ['09:00 - 10:00', '12:00 - 13:00', '16:00 - 17:00', '17:00 - 18:00']
+    },
+    {
+      id: 17,
+      name: 'Richard Wilson',
+      specialty: 'Orthopedist',
+      rating: 4.8,
+      reviews: 187,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'wednesday', 'friday', 'sunday'],
+      availableTimeSlots: ['08:00 - 09:00', '11:00 - 12:00', '14:00 - 15:00', '19:00 - 20:00']
+    },
+
+    // Gastroenterologists
+    {
+      id: 18,
+      name: 'Emily Davis',
+      specialty: 'Gastroenterologist',
+      rating: 4.8,
+      reviews: 165,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'tuesday', 'wednesday', 'sunday'],
+      availableTimeSlots: ['11:00 - 12:00', '13:00 - 14:00', '17:00 - 18:00', '18:00 - 19:00']
+    },
+    {
+      id: 19,
+      name: 'Steven Harris',
+      specialty: 'Gastroenterologist',
+      rating: 4.7,
+      reviews: 143,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'wednesday', 'thursday', 'saturday'],
+      availableTimeSlots: ['08:00 - 09:00', '10:00 - 11:00', '15:00 - 16:00', '19:00 - 20:00']
+    },
+    {
+      id: 20,
+      name: 'Laura Clark',
+      specialty: 'Gastroenterologist',
+      rating: 4.9,
+      reviews: 198,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'thursday', 'friday', 'saturday'],
+      availableTimeSlots: ['09:00 - 10:00', '12:00 - 13:00', '16:00 - 17:00', '20:00 - 21:00']
+    },
+    {
+      id: 21,
+      name: 'Brian Lewis',
+      specialty: 'Gastroenterologist',
+      rating: 4.8,
+      reviews: 172,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['wednesday', 'friday', 'saturday', 'sunday'],
+      availableTimeSlots: ['07:00 - 08:00', '11:00 - 12:00', '14:00 - 15:00', '18:00 - 19:00']
+    },
+
+    // Psychiatrists
+    {
+      id: 22,
+      name: 'David Miller',
+      specialty: 'Psychiatrist',
+      rating: 4.8,
+      reviews: 201,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'wednesday', 'thursday', 'friday'],
+      availableTimeSlots: ['09:00 - 10:00', '10:00 - 11:00', '15:00 - 16:00', '19:00 - 20:00']
+    },
+    {
+      id: 23,
+      name: 'Jessica Walker',
+      specialty: 'Psychiatrist',
+      rating: 4.9,
+      reviews: 234,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'tuesday', 'thursday', 'saturday'],
+      availableTimeSlots: ['08:00 - 09:00', '11:00 - 12:00', '16:00 - 17:00', '17:00 - 18:00']
+    },
+    {
+      id: 24,
+      name: 'Kevin Young',
+      specialty: 'Psychiatrist',
+      rating: 4.7,
+      reviews: 167,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'wednesday', 'friday', 'sunday'],
+      availableTimeSlots: ['10:00 - 11:00', '13:00 - 14:00', '15:00 - 16:00', '20:00 - 21:00']
+    },
+    {
+      id: 25,
+      name: 'Nicole King',
+      specialty: 'Psychiatrist',
+      rating: 4.8,
+      reviews: 189,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'thursday', 'saturday', 'sunday'],
+      availableTimeSlots: ['09:00 - 10:00', '12:00 - 13:00', '14:00 - 15:00', '18:00 - 19:00']
+    },
+
+    // Ophthalmologists
+    {
+      id: 26,
+      name: 'Lisa Anderson',
+      specialty: 'Ophthalmologist',
+      rating: 4.8,
+      reviews: 176,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'thursday', 'friday', 'saturday'],
+      availableTimeSlots: ['07:00 - 08:00', '12:00 - 13:00', '16:00 - 17:00', '17:00 - 18:00']
+    },
+    {
+      id: 27,
+      name: 'Mark Wright',
+      specialty: 'Ophthalmologist',
+      rating: 4.7,
+      reviews: 152,
+      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'wednesday', 'thursday', 'sunday'],
+      availableTimeSlots: ['08:00 - 09:00', '10:00 - 11:00', '15:00 - 16:00', '19:00 - 20:00']
+    },
+    {
+      id: 28,
+      name: 'Sandra Hill',
+      specialty: 'Ophthalmologist',
+      rating: 4.9,
+      reviews: 215,
+      image: 'https://images.unsplash.com/photo-1594824804732-5f0fb3d4fe40?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['monday', 'wednesday', 'friday', 'saturday'],
+      availableTimeSlots: ['09:00 - 10:00', '11:00 - 12:00', '14:00 - 15:00', '18:00 - 19:00']
+    },
+    {
+      id: 29,
+      name: 'George Scott',
+      specialty: 'Ophthalmologist',
+      rating: 4.8,
+      reviews: 194,
+      image: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['tuesday', 'thursday', 'friday', 'sunday'],
+      availableTimeSlots: ['10:00 - 11:00', '13:00 - 14:00', '16:00 - 17:00', '20:00 - 21:00']
+    },
+    {
+      id: 30,
+      name: 'Nancy Green',
+      specialty: 'Ophthalmologist',
+      rating: 4.7,
+      reviews: 168,
+      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
+      availableDays: ['wednesday', 'friday', 'saturday', 'sunday'],
+      availableTimeSlots: ['07:00 - 08:00', '12:00 - 13:00', '17:00 - 18:00', '19:00 - 20:00']
     }
   ]
 
