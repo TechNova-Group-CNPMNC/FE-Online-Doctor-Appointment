@@ -5,7 +5,7 @@ const AuthLayout = ({ children }) => {
     <div className="auth-wrapper">
       <div className="auth-card">
         <aside className="auth-hero">
-          <div className="hero-badge">Clinic Online</div>
+          <div className="hero-badge">TechNova Clinic</div>
           <h1>
             Chăm sóc sức khỏe <span>mọi lúc, mọi nơi</span>
           </h1>

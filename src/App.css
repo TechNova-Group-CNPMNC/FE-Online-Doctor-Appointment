@@ -18,7 +18,10 @@
 }
 
 .auth-hero {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8 60%, #0f172a);
+  background-image: url('./assets/images/Clinic-Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #f8fafc;
   padding: 56px 48px;
   display: flex;
@@ -31,6 +34,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
+  text-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
 }
 
 .auth-hero h1 span {
@@ -43,6 +47,7 @@
   margin: 0;
   color: rgba(241, 245, 249, 0.85);
   font-size: 16px;
+  text-shadow: 0 5px 15px rgba(15, 23, 42, 0.3);
 }
 
 .auth-hero ul {
@@ -54,6 +59,7 @@
   gap: 12px;
   color: rgba(241, 245, 249, 0.9);
   font-size: 15px;
+  text-shadow: 0 5px 15px rgba(15, 23, 42, 0.3);
 }
 
 .auth-hero li::before {
@@ -158,6 +164,96 @@
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
+.form-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.segment-control {
+  display: flex;
+  background: rgba(226, 232, 240, 0.6);
+  padding: 8px;
+  border-radius: 18px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.segment-option {
+  position: relative;
+  flex: 1 1 120px;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #0f172a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.segment-option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segment-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: inherit;
+  min-height: 44px;
+}
+
+.segment-option span::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid #94a3b8;
+  transition: inherit;
+}
+
+.segment-option:hover span {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+}
+
+.segment-option input:checked + span {
+  background: #ffffff;
+  color: #1d4ed8;
+  box-shadow: 0 12px 28px rgba(29, 78, 216, 0.18);
+  border-color: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+.segment-option input:checked + span::before {
+  border-color: transparent;
+  background: radial-gradient(circle at center, #3b82f6 40%, rgba(59, 130, 246, 0.35) 100%);
+}
+
+.segment-option input:focus-visible + span {
+  outline: 3px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
+.input-message {
+  margin: -4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.input-message.error {
+  color: #dc2626;
+}
+
+.input-message.success {
+  color: #15803d;
+}
+
 .form-actions {
   display: flex;
   align-items: center;
@@ -197,6 +293,14 @@
 .primary-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 20px 40px rgba(37, 99, 235, 0.25);
+}
+
+.primary-button:disabled,
+.primary-button:disabled:hover {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .primary-button:focus-visible {
@@ -258,5 +362,9 @@
 
   .form {
     gap: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
