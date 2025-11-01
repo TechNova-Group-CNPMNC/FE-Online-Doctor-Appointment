@@ -54,28 +54,34 @@ api.interceptors.response.use(
 export const authAPI = {
   login: async (credentials) => {
     try {
-      const response = await api.post('/auth/login', credentials)
-      return response.data
+      console.log("Login request:", credentials);
+      const response = await api.post("/auth/login", credentials);
+      console.log("Login API response:", response);
+      return response.data;
     } catch (error) {
-      console.error('Login API error:', error)
-      throw error
+      console.error("Login API error:", error);
+      console.error("Error details:", error.response?.data);
+      throw error;
     }
   },
 
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData)
-      return response.data
+      console.log("Register request:", userData);
+      const response = await api.post("/auth/register", userData);
+      console.log("Register API response:", response);
+      return response.data;
     } catch (error) {
-      console.error('Register API error:', error)
-      throw error
+      console.error("Register API error:", error);
+      console.error("Error details:", error.response?.data);
+      throw error;
     }
   },
 
   logout: () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-  }
-}
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  },
+};
 
-export default api
+export default api;

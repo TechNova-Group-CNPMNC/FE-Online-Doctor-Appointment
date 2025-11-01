@@ -45,58 +45,77 @@ const SignupForm = () => {
     return true
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+ const handleSubmit = async (e) => {
+   e.preventDefault();
+   setError("");
 
-    if (!validateForm()) {
-      return
-    }
+   if (!validateForm()) {
+     return;
+   }
 
-    setLoading(true)
+   setLoading(true);
 
-    try {
-      const { confirmPassword, ...registerData } = formData
-      console.log('Sending registration data:', registerData)
+   try {
+     const { confirmPassword, ...registerData } = formData;
+     console.log("Sending registration data:", registerData);
 
-      const response = await authAPI.register(registerData)
+     const response = await authAPI.register(registerData);
 
-      console.log('Registration response:', response)
+     console.log("Registration response:", response);
 
-      // Store token and user info if returned
-      if (response.token || response.accessToken) {
-        localStorage.setItem('token', response.token || response.accessToken)
-      }
-      if (response.user || response.data) {
-        localStorage.setItem('user', JSON.stringify(response.user || response.data))
-      }
+     // Handle different response structures
+     const token =
+       response.data?.token ||
+       response.token ||
+       response.data?.accessToken ||
+       response.accessToken;
+     const user = response.data?.user || response.user || response.data;
 
-      // Redirect to login or home page
-      navigate('/login', {
-        state: { message: 'Đăng ký thành công! Vui lòng đăng nhập.' }
-      })
-    } catch (err) {
-      console.error('Registration error:', err)
+     if (token) {
+       localStorage.setItem("token", token);
+     }
+     if (user) {
+       localStorage.setItem("user", JSON.stringify(user));
+     }
 
-      let errorMessage = 'Đăng ký không thành công. Vui lòng thử lại.'
+     // Redirect to login or home page
+     navigate("/login", {
+       state: { message: "Đăng ký thành công! Vui lòng đăng nhập." },
+     });
+   } catch (err) {
+     console.error("Registration error:", err);
+     console.error("Error response:", err.response);
 
-      if (err.response) {
-        // Server responded with error
-        errorMessage = err.response.data?.message ||
-                      err.response.data?.error ||
-                      `Lỗi: ${err.response.status}`
-      } else if (err.request) {
-        // Request was made but no response
-        errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.'
-      } else if (err.code === 'ERR_NETWORK') {
-        errorMessage = 'Lỗi kết nối mạng. Vui lòng kiểm tra lại.'
-      }
+     let errorMessage = "Đăng ký không thành công. Vui lòng thử lại.";
 
-      setError(errorMessage)
-    } finally {
-      setLoading(false)
-    }
-  }
+     if (err.response) {
+       // Server responded with error
+       const serverMessage =
+         err.response.data?.message ||
+         err.response.data?.error ||
+         err.response.data?.msg;
+
+       if (serverMessage) {
+         errorMessage = serverMessage;
+       } else if (err.response.status === 409) {
+         errorMessage = "Email đã được đăng ký.";
+       } else if (err.response.status === 400) {
+         errorMessage = "Thông tin không hợp lệ. Vui lòng kiểm tra lại.";
+       } else {
+         errorMessage = `Lỗi: ${err.response.status}`;
+       }
+     } else if (err.request) {
+       errorMessage =
+         "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.";
+     } else if (err.code === "ERR_NETWORK") {
+       errorMessage = "Lỗi kết nối mạng. Vui lòng kiểm tra lại.";
+     }
+
+     setError(errorMessage);
+   } finally {
+     setLoading(false);
+   }
+ };
 
   return (
     <form className="form" onSubmit={handleSubmit} aria-labelledby="signup-title">
