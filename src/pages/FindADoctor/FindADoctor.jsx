@@ -9,6 +9,8 @@ const FindADoctor = () => {
   const [searchResults, setSearchResults] = useState([])
   const [hasSearched, setHasSearched] = useState(false)
 
+
+
   const doctors = [
     // Cardiologists
     {
