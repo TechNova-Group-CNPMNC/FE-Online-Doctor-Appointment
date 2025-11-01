@@ -6,19 +6,7 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-column">
           <div className="footer-logo">
-            <svg 
-              className="logo-icon" 
-              viewBox="0 0 100 100" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                d="M50 20 L40 35 L50 30 L60 35 Z M50 30 L40 40 L50 35 L60 40 Z M50 35 L40 50 L50 45 L60 50 Z M50 45 L40 55 L50 50 L60 55 Z M50 80 L45 70 L50 75 L55 70 Z M50 75 L45 65 L50 70 L55 65 Z" 
-                fill="#4ade80" 
-                stroke="#4ade80"
-              />
-              <rect x="48" y="55" width="4" height="15" rx="2" fill="#4ade80" />
-            </svg>
+            
             <span className="logo-text">TechNova</span>
           </div>
           <p className="footer-tagline">
@@ -71,7 +59,7 @@ const Footer = () => {
 
       <div className="footer-bottom">
         <div className="footer-separator"></div>
-        <p className="copyright">Copyright @ Xpro 2022. All Rights Reserved.</p>
+        <p className="copyright">Copyright @ TeachNova 2025. All Rights Reserved.</p>
       </div>
     </footer>
   )

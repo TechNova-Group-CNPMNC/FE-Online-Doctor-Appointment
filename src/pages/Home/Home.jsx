@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
+import headerImg from '../../assets/header_img.png'
 import './Home.css'
 
 const Home = () => {
@@ -26,26 +27,7 @@ const Home = () => {
     }
   ]
 
-  const doctors = [
-    {
-      name: 'Dr. Sarah Johnson',
-      specialty: 'Cardiologist',
-      experience: '10+ years',
-      image: '👨‍⚕️'
-    },
-    {
-      name: 'Dr. Michael Chen',
-      specialty: 'Neurologist',
-      experience: '8+ years',
-      image: '👩‍⚕️'
-    },
-    {
-      name: 'Dr. Emily Davis',
-      specialty: 'Pediatrician',
-      experience: '12+ years',
-      image: '👨‍⚕️'
-    }
-  ]
+  
 
   const testimonials = [
     {
@@ -116,25 +98,12 @@ const Home = () => {
             </div>
             <div className="hero-image">
               <div className="doctor-image">
-                👨‍⚕️
+                <img src={headerImg} alt="Doctor" />
               </div>
-              <div className="floating-badge badge-1">
-                <span className="badge-icon">🏥</span>
-                <span>1000+ Doctors</span>
-              </div>
-              <div className="floating-badge badge-2">
-                <span className="badge-icon">⭐</span>
-                <span>4.9 Rating</span>
-              </div>
-              <div className="floating-badge badge-3">
-                <span className="badge-icon">💬</span>
-                <span>50K+ Patients</span>
-              </div>
+              
             </div>
           </div>
         </section>
-
-        {/* Features Section */}
         <section className="features-section">
           <div className="container">
             <div className="section-header">
@@ -155,7 +124,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* How It Works Section */}
         <section className="how-it-works-section">
           <div className="container">
             <div className="section-header">
@@ -176,30 +144,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Top Doctors Section */}
-        <section className="doctors-section">
-          <div className="container">
-            <div className="section-header">
-              <h2 className="section-title">Our Top Doctors</h2>
-              <p className="section-subtitle">
-                Experienced professionals dedicated to your health
-              </p>
-            </div>
-            <div className="doctors-grid">
-              {doctors.map((doctor, index) => (
-                <div key={index} className="doctor-card">
-                  <div className="doctor-image">{doctor.image}</div>
-                  <h3 className="doctor-name">{doctor.name}</h3>
-                  <p className="doctor-specialty">{doctor.specialty}</p>
-                  <p className="doctor-experience">{doctor.experience}</p>
-                  <Link to="/doctors" className="btn-doctor">
-                    View Profile
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        
 
         {/* Testimonials Section */}
         <section className="testimonials-section">
@@ -229,7 +174,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="cta-section">
           <div className="container">
             <h2 className="cta-title">Ready to Get Started?</h2>

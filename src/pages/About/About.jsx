@@ -1,5 +1,6 @@
 import MainLayout from '../../layouts/MainLayout'
 import './About.css'
+import aboutImg from '../../assets/appointment_img.png'
 
 const About = () => {
   const values = [
@@ -32,37 +33,11 @@ const About = () => {
     { number: '24/7', label: 'Support Available' }
   ]
 
-  const team = [
-    {
-      name: 'Dr. Sarah Johnson',
-      role: 'Chief Medical Officer',
-      image: '👩‍⚕️',
-      bio: 'With over 20 years of experience in healthcare administration and patient care.'
-    },
-    {
-      name: 'Dr. Michael Chen',
-      role: 'Lead Cardiologist',
-      image: '👨‍⚕️',
-      bio: 'Renowned cardiac surgeon with expertise in minimally invasive procedures.'
-    },
-    {
-      name: 'Dr. Emily Rodriguez',
-      role: 'Pediatric Specialist',
-      image: '👩‍⚕️',
-      bio: 'Dedicated to providing compassionate care for children and their families.'
-    },
-    {
-      name: 'Dr. James Wilson',
-      role: 'Orthopedic Surgeon',
-      image: '👨‍⚕️',
-      bio: 'Specializes in sports medicine and joint replacement surgeries.'
-    }
-  ]
+  
 
   return (
     <MainLayout>
       <div className="about-page">
-        {/* Hero Section */}
         <section className="about-hero">
           <div className="container">
             <h1 className="about-title">About TeachNova</h1>
@@ -72,7 +47,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Mission Section */}
         <section className="mission-section">
           <div className="container">
             <div className="mission-grid">
@@ -86,16 +60,12 @@ const About = () => {
                 </p>
               </div>
               <div className="mission-image">
-                <div className="image-placeholder">
-                  🏥
-                  <span>Our Modern Facility</span>
-                </div>
+              <img src={aboutImg} alt="About Us" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Stats Section */}
         <section className="stats-section">
           <div className="container">
             <div className="stats-grid">
@@ -109,7 +79,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Values Section */}
         <section className="values-section">
           <div className="container">
             <h2 className="section-title centered">Our Core Values</h2>
@@ -125,23 +94,7 @@ const About = () => {
           </div>
         </section>
 
-        {/* Team Section */}
-        <section className="team-section">
-          <div className="container">
-            <h2 className="section-title centered">Meet Our Leadership Team</h2>
-            <div className="team-grid">
-              {team.map((member, index) => (
-                <div key={index} className="team-card">
-                  <div className="team-avatar">{member.image}</div>
-                  <h3 className="team-name">{member.name}</h3>
-                  <p className="team-role">{member.role}</p>
-                  <p className="team-bio">{member.bio}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
+       
         {/* History Section */}
         <section className="history-section">
           <div className="container">
