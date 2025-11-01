@@ -1,3 +1,15 @@
+*, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
