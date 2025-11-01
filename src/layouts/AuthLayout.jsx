@@ -5,12 +5,13 @@ const AuthLayout = ({ children }) => {
     <div className="auth-wrapper">
       <div className="auth-card">
         <aside className="auth-hero">
-          <div className="hero-badge">Clinic Online</div>
+          <div className="hero-badge">TechNova</div>
           <h1>
             Chăm sóc sức khỏe <span>mọi lúc, mọi nơi</span>
           </h1>
           <p>
-            Đặt lịch khám, theo dõi lịch sử và kết nối với bác sĩ chỉ trong vài bước đơn giản.
+            Đặt lịch khám, theo dõi lịch sử và kết nối với bác sĩ chỉ trong vài
+            bước đơn giản.
           </p>
           <ul>
             <li>Đăng ký tài khoản miễn phí</li>
@@ -24,7 +25,7 @@ const AuthLayout = ({ children }) => {
         </section>
       </div>
     </div>
-  )
+  );
 }
 
 export default AuthLayout
