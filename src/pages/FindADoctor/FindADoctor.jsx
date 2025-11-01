@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import "./FindADoctor.css";
 import Header from "../../components/Header/Header";
+import { useNavigate } from "react-router-dom";
 
 const FindADoctor = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
@@ -14,6 +15,7 @@ const FindADoctor = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
+  const navigate = useNavigate();
 
   const timeSlots = [
     "07:00 - 08:00",
@@ -305,7 +307,12 @@ const FindADoctor = () => {
               !loading && (
                 <div className="doctors-grid">
                   {displayedDoctors.map((doctor) => (
-                    <div key={doctor.id} className="doctor-card">
+                    <div
+                      key={doctor.id}
+                      className="doctor-card"
+                      onClick={() => navigate(`/doctor/${doctor.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <div className="card-header">
                         <button className="favorite-btn">
                           <svg

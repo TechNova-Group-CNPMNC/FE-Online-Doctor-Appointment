@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Contact from './pages/Contact'
 import About from './pages/About'
 import FindADoctor from './pages/FindADoctor/FindADoctor'
+import DoctorDetail from "./pages/DoctorDetail/DoctorDetail";
 
 function App() {
   return (
@@ -17,11 +18,12 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/find-a-doctor" element={<FindADoctor />} />
+        <Route path="/doctor/:id" element={<DoctorDetail />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App
