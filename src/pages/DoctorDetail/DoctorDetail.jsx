@@ -4,101 +4,6 @@ import api from "../../services/api";
 import Header from "../../components/Header/Header";
 import "./DoctorDetail.css";
 
-// Mock data for doctors
-const mockDoctors = [
-  {
-    id: 1,
-    fullName: "Dr. Richard James",
-    degree: "MBBS",
-    bio: "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.",
-    consultationFee: 50,
-    averageRating: 4.8,
-    profileImage:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-    specialties: [
-      { id: 1, name: "Cardiology" },
-      { id: 2, name: "Internal Medicine" },
-    ],
-    experience: 7,
-  },
-  {
-    id: 2,
-    fullName: "Dr. Sarah Johnson",
-    degree: "MD",
-    bio: "Board-certified physician specializing in family medicine with over 10 years of experience. Dedicated to providing personalized care to patients of all ages.",
-    consultationFee: 60,
-    averageRating: 4.9,
-    profileImage:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-    specialties: [{ id: 3, name: "Family Practice" }],
-    experience: 10,
-  },
-  {
-    id: 3,
-    fullName: "Dr. Michael Chen",
-    degree: "MBBS, MD",
-    bio: "Experienced pediatrician committed to child health and wellness. Specializes in developmental pediatrics and adolescent medicine.",
-    consultationFee: 55,
-    averageRating: 4.7,
-    profileImage:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-    specialties: [{ id: 4, name: "Pediatrics" }],
-    experience: 8,
-  },
-  {
-    id: 4,
-    fullName: "Dr. Emily Rodriguez",
-    degree: "MD",
-    bio: "Specialized in neurology with a focus on headache disorders and epilepsy. Committed to evidence-based medicine and patient education.",
-    consultationFee: 70,
-    averageRating: 4.9,
-    profileImage:
-      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
-    specialties: [{ id: 5, name: "Neurology" }],
-    experience: 12,
-  },
-  {
-    id: 5,
-    fullName: "Dr. David Wilson",
-    degree: "MBBS",
-    bio: "Orthopedic surgeon with expertise in sports medicine and joint replacement. Passionate about helping patients return to active lifestyles.",
-    consultationFee: 80,
-    averageRating: 4.8,
-    profileImage:
-      "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop&crop=face",
-    specialties: [{ id: 6, name: "Orthopedics" }],
-    experience: 15,
-  },
-  {
-    id: 6,
-    fullName: "Dr. Lisa Anderson",
-    degree: "MD",
-    bio: "Dermatologist specializing in medical and cosmetic dermatology. Expert in skin cancer detection and treatment.",
-    consultationFee: 65,
-    averageRating: 4.9,
-    profileImage:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
-    specialties: [{ id: 7, name: "Dermatology" }],
-    experience: 9,
-  },
-  {
-    id: 7,
-    fullName: "Dr. David Lee",
-    degree: "MD",
-    bio: "Specializing in pediatric care and adolescent health.",
-    consultationFee: 50,
-    averageRating: 4.7,
-    profileImage:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-    specialties: [
-      { id: 3, name: "Pediatrics" },
-      { id: 12, name: "Adolescent Health" },
-      { id: 4, name: "Internal Medicine" },
-    ],
-    experience: 7,
-  },
-];
-
 const DoctorDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -139,50 +44,16 @@ const DoctorDetail = () => {
   const fetchDoctorDetail = async () => {
     try {
       setLoading(true);
+      const response = await api.get(`/doctors/${id}`);
+      const doctorData = response.data?.data || response.data;
+      setDoctor(doctorData);
 
-      // Try to fetch from API first
-      try {
-        const response = await api.get(`/doctors/${id}`);
-        const doctorData = response.data?.data || response.data;
-        setDoctor(doctorData);
-
-        // Fetch related doctors (same specialty)
-        if (doctorData.specialties && doctorData.specialties.length > 0) {
-          fetchRelatedDoctors(doctorData.specialties[0].id);
-        }
-      } catch (apiError) {
-        console.log("API not available, using mock data");
-
-        // Use mock data if API fails
-        const mockDoctor = mockDoctors.find((d) => d.id === parseInt(id));
-
-        if (mockDoctor) {
-          setDoctor(mockDoctor);
-
-          // Get related doctors with same specialty
-          if (mockDoctor.specialties && mockDoctor.specialties.length > 0) {
-            const related = mockDoctors
-              .filter(
-                (d) =>
-                  d.id !== mockDoctor.id &&
-                  d.specialties.some((s) =>
-                    mockDoctor.specialties.some((ms) => ms.id === s.id)
-                  )
-              )
-              .slice(0, 5);
-            setRelatedDoctors(related);
-          }
-        } else {
-          // If doctor not found in mock data, show first doctor
-          setDoctor(mockDoctors[0]);
-          setRelatedDoctors(mockDoctors.slice(1, 6));
-        }
+      // Fetch related doctors (same specialty)
+      if (doctorData.specialties && doctorData.specialties.length > 0) {
+        fetchRelatedDoctors(doctorData.specialties[0].id);
       }
     } catch (err) {
       console.error("Error fetching doctor:", err);
-      // Fallback to first mock doctor
-      setDoctor(mockDoctors[0]);
-      setRelatedDoctors(mockDoctors.slice(1, 6));
     } finally {
       setLoading(false);
     }
@@ -196,11 +67,6 @@ const DoctorDetail = () => {
       setRelatedDoctors(filtered);
     } catch (err) {
       console.error("Error fetching related doctors:", err);
-      // Use mock data as fallback
-      const related = mockDoctors
-        .filter((d) => d.id !== parseInt(id))
-        .slice(0, 5);
-      setRelatedDoctors(related);
     }
   };
 
@@ -218,14 +84,6 @@ const DoctorDetail = () => {
   const handleBookAppointment = () => {
     if (!selectedDate || !selectedTime) {
       alert("Please select both date and time");
-      return;
-    }
-
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login to book an appointment");
-      navigate("/login");
       return;
     }
 
@@ -254,10 +112,7 @@ const DoctorDetail = () => {
     return (
       <>
         <Header />
-        <div className="doctor-detail-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading doctor information...</p>
-        </div>
+        <div className="doctor-detail-loading">Loading...</div>
       </>
     );
   }
@@ -266,15 +121,7 @@ const DoctorDetail = () => {
     return (
       <>
         <Header />
-        <div className="doctor-detail-error">
-          <h2>Doctor not found</h2>
-          <button
-            onClick={() => navigate("/find-a-doctor")}
-            className="back-btn"
-          >
-            Back to Find Doctors
-          </button>
-        </div>
+        <div className="doctor-detail-error">Doctor not found</div>
       </>
     );
   }
@@ -284,28 +131,15 @@ const DoctorDetail = () => {
       <Header />
       <div className="doctor-detail-page">
         <div className="doctor-detail-container">
-          {/* Breadcrumb */}
-          <div className="breadcrumb">
-            <span onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
-              Home
-            </span>
-            <span className="separator">/</span>
-            <span
-              onClick={() => navigate("/find-a-doctor")}
-              style={{ cursor: "pointer" }}
-            >
-              Doctors
-            </span>
-            <span className="separator">/</span>
-            <span className="current">{doctor.fullName}</span>
-          </div>
-
           {/* Doctor Info Section */}
           <div className="doctor-info-section">
             <div className="doctor-profile-card">
               <div className="doctor-image-wrapper">
                 <img
-                  src={doctor.profileImage}
+                  src={
+                    doctor.profileImage ||
+                    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face"
+                  }
                   alt={doctor.fullName}
                   className="doctor-profile-image"
                 />
@@ -316,6 +150,7 @@ const DoctorDetail = () => {
               <div className="doctor-header">
                 <h1 className="doctor-name">
                   {doctor.fullName}
+                  {doctor.degree && `, ${doctor.degree}`}
                   <svg
                     className="verified-badge"
                     width="24"
@@ -341,10 +176,12 @@ const DoctorDetail = () => {
                   </svg>
                 </h1>
                 <div className="doctor-specialty-badge">
-                  {doctor.degree} - {formatSpecialties(doctor.specialties)}
-                  <span className="experience-badge">
-                    {doctor.experience || 7} Years
-                  </span>
+                  {doctor.specialties && doctor.specialties.length > 0
+                    ? `${doctor.degree || "MBBS"} - ${formatSpecialties(
+                        doctor.specialties
+                      )}`
+                    : "General Physician"}
+                  <span className="experience-badge">7 Years</span>
                 </div>
               </div>
 
@@ -365,12 +202,17 @@ const DoctorDetail = () => {
                     />
                   </svg>
                 </h3>
-                <p>{doctor.bio}</p>
+                <p>
+                  {doctor.bio ||
+                    "Experienced physician committed to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies."}
+                </p>
               </div>
 
               <div className="appointment-fee">
                 <span>Appointment fee:</span>
-                <span className="fee-amount">${doctor.consultationFee}</span>
+                <span className="fee-amount">
+                  ${doctor.consultationFee || 50}
+                </span>
               </div>
             </div>
           </div>
@@ -416,7 +258,7 @@ const DoctorDetail = () => {
             </button>
           </div>
 
-          {/* Related Doctors Section */}
+          {/* Related Doctors Section
           {relatedDoctors.length > 0 && (
             <div className="related-doctors-section">
               <h2>Related Doctors</h2>
@@ -429,13 +271,16 @@ const DoctorDetail = () => {
                   <div
                     key={relDoc.id}
                     className="related-doctor-card"
-                    onClick={() => {
-                      window.scrollTo(0, 0);
-                      navigate(`/doctor/${relDoc.id}`);
-                    }}
+                    onClick={() => navigate(`/doctor/${relDoc.id}`)}
                   >
                     <div className="related-doctor-image">
-                      <img src={relDoc.profileImage} alt={relDoc.fullName} />
+                      <img
+                        src={
+                          relDoc.profileImage ||
+                          "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face"
+                        }
+                        alt={relDoc.fullName}
+                      />
                     </div>
                     <div className="related-doctor-info">
                       <div className="availability-badge">
@@ -449,7 +294,7 @@ const DoctorDetail = () => {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

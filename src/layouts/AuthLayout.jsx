@@ -16,7 +16,7 @@ const AuthLayout = ({ children }) => {
           <ul>
             <li>Đăng ký tài khoản miễn phí</li>
             <li>Tra cứu lịch làm việc của bác sĩ</li>
-            <li>Nhận thông báo nhắc lịch tự động</li>
+            {/* <li>Nhận thông báo nhắc lịch tự động</li> */}
           </ul>
         </aside>
         <section className="auth-content">

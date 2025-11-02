@@ -35,10 +35,10 @@ const Home = () => {
   ];
 
   const stats = [
-    { number: "50K+", label: "Happy Patients" },
-    { number: "200+", label: "Expert Doctors" },
-    { number: "15+", label: "Specialties" },
-    { number: "4.9", label: "Rating" },
+    // { number: "50K+", label: "Happy Patients" },
+    // { number: "200+", label: "Expert Doctors" },
+    // { number: "15+", label: "Specialties" },
+    // { number: "4.9", label: "Rating" },
   ];
 
   const testimonials = [
@@ -164,7 +164,7 @@ const Home = () => {
             <div className="hero-image">
               <div className="image-container">
                 <img src={headerImg} alt="Doctor" />
-                <div className="floating-card card-1">
+                {/* <div className="floating-card card-1">
                   <div className="card-icon">👨‍⚕️</div>
                   <div className="card-content">
                     <div className="card-title">Expert Doctors</div>
@@ -184,7 +184,7 @@ const Home = () => {
                     <div className="card-title">Easy Booking</div>
                     <div className="card-subtitle">In 3 simple steps</div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -272,7 +272,7 @@ const Home = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="testimonials-section">
+        {/* <section className="testimonials-section">
           <div className="container">
             <div className="section-header">
               <span className="section-badge">Patient Reviews</span>
@@ -329,7 +329,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* CTA Section */}
         <section className="cta-section">
@@ -372,7 +372,7 @@ const Home = () => {
                       fill="#FCD34D"
                     />
                   </svg>
-                  <span>4.9/5 Rating</span>
+                  {/* <span>4.9/5 Rating</span> */}
                 </div>
                 <div className="trust-item">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -385,7 +385,7 @@ const Home = () => {
                       fill="#34D399"
                     />
                   </svg>
-                  <span>Trusted by 50K+</span>
+                  {/* <span>Trusted by 50K+</span> */}
                 </div>
               </div>
             </div>
