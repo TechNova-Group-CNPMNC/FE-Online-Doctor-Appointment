@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
-import { FiMail, FiLock, FiArrowRight } from "react-icons/fi";
+import { Mail, Lock, ArrowRight } from "lucide-react";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ const LoginForm = () => {
 
       console.log("Login response:", response);
 
-      // Handle different response structures
       const token =
         response.data?.token ||
         response.token ||
@@ -53,16 +52,14 @@ const LoginForm = () => {
         console.log("User stored:", user);
       }
 
-      // Redirect to find doctor page
       navigate("/find-a-doctor");
     } catch (err) {
       console.error("Login error:", err);
       console.error("Error response:", err.response);
 
-      let errorMessage = "Đăng nhập không thành công. Vui lòng thử lại.";
+      let errorMessage = "Login failed. Please try again.";
 
       if (err.response) {
-        // Server responded with error
         const serverMessage =
           err.response.data?.message ||
           err.response.data?.error ||
@@ -71,18 +68,17 @@ const LoginForm = () => {
         if (serverMessage) {
           errorMessage = serverMessage;
         } else if (err.response.status === 401) {
-          errorMessage = "Email hoặc mật khẩu không đúng.";
+          errorMessage = "Incorrect email or password.";
         } else if (err.response.status === 404) {
-          errorMessage = "Tài khoản không tồn tại.";
+          errorMessage = "Account does not exist.";
         } else {
-          errorMessage = `Lỗi: ${err.response.status}`;
+          errorMessage = `Error: ${err.response.status}`;
         }
       } else if (err.request) {
-        // Request was made but no response
         errorMessage =
-          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.";
+          "Unable to connect to server. Please check your network connection.";
       } else if (err.code === "ERR_NETWORK") {
-        errorMessage = "Lỗi kết nối mạng. Vui lòng kiểm tra lại.";
+        errorMessage = "Network error. Please try again.";
       }
 
       setError(errorMessage);
@@ -98,9 +94,9 @@ const LoginForm = () => {
         onSubmit={handleSubmit}
         aria-labelledby="login-title"
       >
-        <h2 id="login-title">Đăng nhập</h2>
+        <h2 id="login-title">Log In</h2>
         <p className="form-subtitle">
-          Nhập thông tin của bạn để tiếp tục đặt lịch khám.
+          Enter your information to continue booking appointments.
         </p>
 
         {error && (
@@ -112,7 +108,7 @@ const LoginForm = () => {
         <label className="input-group">
           <span>Email</span>
           <div style={{ position: "relative" }}>
-            <FiMail
+            <Mail
               style={{
                 position: "absolute",
                 left: "16px",
@@ -137,9 +133,9 @@ const LoginForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Mật khẩu</span>
+          <span>Password</span>
           <div style={{ position: "relative" }}>
-            <FiLock
+            <Lock
               style={{
                 position: "absolute",
                 left: "16px",
@@ -172,10 +168,10 @@ const LoginForm = () => {
               onChange={handleChange}
               disabled={loading}
             />
-            <span>Ghi nhớ tôi</span>
+            <span>Remember me</span>
           </label>
           <Link to="#" className="link">
-            Quên mật khẩu?
+            Forgot password?
           </Link>
         </div>
 
@@ -189,20 +185,20 @@ const LoginForm = () => {
             }}
           >
             {loading ? (
-              "Đang đăng nhập..."
+              "Logging in..."
             ) : (
               <>
-                Đăng nhập
-                <FiArrowRight />
+                Log In
+                <ArrowRight />
               </>
             )}
           </span>
         </button>
 
         <p className="form-footer">
-          Chưa có tài khoản?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="link">
-            Đăng ký ngay
+            Sign up now
           </Link>
         </p>
       </form>

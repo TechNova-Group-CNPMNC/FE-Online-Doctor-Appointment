@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { authAPI } from '../../services/api'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { authAPI } from "../../services/api";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -27,19 +27,19 @@ const SignupForm = () => {
 
   const validateForm = () => {
     if (formData.password !== formData.confirmPassword) {
-      setError("Mật khẩu không khớp");
+      setError("Passwords do not match");
       return false;
     }
     if (formData.password.length < 8) {
-      setError("Mật khẩu phải có ít nhất 8 ký tự");
+      setError("Password must be at least 8 characters");
       return false;
     }
     if (!formData.dateOfBirth) {
-      setError("Vui lòng chọn ngày sinh");
+      setError("Please select a date of birth");
       return false;
     }
     if (!formData.phoneNumber.startsWith("+84")) {
-      setError("Số điện thoại phải bắt đầu với +84");
+      setError("Phone number must start with +84");
       return false;
     }
     return true;
@@ -63,7 +63,6 @@ const SignupForm = () => {
 
       console.log("Registration response:", response);
 
-      // Handle different response structures
       const token =
         response.data?.token ||
         response.token ||
@@ -78,18 +77,16 @@ const SignupForm = () => {
         localStorage.setItem("user", JSON.stringify(user));
       }
 
-      // Redirect to login or home page
       navigate("/login", {
-        state: { message: "Đăng ký thành công! Vui lòng đăng nhập." },
+        state: { message: "Registration successful! Please log in." },
       });
     } catch (err) {
       console.error("Registration error:", err);
       console.error("Error response:", err.response);
 
-      let errorMessage = "Đăng ký không thành công. Vui lòng thử lại.";
+      let errorMessage = "Registration failed. Please try again.";
 
       if (err.response) {
-        // Server responded with error
         const serverMessage =
           err.response.data?.message ||
           err.response.data?.error ||
@@ -98,17 +95,17 @@ const SignupForm = () => {
         if (serverMessage) {
           errorMessage = serverMessage;
         } else if (err.response.status === 409) {
-          errorMessage = "Email đã được đăng ký.";
+          errorMessage = "Email already registered.";
         } else if (err.response.status === 400) {
-          errorMessage = "Thông tin không hợp lệ. Vui lòng kiểm tra lại.";
+          errorMessage = "Invalid information. Please check again.";
         } else {
-          errorMessage = `Lỗi: ${err.response.status}`;
+          errorMessage = `Error: ${err.response.status}`;
         }
       } else if (err.request) {
         errorMessage =
-          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.";
+          "Unable to connect to server. Please check your network connection.";
       } else if (err.code === "ERR_NETWORK") {
-        errorMessage = "Lỗi kết nối mạng. Vui lòng kiểm tra lại.";
+        errorMessage = "Network error. Please try again.";
       }
 
       setError(errorMessage);
@@ -124,9 +121,9 @@ const SignupForm = () => {
         onSubmit={handleSubmit}
         aria-labelledby="signup-title"
       >
-        <h2 id="signup-title">Đăng ký</h2>
+        <h2 id="signup-title">Sign Up</h2>
         <p className="form-subtitle">
-          Tạo tài khoản để quản lý lịch khám và thông tin sức khỏe.
+          Create an account to manage your appointments and health information.
         </p>
 
         {error && (
@@ -136,11 +133,11 @@ const SignupForm = () => {
         )}
 
         <label className="input-group">
-          <span>Họ và tên</span>
+          <span>Full Name</span>
           <input
             type="text"
             name="fullName"
-            placeholder="Nguyễn Văn A"
+            placeholder="John Doe"
             autoComplete="name"
             required
             value={formData.fullName}
@@ -164,7 +161,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Số điện thoại</span>
+          <span>Phone Number</span>
           <input
             type="tel"
             name="phoneNumber"
@@ -178,7 +175,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Ngày sinh</span>
+          <span>Date of Birth</span>
           <input
             type="date"
             name="dateOfBirth"
@@ -191,7 +188,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Giới tính</span>
+          <span>Gender</span>
           <select
             name="gender"
             required
@@ -199,14 +196,14 @@ const SignupForm = () => {
             onChange={handleChange}
             disabled={loading}
           >
-            <option value="MALE">Nam</option>
-            <option value="FEMALE">Nữ</option>
-            <option value="OTHER">Khác</option>
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+            <option value="OTHER">Other</option>
           </select>
         </label>
 
         <label className="input-group">
-          <span>Mật khẩu</span>
+          <span>Password</span>
           <input
             type="password"
             name="password"
@@ -221,7 +218,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Nhập lại mật khẩu</span>
+          <span>Confirm Password</span>
           <input
             type="password"
             name="confirmPassword"
@@ -236,13 +233,13 @@ const SignupForm = () => {
         </label>
 
         <button type="submit" className="primary-button" disabled={loading}>
-          {loading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+          {loading ? "Creating account..." : "Create Account"}
         </button>
 
         <p className="form-footer">
-          Đã có tài khoản?{" "}
+          Already have an account?{" "}
           <Link to="/login" className="link">
-            Đăng nhập
+            Log In
           </Link>
         </p>
       </form>
@@ -250,4 +247,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm
+export default SignupForm;
