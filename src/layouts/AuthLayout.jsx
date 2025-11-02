@@ -1,4 +1,5 @@
 import AuthTabs from '../components/auth/AuthTabs'
+import "./AuthLayout.css";
 
 const AuthLayout = ({ children }) => {
   return (
