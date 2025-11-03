@@ -6,28 +6,20 @@ import './Home.css'
 const Home = () => {
   const features = [
     {
-      icon: '🏥',
       title: 'Find Doctors',
-      description: 'Book your appointment with the best doctors in your area'
+      description: 'Book your appointment with the best doctors '
     },
     {
-      icon: '💊',
-      title: 'Online Consultation',
-      description: 'Get medical advice from qualified doctors online'
-    },
-    {
-      icon: '📱',
       title: 'Easy Booking',
       description: 'Schedule your appointments with just a few clicks'
     },
     {
-      icon: '📊',
       title: 'Health Records',
       description: 'Keep track of your medical history and records'
     }
   ]
 
-  
+
 
   const testimonials = [
     {
@@ -84,7 +76,7 @@ const Home = () => {
                 Your Health is Our <span className="text-primary">Priority</span>
               </h1>
               <p className="hero-subtitle">
-                Book appointments with top-rated doctors. Get the care you deserve, 
+                Book appointments with top-rated doctors. Get the care you deserve,
                 when you need it most.
               </p>
               <div className="hero-actions">
@@ -100,7 +92,7 @@ const Home = () => {
               <div className="doctor-image">
                 <img src={headerImg} alt="Doctor" />
               </div>
-              
+
             </div>
           </div>
         </section>
@@ -144,7 +136,7 @@ const Home = () => {
           </div>
         </section>
 
-        
+
 
         {/* Testimonials Section */}
         <section className="testimonials-section">

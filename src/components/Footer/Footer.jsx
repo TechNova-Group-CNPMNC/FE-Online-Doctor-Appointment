@@ -10,7 +10,7 @@ const Footer = () => {
             <span className="logo-text">TechNova</span>
           </div>
           <p className="footer-tagline">
-            Travel helps companies manage payments easily.
+            Cung cấp dịch vụ y tế chuyên nghiệp, mang đến sự quan tâm và chăm sóc y tế toàn diện cho hơn năm năm qua.
           </p>
           <div className="social-icons">
             <a href="#" aria-label="LinkedIn" className="social-icon">
@@ -39,20 +39,10 @@ const Footer = () => {
         <div className="footer-column">
           <h3 className="footer-heading">Company</h3>
           <ul className="footer-links">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Pricing</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-column">
-          <h3 className="footer-heading">Destinations</h3>
-          <ul className="footer-links">
-            <li><a href="#">Maldives</a></li>
-            <li><a href="#">Los Angeles</a></li>
-            <li><a href="#">Las Vegas</a></li>
-            <li><a href="#">Torronto</a></li>
+            <li><a href="#">Trang Chủ</a></li>
+            <li><a href="#">Danh sách Bác Sĩ</a></li>
+            <li><a href="#">Liên hệ</a></li>
+            <li><a href="#">Giới Thiệu</a></li>
           </ul>
         </div>
       </div>

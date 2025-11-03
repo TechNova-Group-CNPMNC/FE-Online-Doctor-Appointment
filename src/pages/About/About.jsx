@@ -5,32 +5,25 @@ import aboutImg from '../../assets/appointment_img.png'
 const About = () => {
   const values = [
     {
-      icon: '❤️',
-      title: 'Compassionate Care',
-      description: 'We treat every patient with empathy and respect, ensuring their comfort is our top priority.'
+      title: 'Chăm Sóc Tận Tâm',
+      
     },
     {
-      icon: '🎯',
-      title: 'Excellence',
-      description: 'We strive for excellence in everything we do, from diagnosis to treatment and follow-up care.'
+      title: 'Xuất Sắc',
     },
     {
-      icon: '🤝',
-      title: 'Trust & Integrity',
-      description: 'We build lasting relationships based on trust, transparency, and ethical medical practices.'
+      title: 'Tin Cậy & Chính Trực',
     },
     {
-      icon: '🔬',
-      title: 'Innovation',
-      description: 'We embrace cutting-edge technology and medical advances to provide the best care possible.'
+      title: 'Đổi Mới',
     }
   ]
 
   const stats = [
-    { number: '50,000+', label: 'Happy Patients' },
-    { number: '200+', label: 'Expert Doctors' },
-    { number: '15+', label: 'Years Experience' },
-    { number: '24/7', label: 'Support Available' }
+    { number: '50+', label: 'Bệnh Nhân Hài Lòng' },
+    { number: '20+', label: 'Bác Sĩ Chuyên Gia' },
+    { number: '5+', label: 'Năm Kinh Nghiệm' },
+    { number: '24/7', label: 'Hỗ Trợ Sẵn Có' }
   ]
 
   
@@ -40,9 +33,9 @@ const About = () => {
       <div className="about-page">
         <section className="about-hero">
           <div className="container">
-            <h1 className="about-title">About TeachNova</h1>
+            <h1 className="about-title">Giới Thiệu Công Ty</h1>
             <p className="about-subtitle">
-              Your trusted healthcare partner, delivering compassionate and comprehensive medical care for over a decade.
+              Công ty của chúng tôi là một công ty cung cấp dịch vụ y tế chuyên nghiệp, mang đến sự quan tâm và chăm sóc y tế toàn diện cho hơn mười năm qua.
             </p>
           </div>
         </section>
@@ -51,12 +44,11 @@ const About = () => {
           <div className="container">
             <div className="mission-grid">
               <div className="mission-content">
-                <h2 className="section-title">Our Mission</h2>
+                <h2 className="section-title">Sứ Mệnh Của Chúng Tôi</h2>
                 <p className="mission-text">
-                  At TeachNova, we are dedicated to providing exceptional healthcare services that improve the quality of life for our patients and their families. We believe that everyone deserves access to world-class medical care, delivered with compassion, respect, and professionalism.
-                </p>
+                Tại TeachNova, chúng tôi cam kết cung cấp các dịch vụ chăm sóc sức khỏe đặc biệt, giúp cải thiện chất lượng cuộc sống cho bệnh nhân và gia đình họ. Chúng tôi tin rằng mọi người đều xứng đáng được tiếp cận dịch vụ chăm sóc y tế đẳng cấp thế giới, được cung cấp với lòng trắc ẩn, sự tôn trọng và tính chuyên nghiệp.                </p>
                 <p className="mission-text">
-                  Our team of highly qualified medical professionals works together to ensure that each patient receives personalized, evidence-based treatment tailored to their unique needs and circumstances.
+                    Nhóm bác sĩ chuyên nghiệp của chúng tôi làm việc cùng nhau để đảm bảo rằng mỗi bệnh nhân nhận được điều trị cá nhân hóa, dựa trên cơ sở khoa học và phù hợp với nhu cầu và tình huống cá nhân của họ.
                 </p>
               </div>
               <div className="mission-image">
@@ -81,7 +73,7 @@ const About = () => {
 
         <section className="values-section">
           <div className="container">
-            <h2 className="section-title centered">Our Core Values</h2>
+            <h2 className="section-title centered">Giá Trị Cốt Lõi</h2>
             <div className="values-grid">
               {values.map((value, index) => (
                 <div key={index} className="value-card">
@@ -98,42 +90,33 @@ const About = () => {
         {/* History Section */}
         <section className="history-section">
           <div className="container">
-            <h2 className="section-title centered">Our Journey</h2>
+            <h2 className="section-title centered">Hành Trình Của Chúng Tôi</h2>
             <div className="timeline">
               <div className="timeline-item">
                 <div className="timeline-year">2010</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Founded</h3>
-                  <p className="timeline-text">
-                    ClinicCare was founded with a vision to revolutionize healthcare delivery, making quality medical care accessible to all.
-                  </p>
+                  <h3 className="timeline-title">Thành Lập</h3>
+                  
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2015</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Expansion</h3>
-                  <p className="timeline-text">
-                    We expanded our services to include specialized departments, offering comprehensive care under one roof.
-                  </p>
+                  <h3 className="timeline-title">Mở Rộng</h3>
+                  
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2020</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Digital Innovation</h3>
-                  <p className="timeline-text">
-                    Launched our telemedicine platform and online appointment booking system to enhance patient convenience.
-                  </p>
+                  <h3 className="timeline-title">Đổi Mới Số</h3>
+                 
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2024</div>
-                <div className="timeline-content">
-                  <h3 className="timeline-title">Today</h3>
-                  <p className="timeline-text">
-                    Continuing to serve thousands of patients annually with state-of-the-art facilities and cutting-edge medical technology.
-                  </p>
+                <div className="timeline-conten t">
+                  <h3 className="timeline-title">Ngày Nay</h3>
                 </div>
               </div>
             </div>

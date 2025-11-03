@@ -12,10 +12,10 @@ const Header = () => {
   }
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Appointment', path: '/appointment' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'About', path: '/about' }
+    { name: 'Trang Chủ', path: '/' },
+    { name: 'Danh sách ', path: '/doctors' },
+    { name: 'Liên hệ', path: '/contact' },
+    { name: 'Giới Thiệu', path: '/about' }
   ]
 
   return (

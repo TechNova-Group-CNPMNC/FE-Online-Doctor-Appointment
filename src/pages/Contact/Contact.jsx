@@ -8,9 +8,9 @@ const Contact = () => {
         {/* Hero Section */}
         <section className="contact-hero">
           <div className="container">
-            <h1 className="contact-title">Contact Us</h1>
+            <h1 className="contact-title">Liên Hệ</h1>
             <p className="contact-subtitle">
-              Have questions? Send us a message and we'll respond as soon as possible.
+              Có câu hỏi? Gửi cho chúng tôi một tin nhắn và chúng tôi sẽ trả lời sớm nhất có thể.
             </p>
           </div>
         </section>
@@ -44,7 +44,7 @@ const Contact = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="message">Message</label>
+                    <label htmlFor="message">Tin Nhắn</label>
                     <textarea 
                       id="message" 
                       name="message" 
@@ -62,13 +62,13 @@ const Contact = () => {
 
               {/* Contact Info */}
               <div className="contact-info-container">
-                <h2 className="info-title">Get in Touch</h2>
+                <h2 className="info-title">Liên Hệ</h2>
                 
                 <div className="contact-info-list">
                   <div className="contact-info-item">
                     <div className="info-icon">📞</div>
                     <div className="info-content">
-                      <p className="info-text">+1 (555) 123-4567</p>
+                      <p className="info-text">+84 909090909</p>
                     </div>
                   </div>
 

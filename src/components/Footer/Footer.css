@@ -9,7 +9,7 @@
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 10fr);
   gap: 48px;
   padding-bottom: 32px;
 }

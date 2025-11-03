@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MainLayout from '../../layouts/MainLayout'
 import api from "../../services/api";
 import "./FindADoctor.css";
 
@@ -178,6 +179,7 @@ const FindADoctor = () => {
   };
 
   return (
+    <MainLayout>
     <div className="find-doctor-page">
       <div className="container">
         <div className="search-section">
@@ -390,6 +392,7 @@ const FindADoctor = () => {
         </div>
       </div>
     </div>
+    </MainLayout>
   );
 };
 
