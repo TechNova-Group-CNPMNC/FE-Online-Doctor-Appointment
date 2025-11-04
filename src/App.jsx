@@ -19,8 +19,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/find-a-doctor" element={<FindADoctor />} />
         <Route path="/doctor/:id" element={<DoctorDetail />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

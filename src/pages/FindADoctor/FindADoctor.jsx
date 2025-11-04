@@ -91,67 +91,82 @@ const FindADoctor = () => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!selectedSpecialty) {
-      setError("Vui lòng chọn chuyên khoa");
-      return;
+const handleSearch = async () => {
+  if (!selectedSpecialty) {
+    setError("Vui lòng chọn chuyên khoa");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError("");
+
+    const params = new URLSearchParams();
+    params.append("specialty", selectedSpecialty); // Backend expects "specialty" not "specialtyId"
+
+    if (selectedName.trim()) {
+      params.append("name", selectedName.trim()); // Backend expects "name" not "doctorName"
     }
 
-    try {
-      setLoading(true);
-      setError("");
+    // Always send a date - if not selected, use today
+    if (selectedDay) {
+      const today = new Date();
+      const daysOfWeek = [
+        "sunday",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+      ];
+      const targetDayIndex = daysOfWeek.indexOf(selectedDay.toLowerCase());
+      const currentDayIndex = today.getDay();
 
-      // Build query parameters - now using specialty ID
-      const params = new URLSearchParams();
-      params.append("id", selectedSpecialty); // Changed from "specialty" to "specialtyId"
-
-      if (selectedName.trim()) {
-        params.append("name", selectedName.trim());
+      let daysUntil = targetDayIndex - currentDayIndex;
+      if (daysUntil <= 0) {
+        daysUntil += 7;
       }
-      if (selectedDay) {
-        params.append("day", selectedDay);
-      }
-      if (selectedTimeSlot) {
-        params.append("timeSlot", selectedTimeSlot);
-      }
 
-      console.log("Search params:", params.toString());
+      const targetDate = new Date(today);
+      targetDate.setDate(today.getDate() + daysUntil);
+      const dateString = targetDate.toISOString().split("T")[0];
+      params.append("date", dateString);
+    } else {
+      // If no day selected, use today's date
+      const today = new Date();
+      const dateString = today.toISOString().split("T")[0];
+      params.append("date", dateString);
+    }
 
-      const response = await api.get(`/doctors/search?${params.toString()}`);
-      console.log("Search response:", response);
+    console.log("Search params:", params.toString());
 
-      const results = response.data?.data || response.data || [];
+    const response = await api.get(`/doctors/search?${params.toString()}`);
+    console.log("Search response:", response);
 
-      // Handle both array and single object responses
-      const resultsArray = Array.isArray(results) ? results : [results];
+    const results = response.data?.data || response.data || [];
+    const resultsArray = Array.isArray(results) ? results : [results];
 
-      setSearchResults(resultsArray);
+    setSearchResults(resultsArray);
+    setHasSearched(true);
+
+    console.log("Results:", resultsArray);
+  } catch (err) {
+    console.error("Search error:", err);
+
+    if (err.response?.status === 404) {
+      setSearchResults([]);
       setHasSearched(true);
-
-      console.log("Search with:", {
-        id: selectedSpecialty, // Changed log message
-        name: selectedName,
-        day: selectedDay,
-        timeSlot: selectedTimeSlot,
-      });
-      console.log("Results:", resultsArray);
-    } catch (err) {
-      console.error("Search error:", err);
-
-      // Handle 404 as "no results found" instead of error
-      if (err.response?.status === 404) {
-        setSearchResults([]);
-        setHasSearched(true);
-        setError("");
-      } else {
-        setError("Không thể tìm kiếm bác sĩ. Vui lòng thử lại.");
-        setSearchResults([]);
-        setHasSearched(true);
-      }
-    } finally {
-      setLoading(false);
+      setError("");
+    } else {
+      setError("Không thể tìm kiếm bác sĩ. Vui lòng thử lại.");
+      setSearchResults([]);
+      setHasSearched(true);
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleReset = () => {
     setSelectedSpecialty("");

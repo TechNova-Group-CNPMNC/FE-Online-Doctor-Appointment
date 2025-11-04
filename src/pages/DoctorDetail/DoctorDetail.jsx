@@ -68,13 +68,18 @@ const DoctorDetail = () => {
       const doctorData = response.data?.data || response.data;
       setDoctor(doctorData);
 
-      // Fetch related doctors (same specialty)
+
       if (doctorData.specialties && doctorData.specialties.length > 0) {
         fetchRelatedDoctors(doctorData.specialties[0].id);
       }
     } catch (err) {
       console.error("Error fetching doctor:", err);
       console.error("Error details:", err.response?.data);
+
+      if (err.response?.status === 404) {
+        alert(`Doctor with ID ${id} not found. Please select a valid doctor.`);
+        navigate("/find-a-doctor");
+      }
     } finally {
       setLoading(false);
     }
