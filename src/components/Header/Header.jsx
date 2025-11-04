@@ -7,6 +7,9 @@ import logo from "../../assets/logo.png";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("token") ? true : false
+  );
   const location = useLocation();
 
   useEffect(() => {
@@ -52,21 +55,37 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="header-actions">
-          <Link to="/login" className="btn-login">
-            Log In
-          </Link>
-          <Link to="/signup" className="btn-signup">
-            Sign Up
-          </Link>
-          <button
-            className="mobile-menu-btn"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        {!isLoggedIn && (
+          <div className="header-actions">
+            <Link to="/login" className="btn-login">
+              Log In
+            </Link>
+            <Link to="/signup" className="btn-signup">
+              Sign Up
+            </Link>
+            <button
+              className="mobile-menu-btn"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        )}
+        {isLoggedIn && (
+          // log out button
+          <div className="header-actions">
+            <button
+              className="btn-logout"
+              onClick={() => {
+                localStorage.removeItem("token");
+                setIsLoggedIn(false);
+              }}
+            >
+              Log Out
+            </button>
+          </div>
+        )}
 
         <nav className={`header-nav mobile-nav ${isMenuOpen ? "active" : ""}`}>
           <div className="mobile-nav-overlay" onClick={toggleMenu}></div>
