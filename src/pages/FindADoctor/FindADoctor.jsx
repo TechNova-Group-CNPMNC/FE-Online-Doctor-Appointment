@@ -7,48 +7,50 @@ import { useNavigate } from "react-router-dom";
 const FindADoctor = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [selectedName, setSelectedName] = useState("");
-  const [selectedDay, setSelectedDay] = useState("");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
+  const [availableDates, setAvailableDates] = useState([]);
   const navigate = useNavigate();
-
-  const timeSlots = [
-    "07:00 - 08:00",
-    "08:00 - 09:00",
-    "09:00 - 10:00",
-    "10:00 - 11:00",
-    "11:00 - 12:00",
-    "12:00 - 13:00",
-    "13:00 - 14:00",
-    "14:00 - 15:00",
-    "15:00 - 16:00",
-    "16:00 - 17:00",
-    "17:00 - 18:00",
-    "18:00 - 19:00",
-    "19:00 - 20:00",
-    "20:00 - 21:00",
-  ];
-
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
 
   // Fetch specialties and doctors on component mount
   useEffect(() => {
     fetchSpecialties();
     fetchAllDoctors();
+    generateNext7Days();
   }, []);
+
+  const generateNext7Days = () => {
+    const dates = [];
+    const today = new Date();
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+
+      const dateStr = date.toISOString().split("T")[0];
+      const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+      const dayNum = date.getDate();
+      const monthName = date.toLocaleDateString("en-US", { month: "short" });
+
+      dates.push({
+        value: dateStr,
+        label: `${dayName}, ${monthName} ${dayNum}`,
+        dayName: dayName,
+        dayNum: dayNum,
+        monthName: monthName,
+        isToday: i === 0,
+      });
+    }
+
+    setAvailableDates(dates);
+    // Set today as default
+    setSelectedDate(dates[0].value);
+  };
 
   const fetchSpecialties = async () => {
     try {
@@ -60,16 +62,15 @@ const FindADoctor = () => {
       console.log("Available specialties:", specialtiesData);
     } catch (err) {
       console.error("Error fetching specialties:", err);
-      // Fallback to hardcoded list if API fails
       setAvailableSpecialties([
-        { id: 1, name: "Family Practice" },
-        { id: 2, name: "General Medicine" },
+        { id: 1, name: "Cardiology" },
+        { id: 2, name: "Dermatology" },
         { id: 3, name: "Pediatrics" },
-        { id: 4, name: "Internal Medicine" },
-        { id: 5, name: "Cardiology" },
-        { id: 6, name: "Dermatology" },
-        { id: 7, name: "Neurology" },
-        { id: 8, name: "Orthopedics" },
+        { id: 4, name: "Neurology" },
+        { id: 5, name: "Orthopedics" },
+        { id: 6, name: "Oncology" },
+        { id: 7, name: "Psychiatry" },
+        { id: 192, name: "General Medicine" },
       ]);
     }
   };
@@ -85,94 +86,64 @@ const FindADoctor = () => {
       setDoctors(doctorsData);
     } catch (err) {
       console.error("Error fetching doctors:", err);
-      setError("Không thể tải danh sách bác sĩ. Vui lòng thử lại.");
+      setError("Cannot load doctors list. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-const handleSearch = async () => {
-  if (!selectedSpecialty) {
-    setError("Vui lòng chọn chuyên khoa");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setError("");
-
-    const params = new URLSearchParams();
-    params.append("specialty", selectedSpecialty); // Backend expects "specialty" not "specialtyId"
-
-    if (selectedName.trim()) {
-      params.append("name", selectedName.trim()); // Backend expects "name" not "doctorName"
+  const handleSearch = async () => {
+    if (!selectedSpecialty || !selectedDate) {
+      setError("Please select specialty and date");
+      return;
     }
 
-    // Always send a date - if not selected, use today
-    if (selectedDay) {
-      const today = new Date();
-      const daysOfWeek = [
-        "sunday",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-      ];
-      const targetDayIndex = daysOfWeek.indexOf(selectedDay.toLowerCase());
-      const currentDayIndex = today.getDay();
+    try {
+      setLoading(true);
+      setError("");
 
-      let daysUntil = targetDayIndex - currentDayIndex;
-      if (daysUntil <= 0) {
-        daysUntil += 7;
+      // Build query params matching backend API
+      const params = new URLSearchParams();
+      params.append("specialty", selectedSpecialty);
+      params.append("date", selectedDate);
+
+      if (selectedName.trim()) {
+        params.append("name", selectedName.trim());
       }
 
-      const targetDate = new Date(today);
-      targetDate.setDate(today.getDate() + daysUntil);
-      const dateString = targetDate.toISOString().split("T")[0];
-      params.append("date", dateString);
-    } else {
-      // If no day selected, use today's date
-      const today = new Date();
-      const dateString = today.toISOString().split("T")[0];
-      params.append("date", dateString);
-    }
+      console.log("Search params:", params.toString());
 
-    console.log("Search params:", params.toString());
+      const response = await api.get(`/doctors/search?${params.toString()}`);
+      console.log("Search response:", response);
 
-    const response = await api.get(`/doctors/search?${params.toString()}`);
-    console.log("Search response:", response);
+      const results = response.data?.data || response.data || [];
+      const resultsArray = Array.isArray(results) ? results : [results];
 
-    const results = response.data?.data || response.data || [];
-    const resultsArray = Array.isArray(results) ? results : [results];
-
-    setSearchResults(resultsArray);
-    setHasSearched(true);
-
-    console.log("Results:", resultsArray);
-  } catch (err) {
-    console.error("Search error:", err);
-
-    if (err.response?.status === 404) {
-      setSearchResults([]);
+      setSearchResults(resultsArray);
       setHasSearched(true);
-      setError("");
-    } else {
-      setError("Không thể tìm kiếm bác sĩ. Vui lòng thử lại.");
-      setSearchResults([]);
-      setHasSearched(true);
+
+      console.log("Search results:", resultsArray);
+    } catch (err) {
+      console.error("Search error:", err);
+
+      if (err.response?.status === 404) {
+        setSearchResults([]);
+        setHasSearched(true);
+        setError("No doctors found matching your criteria.");
+      } else {
+        setError("Cannot search doctors. Please try again.");
+        setSearchResults([]);
+        setHasSearched(true);
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleReset = () => {
     setSelectedSpecialty("");
     setSelectedName("");
-    setSelectedDay("");
-    setSelectedTimeSlot("");
+    setSelectedDate(availableDates[0]?.value || "");
     setSearchResults([]);
     setHasSearched(false);
     setError("");
@@ -182,7 +153,7 @@ const handleSearch = async () => {
   // Show all doctors initially, or search results after search
   const displayedDoctors = hasSearched ? searchResults : doctors;
 
-  const isDisabled = !selectedSpecialty;
+  const isSearchDisabled = !selectedSpecialty || !selectedDate;
 
   // Format doctor specialty names for display
   const formatSpecialties = (specialties) => {
@@ -203,91 +174,124 @@ const handleSearch = async () => {
         <div className="container">
           <div className="search-section">
             <h1>Find A Doctor</h1>
+
             <div className="search-form">
+              {/* Specialty Selector */}
               <div className="form-group">
+                <label className="form-label">Specialty *</label>
                 <select
                   className="form-select"
                   value={selectedSpecialty}
                   onChange={(e) => setSelectedSpecialty(e.target.value)}
                   disabled={loading}
                 >
-                  <option value="">Speciality</option>
+                  <option value="">Select Specialty</option>
                   {availableSpecialties.map((specialty) => (
                     <option key={specialty.id} value={specialty.id}>
                       {specialty.name}
                     </option>
                   ))}
                 </select>
-              </div>
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="form-input"
-                  value={selectedName}
-                  onChange={(e) => setSelectedName(e.target.value)}
-                  disabled={isDisabled || loading}
-                />
-              </div>
-              <div className="form-group">
-                <select
-                  className="form-select"
-                  value={selectedDay}
-                  onChange={(e) => setSelectedDay(e.target.value)}
-                  disabled={isDisabled || loading}
-                >
-                  <option value="">Day</option>
-                  {days.map((day) => (
-                    <option key={day} value={day.toLowerCase()}>
-                      {day}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <select
-                  className="form-select"
-                  value={selectedTimeSlot}
-                  onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                  disabled={isDisabled || loading}
-                >
-                  <option value="">Time Slot</option>
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>
-                      {slot}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="search-buttons">
-                <button
-                  className="search-btn"
-                  onClick={handleSearch}
-                  disabled={isDisabled || loading}
-                >
-                  {loading ? "Đang tìm..." : "Search"}
-                </button>
-                {hasSearched && (
-                  <button
-                    className="reset-btn"
-                    onClick={handleReset}
+
+                {/* Doctor Name Input */}
+                <div className="form-group">
+                  <label className="form-label">Doctor Name (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="Search by name..."
+                    className="form-input"
+                    value={selectedName}
+                    onChange={(e) => setSelectedName(e.target.value)}
                     disabled={loading}
-                  >
-                    Reset
-                  </button>
-                )}
+                  />
+                </div>
+              </div>
+
+              {/* Date Selector - Next 7 Days */}
+              <div className="form-group date-group">
+                <label className="form-label">
+                  Available Date *
+                  <span className="label-hint">(Next 7 days)</span>
+                </label>
+                <div className="date-picker-grid">
+                  {availableDates.map((dateObj) => (
+                    <button
+                      key={dateObj.value}
+                      type="button"
+                      className={`date-picker-btn ${
+                        selectedDate === dateObj.value ? "active" : ""
+                      } ${dateObj.isToday ? "today" : ""}`}
+                      onClick={() => setSelectedDate(dateObj.value)}
+                      disabled={loading}
+                    >
+                      <span className="date-day">{dateObj.dayName}</span>
+                      <span className="date-number">{dateObj.dayNum}</span>
+                      <span className="date-month">{dateObj.monthName}</span>
+                      {dateObj.isToday && (
+                        <span className="today-badge">Today</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {error && (
-              <div
-                className="error-message"
-                style={{
-                  marginTop: "20px",
-                  color: "#d32f2f",
-                  textAlign: "center",
-                }}
+            {/* Search Buttons */}
+            <div className="search-buttons">
+              <button
+                className="search-btn"
+                onClick={handleSearch}
+                disabled={isSearchDisabled || loading}
               >
+                {loading ? (
+                  <>
+                    <span className="btn-spinner"></span>
+                    Searching...
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Search Doctors
+                  </>
+                )}
+              </button>
+              {hasSearched && (
+                <button
+                  className="reset-btn"
+                  onClick={handleReset}
+                  disabled={loading}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M4 4L20 20M20 4L4 20"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  Reset
+                </button>
+              )}
+            </div>
+
+            {error && (
+              <div className="error-message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
                 {error}
               </div>
             )}
@@ -295,11 +299,9 @@ const handleSearch = async () => {
 
           <div className="results-section">
             {loading && (
-              <div
-                className="loading-message"
-                style={{ textAlign: "center", padding: "40px" }}
-              >
-                <p>Đang tải...</p>
+              <div className="loading-message">
+                <div className="loading-spinner"></div>
+                <p>Loading doctors...</p>
               </div>
             )}
 
@@ -309,14 +311,36 @@ const handleSearch = async () => {
                 <p>
                   {searchResults.length} doctor
                   {searchResults.length !== 1 ? "s" : ""} found
+                  {selectedDate && (
+                    <span className="search-date-info">
+                      {" "}
+                      on{" "}
+                      {new Date(selectedDate).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  )}
                 </p>
               </div>
             )}
 
             {!loading && displayedDoctors.length === 0 && hasSearched ? (
               <div className="no-results">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                    stroke="#cbd5e1"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
                 <h3>No doctors found</h3>
-                <p>Try adjusting your search criteria to find more results.</p>
+                <p>
+                  Try adjusting your search criteria or selecting a different
+                  date.
+                </p>
               </div>
             ) : (
               !loading && (
@@ -348,9 +372,16 @@ const handleSearch = async () => {
                         <img
                           src={
                             doctor.profileImage ||
-                            "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face"
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              doctor.fullName
+                            )}&size=200&background=667eea&color=fff&bold=true`
                           }
                           alt={doctor.fullName}
+                          onError={(e) => {
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              doctor.fullName
+                            )}&size=200&background=667eea&color=fff&bold=true`;
+                          }}
                         />
                       </div>
 
@@ -364,17 +395,7 @@ const handleSearch = async () => {
                         </p>
 
                         {doctor.bio && (
-                          <p
-                            className="doctor-bio"
-                            style={{
-                              fontSize: "13px",
-                              color: "#666",
-                              marginTop: "8px",
-                              marginBottom: "12px",
-                            }}
-                          >
-                            {doctor.bio}
-                          </p>
+                          <p className="doctor-bio">{doctor.bio}</p>
                         )}
 
                         <div className="rating">
@@ -385,11 +406,7 @@ const handleSearch = async () => {
                                 width="14"
                                 height="13"
                                 viewBox="0 0 14 13"
-                                fill={
-                                  i < Math.floor(doctor.averageRating || 0)
-                                    ? "none"
-                                    : "none"
-                                }
+                                fill="none"
                               >
                                 <path
                                   d="M7 0L8.5716 4.83688H13.6574L9.5429 7.82624L11.1145 12.6631L7 9.67376L2.8855 12.6631L4.4571 7.82624L0.342604 4.83688H5.4284L7 0Z"
@@ -403,8 +420,7 @@ const handleSearch = async () => {
                             ))}
                           </div>
                           <span className="rating-text">
-                            {doctor.averageRating?.toFixed(1) || "0.0"} (0
-                            reviews)
+                            {doctor.averageRating?.toFixed(1) || "0.0"}
                           </span>
                         </div>
                       </div>
