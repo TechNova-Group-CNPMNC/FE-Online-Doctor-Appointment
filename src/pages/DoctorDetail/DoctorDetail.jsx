@@ -14,37 +14,57 @@ const DoctorDetail = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [bookingDates, setBookingDates] = useState([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const [loadingTimeSlots, setLoadingTimeSlots] = useState(false);
 
   useEffect(() => {
     fetchDoctorDetail();
     generateBookingDates();
   }, [id]);
 
+  // Fetch time slots when date is selected
+  useEffect(() => {
+    if (selectedDate && doctor) {
+      fetchAvailableTimeSlots();
+    }
+  }, [selectedDate, doctor]);
+
   const generateBookingDates = () => {
     const dates = [];
     const today = new Date();
     const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      dates.push({
-        day: daysOfWeek[date.getDay()],
-        date: date.getDate(),
-        fullDate: date,
-        month: date.getMonth(),
-        year: date.getFullYear(),
-      });
+
+      // Skip weekends (Sunday = 0, Saturday = 6)
+      if (date.getDay() !== 0 && date.getDay() !== 6) {
+        dates.push({
+          day: daysOfWeek[date.getDay()],
+          date: date.getDate(),
+          fullDate: date,
+          month: date.getMonth() + 1, // JavaScript months are 0-indexed
+          year: date.getFullYear(),
+          formattedDate: date.toISOString().split("T")[0], // YYYY-MM-DD format
+        });
+      }
     }
 
     setBookingDates(dates);
-    setSelectedDate(dates[0]);
+    if (dates.length > 0) {
+      setSelectedDate(dates[0]);
+    }
   };
 
   const fetchDoctorDetail = async () => {
     try {
       setLoading(true);
+      console.log("Fetching doctor with ID:", id);
+
       const response = await api.get(`/doctors/${id}`);
+      console.log("Doctor detail response:", response.data);
+
       const doctorData = response.data?.data || response.data;
       setDoctor(doctorData);
 
@@ -54,6 +74,7 @@ const DoctorDetail = () => {
       }
     } catch (err) {
       console.error("Error fetching doctor:", err);
+      console.error("Error details:", err.response?.data);
     } finally {
       setLoading(false);
     }
@@ -61,25 +82,80 @@ const DoctorDetail = () => {
 
   const fetchRelatedDoctors = async (specialtyId) => {
     try {
-      const response = await api.get(`/doctors/search?id=${specialtyId}`);
+      console.log("Fetching related doctors for specialty:", specialtyId);
+
+      const response = await api.get(`/doctors/search`, {
+        params: { specialtyId: specialtyId },
+      });
+
+      console.log("Related doctors response:", response.data);
+
       const doctors = response.data?.data || response.data || [];
       const filtered = doctors.filter((d) => d.id !== parseInt(id)).slice(0, 5);
+
       setRelatedDoctors(filtered);
     } catch (err) {
       console.error("Error fetching related doctors:", err);
+      console.error("Error details:", err.response?.data);
     }
   };
 
-  const timeSlots = [
-    "8:00 am",
-    "8:30 am",
-    "9:00 am",
-    "9:30 am",
-    "10:00 am",
-    "10:30 am",
-    "11:00 am",
-    "11:30 am",
-  ];
+  const fetchAvailableTimeSlots = async () => {
+    try {
+      setLoadingTimeSlots(true);
+      console.log("Fetching time slots for:", {
+        doctorId: id,
+        date: selectedDate.formattedDate,
+      });
+
+      // Call API to get availability blocks for the selected date
+      const response = await api.get(`/availability-blocks/doctor/${id}`, {
+        params: {
+          date: selectedDate.formattedDate,
+        },
+      });
+
+      console.log("Time slots response:", response.data);
+
+      const blocks = response.data?.data || response.data || [];
+
+      // Extract time slots from availability blocks
+      const slots = [];
+      blocks.forEach((block) => {
+        if (block.timeSlots && Array.isArray(block.timeSlots)) {
+          block.timeSlots.forEach((slot) => {
+            if (slot.status === "AVAILABLE") {
+              // Convert ISO timestamp to readable time
+              const startTime = new Date(slot.startTime);
+              const timeString = startTime.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              });
+
+              slots.push({
+                id: slot.id,
+                time: timeString,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                blockId: block.id,
+              });
+            }
+          });
+        }
+      });
+
+      console.log("Processed time slots:", slots);
+      setAvailableTimeSlots(slots);
+      setSelectedTime(null); // Reset selected time when date changes
+    } catch (err) {
+      console.error("Error fetching time slots:", err);
+      console.error("Error details:", err.response?.data);
+      setAvailableTimeSlots([]);
+    } finally {
+      setLoadingTimeSlots(false);
+    }
+  };
 
   const handleBookAppointment = () => {
     if (!selectedDate || !selectedTime) {
@@ -87,14 +163,28 @@ const DoctorDetail = () => {
       return;
     }
 
-    // Navigate to booking confirmation page
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!token || !user.id) {
+      alert("Please login to book an appointment");
+      navigate("/login");
+      return;
+    }
+
+    // Navigate to booking confirmation page with all necessary data
     navigate("/booking", {
       state: {
         doctor,
         date: selectedDate,
-        time: selectedTime,
+        timeSlot: selectedTime,
       },
     });
+  };
+
+  const handleTimeSlotClick = (slot) => {
+    setSelectedTime(slot);
   };
 
   const formatSpecialties = (specialties) => {
@@ -112,7 +202,10 @@ const DoctorDetail = () => {
     return (
       <>
         <Header />
-        <div className="doctor-detail-loading">Loading...</div>
+        <div className="doctor-detail-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading doctor information...</p>
+        </div>
       </>
     );
   }
@@ -121,7 +214,12 @@ const DoctorDetail = () => {
     return (
       <>
         <Header />
-        <div className="doctor-detail-error">Doctor not found</div>
+        <div className="doctor-detail-error">
+          <h2>Doctor not found</h2>
+          <button className="back-btn" onClick={() => navigate("/doctors")}>
+            Back to Doctors
+          </button>
+        </div>
       </>
     );
   }
@@ -131,6 +229,15 @@ const DoctorDetail = () => {
       <Header />
       <div className="doctor-detail-page">
         <div className="doctor-detail-container">
+          {/* Breadcrumb */}
+          <div className="breadcrumb">
+            <span onClick={() => navigate("/")}>Home</span>
+            <span className="separator">/</span>
+            <span onClick={() => navigate("/doctors")}>Doctors</span>
+            <span className="separator">/</span>
+            <span className="current">{doctor.fullName}</span>
+          </div>
+
           {/* Doctor Info Section */}
           <div className="doctor-info-section">
             <div className="doctor-profile-card">
@@ -138,10 +245,17 @@ const DoctorDetail = () => {
                 <img
                   src={
                     doctor.profileImage ||
-                    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face"
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      doctor.fullName
+                    )}&size=400&background=667eea&color=fff&bold=true`
                   }
                   alt={doctor.fullName}
                   className="doctor-profile-image"
+                  onError={(e) => {
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      doctor.fullName
+                    )}&size=400&background=667eea&color=fff&bold=true`;
+                  }}
                 />
               </div>
             </div>
@@ -177,11 +291,13 @@ const DoctorDetail = () => {
                 </h1>
                 <div className="doctor-specialty-badge">
                   {doctor.specialties && doctor.specialties.length > 0
-                    ? `${doctor.degree || "MBBS"} - ${formatSpecialties(
+                    ? `${doctor.degree || "MD"} - ${formatSpecialties(
                         doctor.specialties
                       )}`
                     : "General Physician"}
-                  <span className="experience-badge">7 Years</span>
+                  <span className="experience-badge">
+                    {doctor.experienceYears || 5}+ Years
+                  </span>
                 </div>
               </div>
 
@@ -208,6 +324,15 @@ const DoctorDetail = () => {
                 </p>
               </div>
 
+              {doctor.averageRating && (
+                <div className="doctor-rating">
+                  <span className="rating-label">Rating:</span>
+                  <span className="rating-value">
+                    ⭐ {doctor.averageRating.toFixed(1)}
+                  </span>
+                </div>
+              )}
+
               <div className="appointment-fee">
                 <span>Appointment fee:</span>
                 <span className="fee-amount">
@@ -226,7 +351,9 @@ const DoctorDetail = () => {
                 <button
                   key={index}
                   className={`date-button ${
-                    selectedDate?.date === dateObj.date ? "active" : ""
+                    selectedDate?.formattedDate === dateObj.formattedDate
+                      ? "active"
+                      : ""
                   }`}
                   onClick={() => setSelectedDate(dateObj)}
                 >
@@ -237,33 +364,46 @@ const DoctorDetail = () => {
             </div>
 
             <div className="time-selector">
-              {timeSlots.map((time, index) => (
-                <button
-                  key={index}
-                  className={`time-button ${
-                    selectedTime === time ? "active" : ""
-                  }`}
-                  onClick={() => setSelectedTime(time)}
-                >
-                  {time}
-                </button>
-              ))}
+              {loadingTimeSlots ? (
+                <div className="time-slots-loading">
+                  <div className="loading-spinner-small"></div>
+                  <p>Loading available time slots...</p>
+                </div>
+              ) : availableTimeSlots.length > 0 ? (
+                availableTimeSlots.map((slot, index) => (
+                  <button
+                    key={index}
+                    className={`time-button ${
+                      selectedTime?.id === slot.id ? "active" : ""
+                    }`}
+                    onClick={() => handleTimeSlotClick(slot)}
+                  >
+                    {slot.time}
+                  </button>
+                ))
+              ) : (
+                <div className="no-slots-message">
+                  <p>No available time slots for this date.</p>
+                  <p className="no-slots-hint">Please select another date.</p>
+                </div>
+              )}
             </div>
 
             <button
               className="book-appointment-btn"
               onClick={handleBookAppointment}
+              disabled={!selectedDate || !selectedTime || loadingTimeSlots}
             >
-              Book an appointment
+              {loadingTimeSlots ? "Loading..." : "Book an appointment"}
             </button>
           </div>
 
-          {/* Related Doctors Section
+          {/* Related Doctors Section */}
           {relatedDoctors.length > 0 && (
             <div className="related-doctors-section">
               <h2>Related Doctors</h2>
               <p className="related-subtitle">
-                Simply browse through our extensive list of trusted doctors.
+                Other specialists in {formatSpecialties(doctor.specialties)}
               </p>
 
               <div className="related-doctors-grid">
@@ -271,15 +411,25 @@ const DoctorDetail = () => {
                   <div
                     key={relDoc.id}
                     className="related-doctor-card"
-                    onClick={() => navigate(`/doctor/${relDoc.id}`)}
+                    onClick={() => {
+                      navigate(`/doctor/${relDoc.id}`);
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     <div className="related-doctor-image">
                       <img
                         src={
                           relDoc.profileImage ||
-                          "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face"
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            relDoc.fullName
+                          )}&size=300&background=667eea&color=fff&bold=true`
                         }
                         alt={relDoc.fullName}
+                        onError={(e) => {
+                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            relDoc.fullName
+                          )}&size=300&background=667eea&color=fff&bold=true`;
+                        }}
                       />
                     </div>
                     <div className="related-doctor-info">
@@ -289,12 +439,17 @@ const DoctorDetail = () => {
                       </div>
                       <h3>{relDoc.fullName}</h3>
                       <p>{formatSpecialties(relDoc.specialties)}</p>
+                      {relDoc.averageRating && (
+                        <p className="related-rating">
+                          ⭐ {relDoc.averageRating.toFixed(1)}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </>

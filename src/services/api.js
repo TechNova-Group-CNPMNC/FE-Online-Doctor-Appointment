@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'https://adoptional-julian-grovellingly.ngrok-free.dev/api'
+// const API_BASE_URL = 'https://adoptional-julian-grovellingly.ngrok-free.dev/api'
+const API_BASE_URL = "http://localhost:8000/api"
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': '69420',
-    'User-Agent': 'CustomClient/1.0',
   },
   withCredentials: false,
 })
@@ -15,23 +15,22 @@ const api = axios.create({
 // Add request interceptor to include token and headers
 api.interceptors.request.use(
   (config) => {
-    // Ensure ngrok header is always present with every request
-    config.headers['ngrok-skip-browser-warning'] = '69420'
-    config.headers['User-Agent'] = 'CustomClient/1.0'
+    config.headers["ngrok-skip-browser-warning"] = "69420";
 
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      // console.log("token found: ", token);
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    console.log('Request config:', config)
-    return config
+    console.log("Request config:", config);
+    return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error)
-    return Promise.reject(error)
+    console.error("Request interceptor error:", error);
+    return Promise.reject(error);
   }
-)
+);
 
 // Add response interceptor for error handling
 api.interceptors.response.use(
@@ -52,6 +51,7 @@ api.interceptors.response.use(
 )
 
 export const authAPI = {
+  // login
   login: async (credentials) => {
     try {
       console.log("Login request:", credentials);
@@ -64,7 +64,7 @@ export const authAPI = {
       throw error;
     }
   },
-
+  // register
   register: async (userData) => {
     try {
       console.log("Register request:", userData);

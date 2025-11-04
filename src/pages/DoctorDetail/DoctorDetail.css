@@ -521,3 +521,88 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+.loading-spinner-small {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+.time-slots-loading {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.time-slots-loading p {
+  margin-top: 15px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.no-slots-message {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.no-slots-message p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.no-slots-hint {
+  margin-top: 8px !important;
+  font-size: 13px !important;
+  color: #94a3b8;
+}
+
+/* Doctor Rating */
+.doctor-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 20px;
+  background: #fef3c7;
+  border-radius: 12px;
+}
+
+.rating-label {
+  color: #78716c;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.rating-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+/* Related Doctor Rating */
+.related-rating {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* Disabled Button */
+.book-appointment-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.book-appointment-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
