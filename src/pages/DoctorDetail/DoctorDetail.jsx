@@ -15,62 +15,76 @@ const DoctorDetail = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [bookingDates, setBookingDates] = useState([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-  const [loadingTimeSlots, setLoadingTimeSlots] = useState(false);
 
   useEffect(() => {
     fetchDoctorDetail();
-    generateBookingDates();
   }, [id]);
 
-  // Fetch time slots when date is selected
+  // Update time slots when date is selected
   useEffect(() => {
-    if (selectedDate && doctor) {
-      fetchAvailableTimeSlots();
+    if (selectedDate && doctor?.timeSlotsByDate) {
+      const dateKey = selectedDate.formattedDate;
+      const slots = doctor.timeSlotsByDate[dateKey] || [];
+
+      const formattedSlots = slots
+        .filter((slot) => slot.status === "AVAILABLE")
+        .map((slot) => {
+          const startTime = new Date(slot.startTime);
+          const timeString = startTime.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
+
+          return {
+            id: slot.id,
+            time: timeString,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+          };
+        });
+
+      setAvailableTimeSlots(formattedSlots);
+      setSelectedTime(null); // Reset selected time when date changes
     }
   }, [selectedDate, doctor]);
-
-  const generateBookingDates = () => {
-    const dates = [];
-    const today = new Date();
-    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
-    for (let i = 0; i < 14; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-
-      // Skip weekends (Sunday = 0, Saturday = 6)
-      if (date.getDay() !== 0 && date.getDay() !== 6) {
-        dates.push({
-          day: daysOfWeek[date.getDay()],
-          date: date.getDate(),
-          fullDate: date,
-          month: date.getMonth() + 1, // JavaScript months are 0-indexed
-          year: date.getFullYear(),
-          formattedDate: date.toISOString().split("T")[0], // YYYY-MM-DD format
-        });
-      }
-    }
-
-    setBookingDates(dates);
-    if (dates.length > 0) {
-      setSelectedDate(dates[0]);
-    }
-  };
 
   const fetchDoctorDetail = async () => {
     try {
       setLoading(true);
       console.log("Fetching doctor with ID:", id);
 
-      const response = await api.get(`/doctors/${id}`);
+      // Calculate date range (next 14 days)
+      const today = new Date();
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + 14);
+
+      const startDateStr = today.toISOString().split("T")[0];
+      const endDateStr = endDate.toISOString().split("T")[0];
+
+      // Fetch doctor detail with date range
+      const response = await api.get(`/doctors/${id}/detail`, {
+        params: {
+          startDate: startDateStr,
+          endDate: endDateStr,
+        },
+      });
+
       console.log("Doctor detail response:", response.data);
 
       const doctorData = response.data?.data || response.data;
       setDoctor(doctorData);
 
+      // Generate booking dates from availableDates
+      if (doctorData.availableDates && doctorData.availableDates.length > 0) {
+        generateBookingDatesFromAvailable(doctorData.availableDates);
+      }
 
+      // Fetch related doctors if specialties exist
       if (doctorData.specialties && doctorData.specialties.length > 0) {
-        fetchRelatedDoctors(doctorData.specialties[0].id);
+        // Get first specialty ID from the array of specialty names
+        const firstSpecialtyName = doctorData.specialties[0];
+        fetchRelatedDoctorsByName(firstSpecialtyName);
       }
     } catch (err) {
       console.error("Error fetching doctor:", err);
@@ -85,80 +99,58 @@ const DoctorDetail = () => {
     }
   };
 
-  const fetchRelatedDoctors = async (specialtyId) => {
+  const generateBookingDatesFromAvailable = (availableDates) => {
+    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+    const dates = availableDates.map((dateStr) => {
+      const date = new Date(dateStr);
+
+      return {
+        day: daysOfWeek[date.getDay()],
+        date: date.getDate(),
+        fullDate: date,
+        month: date.getMonth() + 1,
+        year: date.getFullYear(),
+        formattedDate: dateStr, // Already in YYYY-MM-DD format
+      };
+    });
+
+    setBookingDates(dates);
+    if (dates.length > 0) {
+      setSelectedDate(dates[0]);
+    }
+  };
+
+  const fetchRelatedDoctorsByName = async (specialtyName) => {
     try {
-      console.log("Fetching related doctors for specialty:", specialtyId);
+      console.log("Fetching related doctors for specialty:", specialtyName);
 
-      const response = await api.get(`/doctors/search`, {
-        params: { specialtyId: specialtyId },
-      });
+      // Get all doctors
+      const response = await api.get(`/doctors`);
+      console.log("All doctors response:", response.data);
 
-      console.log("Related doctors response:", response.data);
+      const allDoctors = response.data?.data || response.data || [];
 
-      const doctors = response.data?.data || response.data || [];
-      const filtered = doctors.filter((d) => d.id !== parseInt(id)).slice(0, 5);
+      // Filter doctors with same specialty
+      const filtered = allDoctors
+        .filter((d) => {
+          // Exclude current doctor
+          if (d.id === parseInt(id)) return false;
+
+          // Check if doctor has the same specialty
+          if (d.specialties && Array.isArray(d.specialties)) {
+            return d.specialties.some(
+              (s) => s.name === specialtyName || s === specialtyName
+            );
+          }
+          return false;
+        })
+        .slice(0, 5);
 
       setRelatedDoctors(filtered);
     } catch (err) {
       console.error("Error fetching related doctors:", err);
       console.error("Error details:", err.response?.data);
-    }
-  };
-
-  const fetchAvailableTimeSlots = async () => {
-    try {
-      setLoadingTimeSlots(true);
-      console.log("Fetching time slots for:", {
-        doctorId: id,
-        date: selectedDate.formattedDate,
-      });
-
-      // Call API to get availability blocks for the selected date
-      const response = await api.get(`/availability-blocks/doctor/${id}`, {
-        params: {
-          date: selectedDate.formattedDate,
-        },
-      });
-
-      console.log("Time slots response:", response.data);
-
-      const blocks = response.data?.data || response.data || [];
-
-      // Extract time slots from availability blocks
-      const slots = [];
-      blocks.forEach((block) => {
-        if (block.timeSlots && Array.isArray(block.timeSlots)) {
-          block.timeSlots.forEach((slot) => {
-            if (slot.status === "AVAILABLE") {
-              // Convert ISO timestamp to readable time
-              const startTime = new Date(slot.startTime);
-              const timeString = startTime.toLocaleTimeString("en-US", {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              });
-
-              slots.push({
-                id: slot.id,
-                time: timeString,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-                blockId: block.id,
-              });
-            }
-          });
-        }
-      });
-
-      console.log("Processed time slots:", slots);
-      setAvailableTimeSlots(slots);
-      setSelectedTime(null); // Reset selected time when date changes
-    } catch (err) {
-      console.error("Error fetching time slots:", err);
-      console.error("Error details:", err.response?.data);
-      setAvailableTimeSlots([]);
-    } finally {
-      setLoadingTimeSlots(false);
     }
   };
 
@@ -172,7 +164,7 @@ const DoctorDetail = () => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    if (!token || !user.id) {
+    if (!token && !user.id) {
       alert("Please login to book an appointment");
       navigate("/login");
       return;
@@ -200,7 +192,10 @@ const DoctorDetail = () => {
     ) {
       return "General Physician";
     }
-    return specialties.map((s) => s.name).join(", ");
+    // Handle both string array and object array
+    return specialties
+      .map((s) => (typeof s === "string" ? s : s.name))
+      .join(", ");
   };
 
   if (loading) {
@@ -221,7 +216,10 @@ const DoctorDetail = () => {
         <Header />
         <div className="doctor-detail-error">
           <h2>Doctor not found</h2>
-          <button className="back-btn" onClick={() => navigate("/doctors")}>
+          <button
+            className="back-btn"
+            onClick={() => navigate("/find-a-doctor")}
+          >
             Back to Doctors
           </button>
         </div>
@@ -238,7 +236,7 @@ const DoctorDetail = () => {
           <div className="breadcrumb">
             <span onClick={() => navigate("/")}>Home</span>
             <span className="separator">/</span>
-            <span onClick={() => navigate("/doctors")}>Doctors</span>
+            <span onClick={() => navigate("/find-a-doctor")}>Doctors</span>
             <span className="separator">/</span>
             <span className="current">{doctor.fullName}</span>
           </div>
@@ -351,56 +349,62 @@ const DoctorDetail = () => {
           <div className="booking-section">
             <h2>Booking slots</h2>
 
-            <div className="date-selector">
-              {bookingDates.map((dateObj, index) => (
+            {bookingDates.length > 0 ? (
+              <>
+                <div className="date-selector">
+                  {bookingDates.map((dateObj, index) => (
+                    <button
+                      key={index}
+                      className={`date-button ${
+                        selectedDate?.formattedDate === dateObj.formattedDate
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedDate(dateObj)}
+                    >
+                      <span className="date-day">{dateObj.day}</span>
+                      <span className="date-number">{dateObj.date}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="time-selector">
+                  {availableTimeSlots.length > 0 ? (
+                    availableTimeSlots.map((slot, index) => (
+                      <button
+                        key={index}
+                        className={`time-button ${
+                          selectedTime?.id === slot.id ? "active" : ""
+                        }`}
+                        onClick={() => handleTimeSlotClick(slot)}
+                      >
+                        {slot.time}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="no-slots-message">
+                      <p>No available time slots for this date.</p>
+                      <p className="no-slots-hint">
+                        Please select another date.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
                 <button
-                  key={index}
-                  className={`date-button ${
-                    selectedDate?.formattedDate === dateObj.formattedDate
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedDate(dateObj)}
+                  className="book-appointment-btn"
+                  onClick={handleBookAppointment}
+                  disabled={!selectedDate || !selectedTime}
                 >
-                  <span className="date-day">{dateObj.day}</span>
-                  <span className="date-number">{dateObj.date}</span>
+                  Book an appointment
                 </button>
-              ))}
-            </div>
-
-            <div className="time-selector">
-              {loadingTimeSlots ? (
-                <div className="time-slots-loading">
-                  <div className="loading-spinner-small"></div>
-                  <p>Loading available time slots...</p>
-                </div>
-              ) : availableTimeSlots.length > 0 ? (
-                availableTimeSlots.map((slot, index) => (
-                  <button
-                    key={index}
-                    className={`time-button ${
-                      selectedTime?.id === slot.id ? "active" : ""
-                    }`}
-                    onClick={() => handleTimeSlotClick(slot)}
-                  >
-                    {slot.time}
-                  </button>
-                ))
-              ) : (
-                <div className="no-slots-message">
-                  <p>No available time slots for this date.</p>
-                  <p className="no-slots-hint">Please select another date.</p>
-                </div>
-              )}
-            </div>
-
-            <button
-              className="book-appointment-btn"
-              onClick={handleBookAppointment}
-              disabled={!selectedDate || !selectedTime || loadingTimeSlots}
-            >
-              {loadingTimeSlots ? "Loading..." : "Book an appointment"}
-            </button>
+              </>
+            ) : (
+              <div className="no-slots-message">
+                <p>No available booking slots at the moment.</p>
+                <p className="no-slots-hint">Please check back later.</p>
+              </div>
+            )}
           </div>
 
           {/* Related Doctors Section */}
