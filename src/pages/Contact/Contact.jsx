@@ -1,5 +1,6 @@
-import MainLayout from '../../layouts/MainLayout'
-import './Contact.css'
+import MainLayout from "../../layouts/MainLayout";
+import "./Contact.css";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -7,10 +8,20 @@ const Contact = () => {
       <div className="contact-page">
         {/* Hero Section */}
         <section className="contact-hero">
+          <div className="hero-background">
+            <div className="hero-shape hero-shape-1"></div>
+            <div className="hero-shape hero-shape-2"></div>
+            <div className="particles">
+              {[...Array(15)].map((_, i) => (
+                <div key={i} className="particle"></div>
+              ))}
+            </div>
+          </div>
           <div className="container">
             <h1 className="contact-title">Contact Us</h1>
             <p className="contact-subtitle">
-              Have questions? Send us a message and we'll respond as soon as possible.
+              Have questions? Send us a message and we'll respond as soon as
+              possible.
             </p>
           </div>
         </section>
@@ -20,13 +31,14 @@ const Contact = () => {
             <div className="contact-wrapper">
               {/* Contact Form */}
               <div className="contact-form-container">
+                <h2 className="form-title">Send Us a Message</h2>
                 <form className="contact-form">
                   <div className="form-group">
                     <label htmlFor="name">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      name="name" 
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
                       placeholder="Your name"
                       required
                     />
@@ -34,10 +46,10 @@ const Contact = () => {
 
                   <div className="form-group">
                     <label htmlFor="email">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
                       placeholder="Your email"
                       required
                     />
@@ -45,9 +57,9 @@ const Contact = () => {
 
                   <div className="form-group">
                     <label htmlFor="message">Message</label>
-                    <textarea 
-                      id="message" 
-                      name="message" 
+                    <textarea
+                      id="message"
+                      name="message"
                       rows="5"
                       placeholder="Your message..."
                       required
@@ -63,19 +75,39 @@ const Contact = () => {
               {/* Contact Info */}
               <div className="contact-info-container">
                 <h2 className="info-title">Get in Touch</h2>
-                
+
                 <div className="contact-info-list">
                   <div className="contact-info-item">
-                    <div className="info-icon">📞</div>
+                    <Phone size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">+1 (555) 123-4567</p>
                     </div>
                   </div>
 
                   <div className="contact-info-item">
-                    <div className="info-icon">✉️</div>
+                    <Mail size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">info@teachnova.com</p>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-item">
+                    <MapPin size={24} className="info-icon" />
+                    <div className="info-content">
+                      <p className="info-text">
+                        123 Health Street, Medical City, MC 12345
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-item">
+                    <Clock size={24} className="info-icon" />
+                    <div className="info-content">
+                      <p className="info-text">
+                        Mon-Fri: 9AM-6PM
+                        <br />
+                        Sat-Sun: 10AM-4PM
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -85,8 +117,7 @@ const Contact = () => {
         </section>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
-export default Contact
-
+export default Contact;
