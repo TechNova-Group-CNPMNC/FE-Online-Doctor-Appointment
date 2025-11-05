@@ -21,7 +21,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/find-a-doctor" element={<FindADoctor />} />
-        <Route path="/create-appointment" element={<CreateAppointment />} />
+        {/* <Route path="/create-appointment" element={<CreateAppointment />} /> */}
         <Route
           path="/doctor/my-availability"
           element={
