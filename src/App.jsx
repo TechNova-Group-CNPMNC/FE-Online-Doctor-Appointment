@@ -8,6 +8,7 @@ import About from "./pages/About";
 import FindADoctor from "./pages/FindADoctor/FindADoctor";
 import DoctorDetail from "./pages/DoctorDetail/DoctorDetail";
 import DoctorAvailability from "./pages/DoctorAvailability/DoctorAvailability";
+import ProtectedRoute from "./util/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
         <Route path="/find-a-doctor" element={<FindADoctor />} />
         <Route
           path="/doctor/my-availability"
-          element={<DoctorAvailability />}
+          element={
+            <ProtectedRoute requireDoctor={true}>
+              <DoctorAvailability />
+            </ProtectedRoute>
+          }
         />
         <Route path="/doctor/:id" element={<DoctorDetail />} />
 
