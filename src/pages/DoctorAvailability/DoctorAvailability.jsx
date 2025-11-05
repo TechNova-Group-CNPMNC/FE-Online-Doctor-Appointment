@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {
+  getUserInfo,
+  isDoctor,
+  isAuthenticated,
+  getDoctorId,
+} from "../../util/jwtdecoder";
 import api from "../../services/api";
 import Header from "../../components/Header/Header";
 import "./DoctorAvailability.css";
@@ -26,36 +31,28 @@ const DoctorAvailability = () => {
   const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    if (!isAuthenticated()) {
       alert("Please login to access this page");
       navigate("/login");
       return;
     }
 
-    // Decode token to get doctor ID and role
-    try {
-      const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
-
-      if (decoded.role !== "DOCTOR") {
-        setError("Access denied. Only doctors can access this page.");
-        setTimeout(() => navigate("/"), 2000);
-        return;
-      }
-
-      // Get doctor ID from token
-      const id = decoded.id || decoded.sub;
-      setDoctorId(id);
-      console.log("Doctor ID from token:", id);
-    } catch (err) {
-      console.error("Error decoding token:", err);
-      setError("Invalid token. Please login again.");
-      setTimeout(() => navigate("/login"), 2000);
+    if (!isDoctor()) {
+      setError("Access denied. Only doctors can access this page.");
+      setTimeout(() => navigate("/"), 2000);
       return;
     }
+
+    const id = getDoctorId();
+    console.log("✅ Doctor ID from token:", id);
+
+    if (!id) {
+      setError("Doctor profile not found. Please contact support.");
+      setTimeout(() => navigate("/"), 2000);
+      return;
+    }
+
+    setDoctorId(id);
   }, [navigate]);
 
   // Fetch availability blocks when doctorId is set
@@ -77,14 +74,15 @@ const DoctorAvailability = () => {
         url += `?date=${date}`;
       }
 
-      console.log("Fetching availability from:", url);
+      console.log("📡 Fetching availability from:", url);
       const response = await api.get(url);
-      console.log("Availability blocks response:", response.data);
+      console.log("✅ Availability blocks response:", response.data);
 
       const blocks = response.data?.data || response.data || [];
       setAvailabilityBlocks(Array.isArray(blocks) ? blocks : []);
     } catch (err) {
-      console.error("Error fetching availability:", err);
+      console.error("❌ Error fetching availability:", err);
+      console.error("❌ Error response:", err.response);
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
@@ -93,6 +91,23 @@ const DoctorAvailability = () => {
       } else if (err.response?.status === 401) {
         setError("Session expired. Please login again.");
         setTimeout(() => navigate("/login"), 2000);
+      } else if (err.response?.status === 404) {
+        // Doctor not found - might need to use different endpoint
+        console.error("🔍 Doctor not found. Trying alternative endpoint...");
+
+        // Try alternative endpoint: /availability/my or /me/availability
+        try {
+          const altResponse = await api.get("/doctors/me/availability");
+          console.log("✅ Alternative endpoint worked:", altResponse.data);
+          const blocks = altResponse.data?.data || altResponse.data || [];
+          setAvailabilityBlocks(Array.isArray(blocks) ? blocks : []);
+          setError("");
+        } catch (altErr) {
+          console.error("❌ Alternative endpoint also failed:", altErr);
+          setError(
+            "Could not load availability blocks. Your doctor profile may not be set up yet."
+          );
+        }
       } else {
         setError(
           err.response?.data?.message || "Failed to load availability blocks"
@@ -130,12 +145,25 @@ const DoctorAvailability = () => {
       setError("");
       setSuccess("");
 
-      console.log("Creating availability for doctor:", doctorId);
-      const response = await api.post(
-        `/doctors/${doctorId}/availability`,
-        formData
-      );
-      console.log("Create availability response:", response.data);
+      console.log("📝 Creating availability for doctor:", doctorId);
+
+      let response;
+      try {
+        response = await api.post(
+          `/doctors/${doctorId}/availability`,
+          formData
+        );
+      } catch (err) {
+        if (err.response?.status === 404) {
+          // Try alternative endpoint
+          console.log("🔄 Trying alternative create endpoint...");
+          response = await api.post("/doctors/me/availability", formData);
+        } else {
+          throw err;
+        }
+      }
+
+      console.log("✅ Create availability response:", response.data);
 
       setSuccess(
         "Availability block created successfully! Time slots generated automatically."
@@ -154,7 +182,7 @@ const DoctorAvailability = () => {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      console.error("Error creating availability:", err);
+      console.error("❌ Error creating availability:", err);
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
@@ -187,9 +215,20 @@ const DoctorAvailability = () => {
       setSuccess("");
 
       console.log(
-        `Deleting availability block ${blockId} for doctor ${doctorId}`
+        `🗑️ Deleting availability block ${blockId} for doctor ${doctorId}`
       );
-      await api.delete(`/doctors/${doctorId}/availability/${blockId}`);
+
+      try {
+        await api.delete(`/doctors/${doctorId}/availability/${blockId}`);
+      } catch (err) {
+        if (err.response?.status === 404) {
+          // Try alternative endpoint
+          console.log("🔄 Trying alternative delete endpoint...");
+          await api.delete(`/doctors/me/availability/${blockId}`);
+        } else {
+          throw err;
+        }
+      }
 
       setSuccess("Availability block deleted successfully");
 
@@ -199,7 +238,7 @@ const DoctorAvailability = () => {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      console.error("Error deleting availability:", err);
+      console.error("❌ Error deleting availability:", err);
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {

@@ -85,3 +85,49 @@ export const getUserInfo = () => {
   console.log("ℹ️ User Info:", info);
   return info;
 };
+
+
+/**
+ * Get doctor ID from token
+ * @returns {number|null}
+ */
+export const getDoctorId = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  const decoded = decodeToken(token);
+  const doctorId = decoded?.doctorId;
+  console.log("🩺 Doctor ID from token:", doctorId);
+
+  return doctorId;
+};
+
+/**
+ * Get patient ID from token
+ * @returns {number|null}
+ */
+export const getPatientId = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  const decoded = decodeToken(token);
+  const patientId = decoded?.patientId;
+  console.log("🤒 Patient ID from token:", patientId);
+
+  return patientId;
+};
+
+/**
+ * Get user ID from token
+ * @returns {number|null}
+ */
+export const getUserId = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  const decoded = decodeToken(token);
+  const userId = decoded?.id || decoded?.sub;
+  console.log("👤 User ID from token:", userId);
+
+  return userId;
+};
