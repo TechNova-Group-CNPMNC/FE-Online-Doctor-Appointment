@@ -27,11 +27,11 @@ const Header = () => {
 
   return (
     <>
-      <div
+      {/* <div
         style={{
           height: headerRef.current ? headerRef.current.offsetHeight : 0,
         }}
-      ></div>
+      ></div> */}
       <header className="header" ref={headerRef}>
         <div className="header-container">
           <Link to="/" className="header-logo">
@@ -47,12 +47,6 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/about"
-              className={`nav-link ${isActive("/about") ? "active" : ""}`}
-            >
-              About
-            </Link>
-            <Link
               to="/find-a-doctor"
               className={`nav-link ${
                 isActive("/find-a-doctor") ? "active" : ""
@@ -60,12 +54,24 @@ const Header = () => {
             >
               Find a Doctor
             </Link>
-            <Link
-              to="/contact"
-              className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+            {/* <Link
+              to="/create-appointment"
+              className={`nav-link ${
+                isActive("/create-appointment") ? "active" : ""
+              }`}
             >
-              Contact
-            </Link>
+              Create Appointment
+            </Link> */}
+            {isAuth && !isDoctorUser && (
+              <Link
+                to="/create-appointment"
+                className={`nav-link ${
+                  isActive("/create-appointment") ? "active" : ""
+                }`}
+              >
+                Create Appointment
+              </Link>
+            )}
             {isAuth && isDoctorUser && (
               <Link
                 to="/doctor/my-availability"
@@ -76,6 +82,18 @@ const Header = () => {
                 My Availability
               </Link>
             )}
+            <Link
+              to="/about"
+              className={`nav-link ${isActive("/about") ? "active" : ""}`}
+            >
+              About
+            </Link>
+            <Link
+              to="/contact"
+              className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+            >
+              Contact
+            </Link>
           </nav>
 
           {/* Desktop Actions */}

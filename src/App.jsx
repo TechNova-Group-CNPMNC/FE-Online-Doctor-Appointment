@@ -9,6 +9,7 @@ import FindADoctor from "./pages/FindADoctor/FindADoctor";
 import DoctorDetail from "./pages/DoctorDetail/DoctorDetail";
 import DoctorAvailability from "./pages/DoctorAvailability/DoctorAvailability";
 import ProtectedRoute from "./util/ProtectedRoute.jsx";
+import CreateAppointment from "./pages/CreateAppointment/CreateAppointment.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/find-a-doctor" element={<FindADoctor />} />
+        <Route path="/create-appointment" element={<CreateAppointment />} />
         <Route
           path="/doctor/my-availability"
           element={

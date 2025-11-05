@@ -42,6 +42,10 @@
   animation: fadeInUp 1s ease-out 0.2s both;
 }
 
+.about-us-girl-image{
+  animation: none !important;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -45,6 +45,18 @@ export const isDoctor = () => {
   return result;
 };
 
+export const isPatient = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return false;
+
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.role === "PATIENT";
+  } catch (error) {
+    return false;
+  }
+};
+
 /**
  * Check if user is authenticated
  * @returns {boolean}
@@ -86,6 +98,18 @@ export const getUserInfo = () => {
   return info;
 };
 
+export const getUserEmail = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.email || decoded.sub || null;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
+  }
+};
 
 /**
  * Get doctor ID from token
@@ -95,11 +119,13 @@ export const getDoctorId = () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
-  const decoded = decodeToken(token);
-  const doctorId = decoded?.doctorId;
-  console.log("🩺 Doctor ID from token:", doctorId);
-
-  return doctorId;
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.doctorId || decoded.sub || null;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
+  }
 };
 
 /**
@@ -110,11 +136,13 @@ export const getPatientId = () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
-  const decoded = decodeToken(token);
-  const patientId = decoded?.patientId;
-  console.log("🤒 Patient ID from token:", patientId);
-
-  return patientId;
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.patientId || decoded.sub || null;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
+  }
 };
 
 /**
