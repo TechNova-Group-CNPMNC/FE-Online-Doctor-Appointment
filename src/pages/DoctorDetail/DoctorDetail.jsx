@@ -28,6 +28,8 @@ const DoctorDetail = () => {
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [appointmentDetails, setAppointmentDetails] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     fetchDoctorDetail();
@@ -199,13 +201,12 @@ const DoctorDetail = () => {
       setError("");
       setSuccess("");
 
-      // Gửi đúng format theo backend AppointmentRequest
       const appointmentData = {
         patientId: parseInt(patientId),
         doctorId: parseInt(id),
         timeSlotId: selectedTime.id,
         symptoms: symptoms.trim(),
-        suspectedDisease: suspectedDisease.trim() || null, // Optional
+        suspectedDisease: suspectedDisease.trim() || null,
       };
 
       console.log("📝 Creating appointment:", appointmentData);
@@ -213,16 +214,19 @@ const DoctorDetail = () => {
       const response = await api.post("/appointments", appointmentData);
       console.log("✅ Appointment created:", response.data);
 
-      setSuccess("Appointment booked successfully!");
+      // Lưu appointment details để hiển thị trong success modal
+      const appointmentResponse = response.data?.data || response.data;
+      setAppointmentDetails(appointmentResponse);
+
+      // Đóng reason modal và mở success modal
       setShowReasonModal(false);
+      setShowSuccessModal(true);
+
       setSymptoms("");
       setSuspectedDisease("");
 
-      // Refresh doctor detail to update available slots
-      setTimeout(() => {
-        fetchDoctorDetail();
-        setSuccess("");
-      }, 2000);
+      // Refresh doctor detail để update available slots
+      fetchDoctorDetail();
     } catch (err) {
       console.error("❌ Error creating appointment:", err);
 
@@ -246,6 +250,29 @@ const DoctorDetail = () => {
     } finally {
       setBookingLoading(false);
     }
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      PENDING: { bg: "#FEF3C7", text: "#92400E", border: "#FCD34D" },
+      CONFIRMED: { bg: "#D1FAE5", text: "#065F46", border: "#34D399" },
+      COMPLETED: { bg: "#DBEAFE", text: "#1E40AF", border: "#60A5FA" },
+      CANCELLED: { bg: "#FEE2E2", text: "#991B1B", border: "#FCA5A5" },
+    };
+    return colors[status] || colors.PENDING;
   };
 
   const handleCloseModal = () => {
@@ -626,6 +653,325 @@ const DoctorDetail = () => {
                   ) : (
                     "Confirm Booking"
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showSuccessModal && appointmentDetails && (
+          <div
+            className="modal-overlay"
+            onClick={() => setShowSuccessModal(false)}
+          >
+            <div
+              className="modal-content success-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="success-icon-wrapper">
+                <svg
+                  className="success-icon"
+                  width="80"
+                  height="80"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle cx="12" cy="12" r="10" fill="#10B981" />
+                  <path
+                    d="M8 12L11 15L16 9"
+                    stroke="white"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <div className="modal-header success-header">
+                <h3>Appointment Booked Successfully! 🎉</h3>
+                <button
+                  className="modal-close"
+                  onClick={() => setShowSuccessModal(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <div className="appointment-card">
+                  <div className="appointment-card-header">
+                    <h4>Appointment Details</h4>
+                    <span
+                      className="status-badge"
+                      style={{
+                        background: getStatusColor(appointmentDetails.status)
+                          .bg,
+                        color: getStatusColor(appointmentDetails.status).text,
+                        border: `2px solid ${
+                          getStatusColor(appointmentDetails.status).border
+                        }`,
+                      }}
+                    >
+                      {appointmentDetails.status}
+                    </span>
+                  </div>
+
+                  <div className="appointment-info-grid">
+                    <div className="info-item">
+                      <div className="info-icon">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                          <path
+                            d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="info-label">Doctor</p>
+                        <p className="info-value">
+                          {appointmentDetails.doctorName}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="info-item">
+                      <div className="info-icon">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <rect
+                            x="3"
+                            y="6"
+                            width="18"
+                            height="15"
+                            rx="2"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                          <path d="M3 10H21" stroke="#667eea" strokeWidth="2" />
+                          <path
+                            d="M8 3V6"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M16 3V6"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="info-label">Date & Time</p>
+                        <p className="info-value">
+                          {formatDateTime(appointmentDetails.startTime)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="info-item">
+                      <div className="info-icon">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                          <path
+                            d="M12 7V12L15 15"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="info-label">Duration</p>
+                        <p className="info-value">30 minutes</p>
+                      </div>
+                    </div>
+
+                    <div className="info-item">
+                      <div className="info-icon">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                          <path
+                            d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V5C15 6.10457 14.1046 7 13 7H11C9.89543 7 9 6.10457 9 5V5Z"
+                            stroke="#667eea"
+                            strokeWidth="2"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="info-label">Symptoms</p>
+                        <p className="info-value">
+                          {appointmentDetails.symptoms}
+                        </p>
+                      </div>
+                    </div>
+
+                    {appointmentDetails.suspectedDisease && (
+                      <div className="info-item">
+                        <div className="info-icon">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                              stroke="#667eea"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="info-label">Suspected Disease</p>
+                          <p className="info-value">
+                            {appointmentDetails.suspectedDisease}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="appointment-id">
+                    <p>
+                      Appointment ID: <strong>#{appointmentDetails.id}</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="next-steps">
+                  <h4>What's Next?</h4>
+                  <ul>
+                    <li>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M9 12L11 14L15 10"
+                          stroke="#10B981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      You'll receive a confirmation email shortly
+                    </li>
+                    <li>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M9 12L11 14L15 10"
+                          stroke="#10B981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      Please arrive 10 minutes before your appointment
+                    </li>
+                    <li>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M9 12L11 14L15 10"
+                          stroke="#10B981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      You can reschedule or cancel up to 24 hours before
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="modal-footer success-footer">
+                <button
+                  className="btn-secondary"
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    navigate("/");
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Back to Home
+                </button>
+                <button
+                  className="btn-primary"
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    navigate("/appointments");
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="3"
+                      y="6"
+                      width="18"
+                      height="15"
+                      rx="2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path d="M3 10H21" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                  View My Appointments
                 </button>
               </div>
             </div>

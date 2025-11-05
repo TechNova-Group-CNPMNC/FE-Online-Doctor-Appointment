@@ -863,3 +863,251 @@
     flex-direction: column;
   }
 }
+
+/* Success Modal */
+.success-modal {
+  max-width: 600px !important;
+}
+
+.success-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0 20px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-icon {
+  filter: drop-shadow(0 10px 20px rgba(16, 185, 129, 0.3));
+}
+
+.success-header {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  text-align: center;
+}
+
+.success-header h3 {
+  color: #10B981;
+  font-size: 1.75rem;
+}
+
+.appointment-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+  border: 2px solid #e0e7ff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.appointment-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e7ff;
+}
+
+.appointment-card-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+}
+
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.appointment-info-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+}
+
+.info-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.info-label {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #1e293b;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.appointment-id {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid #e0e7ff;
+  text-align: center;
+}
+
+.appointment-id p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.appointment-id strong {
+  color: #667eea;
+  font-size: 1rem;
+}
+
+.next-steps {
+  background: white;
+  border: 2px solid #e0e7ff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.next-steps h4 {
+  margin: 0 0 16px;
+  font-size: 1.125rem;
+  color: #1e293b;
+}
+
+.next-steps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.next-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.next-steps li svg {
+  flex-shrink: 0;
+}
+
+.success-footer {
+  gap: 12px;
+}
+
+.btn-secondary,
+.btn-primary {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-secondary {
+  background: white;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .success-modal {
+    width: 95% !important;
+  }
+
+  .appointment-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .success-footer {
+    flex-direction: column;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    width: 100%;
+  }
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="text"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input[type="text"]:disabled {
+  background: #f8fafc;
+  cursor: not-allowed;
+}
