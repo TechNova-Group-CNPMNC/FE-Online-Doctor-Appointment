@@ -259,6 +259,7 @@ const handleUpdateConfirm = async () => {
     setError("");
 
     const updateData = {
+      appointmentId: selectedAppointment.id,
       symptoms: updateFormData.symptoms,
       suspectedDisease: updateFormData.suspectedDisease,
     };
@@ -266,6 +267,8 @@ const handleUpdateConfirm = async () => {
     if (isRescheduling && selectedNewTimeSlot) {
       updateData.newTimeSlotId = selectedNewTimeSlot;
     }
+
+    console.log("Sending update data:", updateData);
 
     await api.put(`/appointments/${selectedAppointment.id}`, updateData);
 
@@ -285,18 +288,15 @@ const handleUpdateConfirm = async () => {
   } catch (err) {
     console.error("❌ Error updating appointment:", err);
 
-    // Hiển thị lỗi từ backend
     const errorMessage =
       err.response?.data?.message || "Cập nhật lịch hẹn thất bại";
     setError(errorMessage);
 
-    // Đóng modal nếu muốn
     setShowUpdateModal(false);
     setSelectedAppointment(null);
     setIsRescheduling(false);
     setSelectedNewTimeSlot(null);
 
-    // Auto clear error sau 5 giây
     setTimeout(() => setError(""), 5000);
   } finally {
     setUpdateLoading(false);
