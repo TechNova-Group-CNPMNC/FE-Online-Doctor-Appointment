@@ -327,14 +327,15 @@ const Appointments = () => {
     return appointment.status === "PENDING";
   };
 
-  const canRescheduleAppointment = (appointment) => {
-    if (appointment.status !== "PENDING") return false;
-    if ((appointment.rescheduleCount || 0) >= 2) return false;
-    const appointmentTime = new Date(appointment.startTime);
-    const now = new Date();
-    const hoursUntilAppointment = (appointmentTime - now) / (1000 * 60 * 60);
-    return hoursUntilAppointment >= 48;
-  };
+    const canRescheduleAppointment = (appointment) => {
+      return true;
+      if (appointment.status !== "PENDING") return false;
+      if ((appointment.rescheduleCount || 0) >= 2) return false;
+      const appointmentTime = new Date(appointment.startTime);
+      const now = new Date();
+      const hoursUntilAppointment = (appointmentTime - now) / (1000 * 60 * 60);
+      return hoursUntilAppointment >= 48;
+    };
 
   const getStatusCounts = () => {
     return {
