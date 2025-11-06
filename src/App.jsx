@@ -10,6 +10,7 @@ import DoctorDetail from "./pages/DoctorDetail/DoctorDetail";
 import DoctorAvailability from "./pages/DoctorAvailability/DoctorAvailability";
 import ProtectedRoute from "./util/ProtectedRoute.jsx";
 import CreateAppointment from "./pages/CreateAppointment/CreateAppointment.jsx";
+import Appointments from "./pages/Appointments/Appointments.jsx";
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
           }
         />
         <Route path="/doctor/:id" element={<DoctorDetail />} />
-
+        <Route path="/appointments" element={<Appointments />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
