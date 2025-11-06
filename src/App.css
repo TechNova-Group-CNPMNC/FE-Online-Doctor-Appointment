@@ -9,3 +9,9 @@
   display: flex;
   flex-direction: column;
 }
+
+input, textarea, select, button {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: white;
+    color: #334155;
+}
