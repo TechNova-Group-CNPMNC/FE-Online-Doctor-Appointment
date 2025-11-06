@@ -1601,88 +1601,34 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 
 ---
 
-## 5. YÊU CẦU GIAO DIỆN
 
-### 5.1 Giao diện người dùng (UI)
-- **UIR-1:** Design system nhất quán
-- **UIR-2:** Color scheme: Primary blue (#667eea), Secondary colors
-- **UIR-3:** Typography: Sans-serif fonts, readable sizes
-- **UIR-4:** Icons: Consistent icon library
-- **UIR-5:** Loading states và animations
+## 5. KẾ HOẠCH PHÁT TRIỂN
 
-### 5.2 Trải nghiệm người dùng (UX)
-- **UXR-1:** User flow trực quan và logic
-- **UXR-2:** Minimize số clicks để hoàn thành task
-- **UXR-3:** Clear error messages và recovery paths
-- **UXR-4:** Progressive disclosure cho complex forms
-- **UXR-5:** Feedback rõ ràng cho mọi action
-
-### 5.3 Responsive Design
-- **RDR-1:** Mobile-first approach
-- **RDR-2:** Breakpoints: 320px, 768px, 1024px, 1440px
-- **RDR-3:** Touch-friendly interface cho mobile
-- **RDR-4:** Optimized layouts cho tablet
-
----
-
-## 6. YÊU CẦU HỆ THỐNG
-
-### 6.1 Kiến trúc hệ thống
-- **SR-1:** Microservices architecture (future)
-- **SR-2:** RESTful API design
-- **SR-3:** JWT-based authentication
-- **SR-4:** Stateless application servers
-
-### 6.2 Công nghệ
-- **TR-1:** Backend: Spring Boot, Java 11+
-- **TR-2:** Frontend: React.js, Modern JavaScript
-- **TR-3:** Database: PostgreSQL/MySQL
-- **TR-4:** Caching: Redis (future)
-- **TR-5:** Message Queue: RabbitMQ (future)
-
-### 6.3 Deployment
-- **DR-1:** Containerization với Docker
-- **DR-2:** Cloud deployment (AWS/Azure)
-- **DR-3:** CI/CD pipeline
-- **DR-4:** Blue-green deployment
-- **DR-5:** Monitoring và logging
-
-### 6.4 Tích hợp
-- **IR-1:** Email service integration
-- **IR-2:** SMS service integration (future)
-- **IR-3:** Payment gateway integration (future)
-- **IR-4:** Calendar integration (future)
-
----
-
-
-## 7. KẾ HOẠCH PHÁT TRIỂN
-
-### 7.1 Timeline
+### 5.1 Timeline
 - **Sprint 1 (4 giờ):** Authentication + Finding Doctor
 - **Sprint 2 (4 giờ):** Doctor Details + Make Appointment
 - **Sprint 3 (4 giờ):** Appointment Management + Patient Info
 - **Tổng thời gian:** 12 giờ (khoảng 1.5 ngày làm việc)
 
-### 7.2 Milestones
+### 5.2 Milestones
 - **M1:** MVP với core features
 - **M2:** Full appointment management
 - **M3:** Advanced features và optimizations
 
-### 7.3 Testing Strategy
+### 5.3 Testing Strategy
 - **Unit Testing:** 80%+ code coverage
 - **Integration Testing:** API và database
 - **E2E Testing:** Critical user journeys
 - **Performance Testing:** Load và stress testing
 - **Security Testing:** Vulnerability scanning
 
-### 7.4 Deployment Strategy
+### 5.4 Deployment Strategy
 - **Development:** Local development environment
 - **Staging:** Pre-production testing
 - **Production:** Blue-green deployment
 - **Monitoring:** Application và infrastructure monitoring
 
-### 7.5 Maintenance
+### 5.5 Maintenance
 - **Bug fixes:** Priority-based resolution
 - **Feature updates:** Regular releases
 - **Security patches:** Immediate deployment
@@ -1690,165 +1636,7 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 
 ---
 
-## 8. RỦI RO VÀ GIẢM THIỂU
-
-### 8.1 Technical Risks
-- **Risk:** Database performance issues
-  - **Mitigation:** Query optimization, indexing, caching
-- **Risk:** API scalability problems
-  - **Mitigation:** Load testing, horizontal scaling
-- **Risk:** Security vulnerabilities
-  - **Mitigation:** Regular audits, penetration testing
-
-### 8.2 Business Risks
-- **Risk:** User adoption challenges
-  - **Mitigation:** User testing, feedback incorporation
-- **Risk:** Regulatory compliance issues
-  - **Mitigation:** Legal consultation, compliance audits
-
-### 8.3 Project Risks
-- **Risk:** Timeline delays
-  - **Mitigation:** Agile methodology, regular reviews
-- **Risk:** Resource constraints
-  - **Mitigation:** Priority management, scope adjustment
-
----
-
-## 9. YÊU CẦU BẢO MẬT
-
-### 9.1 Xác thực và Phân quyền
-- **SEC-1:** JWT-based authentication với secure token generation
-  - Token expiration: 24 giờ cho access token
-  - Refresh token mechanism với sliding expiration
-  - Secure token storage (httpOnly cookies)
-  - Token blacklisting khi logout
-
-- **SEC-2:** Role-based access control (RBAC)
-  - Roles: PATIENT, DOCTOR, ADMIN
-  - Permission-based access cho từng endpoint
-  - Resource-level authorization (user chỉ truy cập data của mình)
-  - Hierarchical role inheritance
-
-- **SEC-3:** Password security
-  - BCrypt hashing với salt rounds >= 12
-  - Password complexity requirements (8+ chars, mixed case, numbers, symbols)
-  - Password history tracking (không được trùng 5 password gần nhất)
-  - Account lockout sau 5 lần đăng nhập sai
-
-- **SEC-4:** Session management
-  - Secure session handling
-  - Concurrent session limits
-  - Session timeout sau 30 phút inactive
-  - Session invalidation khi detect suspicious activity
-
-- **SEC-5:** Multi-factor authentication (Future)
-  - SMS-based OTP
-  - Email-based verification
-  - Authenticator app support
-  - Backup codes
-
-### 9.2 Bảo mật dữ liệu
-- **SEC-6:** Encryption
-  - HTTPS/TLS 1.3 cho tất cả communications
-  - Database encryption at rest (AES-256)
-  - Sensitive field encryption (PII, medical data)
-  - Key management với HSM hoặc cloud KMS
-
-- **SEC-7:** Input validation và sanitization
-  - Server-side validation cho tất cả inputs
-  - SQL injection prevention (parameterized queries)
-  - XSS protection (output encoding, CSP headers)
-  - File upload validation (type, size, content scanning)
-  - CSRF token validation
-
-- **SEC-8:** API security
-  - Rate limiting (100 requests/minute per user)
-  - CORS configuration restrictive
-  - API versioning và backward compatibility
-  - Request/response logging cho audit
-  - IP whitelisting cho admin endpoints
-
-### 9.3 Privacy và Compliance
-- **SEC-9:** Data privacy
-  - GDPR compliance (EU users)
-  - HIPAA considerations (US healthcare data)
-  - Data minimization principles
-  - Consent management system
-  - Privacy policy và terms of service
-
-- **SEC-10:** Audit và monitoring
-  - Comprehensive audit logging
-  - Real-time security monitoring
-  - Anomaly detection
-  - Incident response procedures
-  - Security information và event management (SIEM)
-
-- **SEC-11:** Data retention và disposal
-  - Automated data purging policies
-  - Right to be forgotten implementation
-  - Backup encryption và secure deletion
-  - Legal hold capabilities
-  - Data anonymization cho analytics
-
-### 9.4 Security Testing
-- **SEC-12:** Regular security assessments
-  - Quarterly penetration testing
-  - Automated vulnerability scanning
-  - Code security reviews
-  - Dependency vulnerability checks
-  - Security compliance audits
-
----
-
-## 10. KIẾN TRÚC VÀ THIẾT KẾ HỆ THỐNG
-
-### 10.1 Kiến trúc tổng thể
-**Layered Architecture Pattern:**
-
-- **Presentation Layer (Frontend):**
-  - React.js single-page application
-  - Component-based architecture
-  - State management với React hooks
-  - Client-side routing
-  - Responsive design framework
-
-- **API Gateway Layer:**
-  - RESTful API endpoints
-  - Request validation và authentication
-  - Rate limiting và throttling
-  - API versioning
-  - CORS handling
-
-- **Business Logic Layer:**
-  - Service classes với business rules
-  - Transaction management
-  - Validation logic
-  - Business workflow orchestration
-  - Event handling
-
-- **Data Access Layer:**
-  - JPA/Hibernate ORM
-  - Repository pattern implementation
-  - Query optimization
-  - Connection pooling
-  - Transaction boundaries
-
-- **Database Layer:**
-  - PostgreSQL relational database
-  - Normalized schema design
-  - Indexing strategy
-  - Backup và replication
-  - Performance tuning
-
-### 10.2 Design Patterns
-- **Repository Pattern:** Abstraction layer cho data access
-- **Service Layer Pattern:** Business logic encapsulation
-- **DTO Pattern:** Data transfer giữa layers
-- **Factory Pattern:** Object creation
-- **Strategy Pattern:** Interchangeable algorithms
-- **Observer Pattern:** Event notifications
-
-### 10.3 Database Design
+## 6. THIẾT KẾ DATABASE
 
 **Core Tables:**
 
@@ -1901,64 +1689,11 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 - Trigger-based audit trails
 - Optimistic locking cho concurrent updates
 
-### 10.4 API Design Principles
-
-**RESTful Standards:**
-- Resource-based URL structure: `/api/v1/resource`
-- HTTP methods: GET, POST, PUT, DELETE, PATCH
-- Stateless operations
-- Standard HTTP status codes
-- JSON response format
-
-**API Endpoints Structure:**
-```
-Authentication:
-- POST /api/auth/register
-- POST /api/auth/login
-- POST /api/auth/refresh
-- POST /api/auth/logout
-
-Specialties:
-- GET /api/specialties
-
-Doctors:
-- GET /api/doctors
-- GET /api/doctors/search
-- GET /api/doctors/{id}
-- GET /api/doctors/{id}/detail
-
-Availability:
-- POST /api/doctors/{id}/availability
-- GET /api/doctors/{id}/availability
-- DELETE /api/doctors/{id}/availability/{blockId}
-
-Appointments:
-- POST /api/appointments
-- GET /api/appointments/my-appointments
-- PUT /api/appointments/{id}/cancel
-- PUT /api/appointments/{id}/reschedule
-```
-
-**Response Format:**
-```json
-{
-  "status": "success|error",
-  "data": {},
-  "message": "Optional message",
-  "errors": [],
-  "pagination": {
-    "page": 1,
-    "size": 20,
-    "total": 100
-  }
-}
-```
-
 ---
 
-## 11. TESTING VÀ QUALITY ASSURANCE
+## 7. TESTING VÀ QUALITY ASSURANCE
 
-### 11.1 Testing Pyramid
+### 7.1 Testing Pyramid
 
 **Unit Tests (70% coverage target):**
 - Service layer business logic
@@ -1981,23 +1716,7 @@ Appointments:
 - Security testing
 - Accessibility testing
 
-### 11.2 Testing Strategy chi tiết
-
-**Backend Testing:**
-- **Unit Tests:** JUnit 5, Mockito, AssertJ
-- **Integration Tests:** Spring Boot Test, TestContainers
-- **API Tests:** RestAssured, Postman/Newman
-- **Performance Tests:** JMeter, Gatling
-- **Security Tests:** OWASP ZAP, SonarQube
-
-**Frontend Testing:**
-- **Unit Tests:** Jest, React Testing Library
-- **Component Tests:** Storybook
-- **E2E Tests:** Cypress, Playwright
-- **Visual Regression:** Percy, Chromatic
-- **Performance:** Lighthouse, WebPageTest
-
-### 11.3 Quality Metrics
+### 7.2 Quality Metrics
 
 **Code Quality:**
 - Test coverage >= 80%
@@ -2021,39 +1740,9 @@ Appointments:
 
 ---
 
-## 12. DEPLOYMENT VÀ DEVOPS
+## 8. PHỤ LỤC
 
-### 12.1 Environment Configuration
-
-**Development Environment:**
-- Local Docker Compose setup
-- H2/PostgreSQL local database
-- Hot reload enabled
-- Debug logging
-- Mock external services
-- Sample data seeding
-
-**Staging Environment:**
-- Production-like configuration
-- Separate database instance
-- Full logging enabled
-- Performance monitoring
-- Integration with test services
-- Automated daily deployment
-
-**Production Environment:**
-- High availability setup (99.5% uptime)
-- Load balancing với health checks
-- Auto-scaling based on metrics
-- Database replication (master-slave)
-- CDN cho static assets
-- Full monitoring và alerting
-
----
-
-## 13. PHỤ LỤC
-
-### 13.1 Glossary (Bảng thuật ngữ)
+### 8.1 Glossary (Bảng thuật ngữ)
 
 **Technical Terms:**
 - **API:** Application Programming Interface - giao diện lập trình ứng dụng
@@ -2085,7 +1774,7 @@ Appointments:
 - **HIS:** Hospital Information System - hệ thống thông tin bệnh viện
 - **PACS:** Picture Archiving và Communication System
 
-### 13.2 References
+### 8.2 References
 
 **Standards và Guidelines:**
 - IEEE 830-1998 Standard for Software Requirements Specifications
