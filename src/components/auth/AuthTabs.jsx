@@ -1,26 +1,29 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink } from "react-router-dom";
 
 const AuthTabs = () => {
   return (
-    <div className="tab-switcher" role="tablist" aria-label="Chọn loại biểu mẫu xác thực">
+    <div
+      className="tab-switcher"
+      role="tablist"
+      aria-label="Select authentication form type"
+    >
       <NavLink
         to="/login"
         end
         role="tab"
-        className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
+        className={({ isActive }) => (isActive ? "tab active" : "tab")}
       >
-        Đăng nhập
+        Log In
       </NavLink>
       <NavLink
         to="/signup"
         role="tab"
-        className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
+        className={({ isActive }) => (isActive ? "tab active" : "tab")}
       >
-        Đăng ký
+        Sign Up
       </NavLink>
     </div>
-  )
-}
+  );
+};
 
-export default AuthTabs
-
+export default AuthTabs;

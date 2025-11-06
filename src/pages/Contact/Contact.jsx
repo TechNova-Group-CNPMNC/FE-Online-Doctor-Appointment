@@ -1,5 +1,5 @@
-import MainLayout from '../../layouts/MainLayout'
-import './Contact.css'
+import MainLayout from "../../layouts/MainLayout";
+import "./Contact.css";
 
 const Contact = () => {
   return (
@@ -10,7 +10,8 @@ const Contact = () => {
           <div className="container">
             <h1 className="contact-title">Liên Hệ</h1>
             <p className="contact-subtitle">
-              Có câu hỏi? Gửi cho chúng tôi một tin nhắn và chúng tôi sẽ trả lời sớm nhất có thể.
+              Có câu hỏi? Gửi cho chúng tôi một tin nhắn và chúng tôi sẽ trả lời
+              sớm nhất có thể.
             </p>
           </div>
         </section>
@@ -23,10 +24,10 @@ const Contact = () => {
                 <form className="contact-form">
                   <div className="form-group">
                     <label htmlFor="name">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      name="name" 
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
                       placeholder="Your name"
                       required
                     />
@@ -34,10 +35,10 @@ const Contact = () => {
 
                   <div className="form-group">
                     <label htmlFor="email">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
                       placeholder="Your email"
                       required
                     />
@@ -45,9 +46,9 @@ const Contact = () => {
 
                   <div className="form-group">
                     <label htmlFor="message">Tin Nhắn</label>
-                    <textarea 
-                      id="message" 
-                      name="message" 
+                    <textarea
+                      id="message"
+                      name="message"
                       rows="5"
                       placeholder="Your message..."
                       required
@@ -60,10 +61,9 @@ const Contact = () => {
                 </form>
               </div>
 
-              {/* Contact Info */}
               <div className="contact-info-container">
                 <h2 className="info-title">Liên Hệ</h2>
-                
+
                 <div className="contact-info-list">
                   <div className="contact-info-item">
                     <div className="info-icon">📞</div>
@@ -85,8 +85,7 @@ const Contact = () => {
         </section>
       </div>
     </MainLayout>
-  )
-}
+  );
+};
 
-export default Contact
-
+export default Contact;

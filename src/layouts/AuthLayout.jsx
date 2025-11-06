@@ -1,32 +1,35 @@
-import AuthTabs from '../components/auth/AuthTabs'
+import { Link } from "react-router-dom";
+import AuthTabs from "../components/auth/AuthTabs";
+import "./AuthLayout.css";
 
 const AuthLayout = ({ children }) => {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
         <aside className="auth-hero">
-          <div className="hero-badge">Clinic Online</div>
+          <div className="hero-badge">HealthCare</div>
           <h1>
-            Chăm sóc sức khỏe <span>mọi lúc, mọi nơi</span>
+            Healthcare <span>anytime, anywhere</span>
           </h1>
           <p>
-            Đặt lịch khám, theo dõi lịch sử và kết nối với bác sĩ chỉ trong vài bước đơn giản.
+            Book appointments, track history, and connect with doctors in just a
+            few simple steps.
           </p>
           <ul>
-            <li>Đăng ký tài khoản miễn phí</li>
-            <li>Tra cứu lịch làm việc của bác sĩ</li>
-            <li>Nhận thông báo nhắc lịch tự động</li>
+            <li>Free account registration</li>
+            <li>Check doctor schedules</li>
           </ul>
         </aside>
         <section className="auth-content">
           <AuthTabs />
           <div className="tab-panel">{children}</div>
+          <Link to="/" className="back-home-button">
+            Back to Home
+          </Link>
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AuthLayout
-
-
+export default AuthLayout;
