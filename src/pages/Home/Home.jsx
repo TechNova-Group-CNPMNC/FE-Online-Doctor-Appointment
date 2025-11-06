@@ -25,90 +25,63 @@ const Home = () => {
   const features = [
     {
       icon: <Search size={40} />,
-      title: "Find Specialist Doctors",
-      description: "Connect with qualified doctors across multiple specialties",
+      title: "Tìm bác sĩ chuyên khoa",
+      description: "Kết nối với bác sĩ giỏi thuộc nhiều chuyên khoa",
       color: "#3B82F6",
     },
     {
       icon: <Calendar size={40} />,
-      title: "Easy Appointment Booking",
-      description: "Schedule appointments in just a few clicks, 24/7",
+      title: "Đặt lịch hẹn dễ dàng",
+      description: "Đặt lịch chỉ với vài cú nhấp chuột, 24/7",
       color: "#8B5CF6",
     },
     {
       icon: <MessageSquare size={40} />,
-      title: "Online Consultation",
-      description: "Video consultations from the comfort of your home",
+      title: "Tư vấn trực tuyến",
+      description: "Tư vấn qua video ngay tại nhà của bạn",
       color: "#10B981",
     },
     {
       icon: <Lock size={40} />,
-      title: "Secure & Private",
-      description: "Your health data is encrypted and fully protected",
+      title: "Bảo mật & Riêng tư",
+      description: "Dữ liệu sức khỏe của bạn được mã hóa và bảo vệ",
       color: "#F59E0B",
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Patient",
-      comment:
-        "The online consultation feature is a game-changer! I got expert medical advice without leaving my home. The doctors are professional and caring.",
-      rating: 5,
-      avatar: "👩‍💼",
-    },
-    {
-      name: "Michael Chen",
-      role: "Patient",
-      comment:
-        "Booking appointments has never been easier. The platform is intuitive and I love how I can see doctor availability in real-time.",
-      rating: 5,
-      avatar: "👨‍💻",
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Patient",
-      comment:
-        "Outstanding service! The doctors are highly qualified and the entire process is seamless. Highly recommend to everyone.",
-      rating: 5,
-      avatar: "👩‍🎓",
     },
   ];
 
   const steps = [
     {
       number: "01",
-      title: "Create Your Account",
-      description: "Sign up in under 60 seconds with your email",
+      title: "Tạo tài khoản",
+      description: "Đăng ký dưới 60 giây bằng email của bạn",
       icon: <PenSquare size={48} />,
     },
     {
       number: "02",
-      title: "Search & Select",
-      description: "Browse doctors by specialty, location, or availability",
+      title: "Tìm kiếm & Lựa chọn",
+      description: "Tìm bác sĩ theo chuyên khoa, địa điểm hoặc lịch rảnh",
       icon: <Search size={48} />,
     },
     {
       number: "03",
-      title: "Book Appointment",
-      description: "Choose your preferred date and time slot",
+      title: "Đặt lịch hẹn",
+      description: "Chọn ngày và khung giờ bạn muốn",
       icon: <Calendar size={48} />,
     },
     {
       number: "04",
-      title: "Get Treated",
-      description: "Meet your doctor online or visit in-person",
+      title: "Nhận tư vấn",
+      description: "Gặp bác sĩ trực tuyến hoặc đến khám trực tiếp",
       icon: <Hospital size={48} />,
     },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
+  //   useEffect(() => {
+  //     const interval = setInterval(() => {
+  //       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+  //     }, 5000);
+  //     return () => clearInterval(interval);
+  //   }, [testimonials.length]);
 
   return (
     <MainLayout>
@@ -129,40 +102,40 @@ const Home = () => {
             <div className="hero-content">
               <div className="hero-badge">
                 <Sparkles size={16} className="badge-icon" />
-                <span>Your Health, Our Priority</span>
+                <span>Sức khỏe của bạn, Ưu tiên của chúng tôi</span>
               </div>
 
               <h1 className="hero-title">
-                Find & Book
-                <span className="text-gradient"> Top Doctors</span>
+                Tìm & Đặt lịch
+                <span className="text-gradient"> Bác sĩ hàng đầu</span>
                 <br />
-                Near You
+                Gần bạn
               </h1>
 
               <p className="hero-subtitle">
-                Access quality healthcare with ease. Connect with experienced
-                doctors, book appointments instantly, and get the care you
-                deserve - all in one platform.
+                Tiếp cận chăm sóc sức khỏe chất lượng một cách dễ dàng. Kết nối
+                với các bác sĩ giàu kinh nghiệm, đặt lịch hẹn ngay lập tức và
+                nhận được sự chăm sóc xứng đáng - tất cả trong một nền tảng.
               </p>
 
               <div className="hero-actions">
                 <Link to="/find-a-doctor" className="btn-primary">
-                  <span>Find Doctors</span>
+                  <span>Tìm bác sĩ</span>
                   <ArrowRight size={20} />
                 </Link>
                 <Link to="/signup" className="btn-secondary">
-                  <span>Get Started</span>
+                  <span>Bắt đầu</span>
                 </Link>
               </div>
 
               <div className="hero-trust-badges">
                 <div className="trust-badge">
                   <BadgeCheck size={20} />
-                  <span>Verified Doctors</span>
+                  <span>Bác sĩ đã xác minh</span>
                 </div>
                 <div className="trust-badge">
                   <Star size={20} />
-                  <span>Top Rated Service</span>
+                  <span>Dịch vụ hàng đầu</span>
                 </div>
               </div>
             </div>
@@ -173,22 +146,24 @@ const Home = () => {
                 <div className="floating-card card-1">
                   <Pill size={32} className="card-icon-lucide" />
                   <div className="card-content">
-                    <div className="card-title">Online Booking</div>
-                    <div className="card-subtitle">Easy & Fast</div>
+                    <div className="card-title">Đặt lịch trực tuyến</div>
+                    <div className="card-subtitle">Dễ dàng & Nhanh chóng</div>
                   </div>
                 </div>
                 <div className="floating-card card-2">
                   <Stethoscope size={32} className="card-icon-lucide" />
                   <div className="card-content">
-                    <div className="card-title">Expert Doctors</div>
-                    <div className="card-subtitle">Certified Professionals</div>
+                    <div className="card-title">Bác sĩ chuyên môn</div>
+                    <div className="card-subtitle">
+                      Chuyên gia đã chứng nhận
+                    </div>
                   </div>
                 </div>
                 <div className="floating-card card-3">
                   <CalendarCheck size={32} className="card-icon-lucide" />
                   <div className="card-content">
-                    <div className="card-title">Easy Booking</div>
-                    <div className="card-subtitle">Instant Confirmation</div>
+                    <div className="card-title">Đặt lịch dễ dàng</div>
+                    <div className="card-subtitle">Xác nhận ngay lập tức</div>
                   </div>
                 </div>
               </div>
@@ -199,12 +174,12 @@ const Home = () => {
         <section className="features-section">
           <div className="container">
             <div className="section-header">
-              <span className="section-badge">Why Choose Us</span>
+              <span className="section-badge">Tại sao chọn chúng tôi</span>
               <h2 className="section-title">
-                Everything You Need for Better Healthcare
+                Mọi thứ bạn cần cho Chăm sóc sức khỏe tốt hơn
               </h2>
               <p className="section-subtitle">
-                Comprehensive healthcare solutions designed with you in mind
+                Giải pháp chăm sóc sức khỏe toàn diện thiết kế vì bạn
               </p>
             </div>
 
@@ -233,12 +208,12 @@ const Home = () => {
         <section className="how-it-works-section">
           <div className="container">
             <div className="section-header">
-              <span className="section-badge">Simple Process</span>
+              <span className="section-badge">Quy trình đơn giản</span>
               <h2 className="section-title">
-                Book Your Appointment in 4 Easy Steps
+                Đặt lịch hẹn trong 4 bước dễ dàng
               </h2>
               <p className="section-subtitle">
-                Getting healthcare has never been this simple
+                Chăm sóc sức khỏe chưa bao giờ đơn giản đến thế
               </p>
             </div>
 
@@ -270,67 +245,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* <section className="testimonials-section">
-          <div className="container">
-            <div className="section-header">
-              <span className="section-badge">Testimonials</span>
-              <h2 className="section-title">What Our Patients Say</h2>
-              <p className="section-subtitle">
-                Real experiences from real people
-              </p>
-            </div>
-
-            <div className="testimonials-carousel">
-              <div
-                className="testimonial-track"
-                style={{
-                  transform: `translateX(-${activeTestimonial * 100}%)`,
-                }}
-              >
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="testimonial-slide">
-                    <div className="testimonial-card">
-                      <div className="testimonial-rating">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="star"
-                            size={24}
-                            fill="currentColor"
-                          />
-                        ))}
-                      </div>
-                      <p className="testimonial-comment">
-                        "{testimonial.comment}"
-                      </p>
-                      <div className="testimonial-author">
-                        <div className="author-avatar">
-                          {testimonial.avatar}
-                        </div>
-                        <div className="author-info">
-                          <div className="author-name">{testimonial.name}</div>
-                          <div className="author-role">{testimonial.role}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="carousel-dots">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`dot ${
-                      index === activeTestimonial ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTestimonial(index)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section> */}
-
         <section className="cta-section">
           <div className="cta-background">
             <div className="cta-shape cta-shape-1"></div>
@@ -340,18 +254,18 @@ const Home = () => {
           <div className="container">
             <div className="cta-content">
               <h2 className="cta-title">
-                Ready to Take Control of Your Health?
+                Sẵn sàng kiểm soát sức khỏe của bạn?
               </h2>
               <p className="cta-subtitle">
-                Join our community and experience healthcare made simple
+                Tham gia cộng đồng và trải nghiệm chăm sóc sức khỏe đơn giản
               </p>
               <div className="cta-actions">
                 <Link to="/signup" className="btn-cta-primary">
-                  Get Started Free
+                  Bắt đầu miễn phí
                   <ArrowRight size={20} />
                 </Link>
                 <Link to="/find-a-doctor" className="btn-cta-secondary">
-                  Browse Doctors
+                  Xem danh sách Bác sĩ
                 </Link>
               </div>
             </div>

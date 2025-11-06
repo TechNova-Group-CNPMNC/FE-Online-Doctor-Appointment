@@ -9,22 +9,22 @@ const AuthLayout = ({ children }) => {
         <aside className="auth-hero">
           <div className="hero-badge">HealthCare</div>
           <h1>
-            Healthcare <span>anytime, anywhere</span>
+            Chăm sóc sức khỏe <span>bất cứ lúc nào, bất cứ đâu</span>
           </h1>
           <p>
-            Book appointments, track history, and connect with doctors in just a
-            few simple steps.
+            Đặt lịch hẹn, theo dõi lịch sử và kết nối với bác sĩ chỉ trong vài
+            bước đơn giản.
           </p>
           <ul>
-            <li>Free account registration</li>
-            <li>Check doctor schedules</li>
+            <li>Đăng ký tài khoản miễn phí</li>
+            <li>Kiểm tra lịch trình bác sĩ</li>
           </ul>
         </aside>
         <section className="auth-content">
           <AuthTabs />
           <div className="tab-panel">{children}</div>
           <Link to="/" className="back-home-button">
-            Back to Home
+            Quay lại Trang chủ
           </Link>
         </section>
       </div>

@@ -16,35 +16,35 @@ const About = () => {
   const values = [
     {
       icon: <Heart size={48} />,
-      title: "Compassionate Care",
+      title: "Chăm sóc đầy lòng nhân ái",
       description:
-        "We treat every patient with empathy and respect, ensuring their comfort is our top priority.",
+        "Chúng tôi đối xử với mỗi bệnh nhân bằng sự đồng cảm và tôn trọng, đảm bảo sự thoải mái của họ là ưu tiên hàng đầu.",
     },
     {
       icon: <Target size={48} />,
-      title: "Excellence",
+      title: "Xuất sắc",
       description:
-        "We strive for excellence in everything we do, from diagnosis to treatment and follow-up care.",
+        "Chúng tôi phấn đấu đạt được sự xuất sắc trong mọi việc, từ chẩn đoán đến điều trị và chăm sóc theo dõi.",
     },
     {
       icon: <Handshake size={48} />,
-      title: "Trust & Integrity",
+      title: "Tin cậy và liêm chính",
       description:
-        "We build lasting relationships based on trust, transparency, and ethical medical practices.",
+        "Chúng tôi xây dựng mối quan hệ lâu dài dựa trên lòng tin, sự minh bạch và các thực hành y tế đạo đức.",
     },
     {
       icon: <Microscope size={48} />,
-      title: "Innovation",
+      title: "Đổi mới",
       description:
-        "We embrace cutting-edge technology and medical advances to provide the best care possible.",
+        "Chúng tôi áp dụng công nghệ tiên tiến và tiến bộ y tế để cung cấp chăm sóc tốt nhất có thể.",
     },
   ];
 
   const stats = [
-    { icon: <Users size={32} />, number: "50,000+", label: "Happy Patients" },
-    { icon: <Award size={32} />, number: "200+", label: "Expert Doctors" },
-    { icon: <Clock size={32} />, number: "15+", label: "Years Experience" },
-    { icon: <Shield size={32} />, number: "24/7", label: "Support Available" },
+    { icon: <Users size={32} />, number: "50,000+", label: "Bệnh nhân hài lòng" },
+    { icon: <Award size={32} />, number: "200+", label: "Bác sĩ chuyên gia" },
+    { icon: <Clock size={32} />, number: "15+", label: "Năm kinh nghiệm" },
+    { icon: <Shield size={32} />, number: "24/7", label: "Hỗ trợ luôn sẵn sàng" },
   ];
 
   return (
@@ -52,10 +52,9 @@ const About = () => {
       <div className="about-page">
         <section className="about-hero">
           <div className="container">
-            <h1 className="about-title">About TechNova</h1>
+            <h1 className="about-title">Về TechNova</h1>
             <p className="about-subtitle">
-              Your trusted healthcare partner, delivering compassionate and
-              comprehensive medical care for over a decade.
+              Đối tác chăm sóc sức khỏe đáng tin cậy của bạn, cung cấp dịch vụ y tế toàn diện và đầy lòng nhân ái hơn một thập kỷ.
             </p>
           </div>
         </section>
@@ -64,25 +63,18 @@ const About = () => {
           <div className="container">
             <div className="mission-grid">
               <div className="mission-content">
-                <h2 className="section-title">Our Mission</h2>
+                <h2 className="section-title">Sứ mệnh của chúng tôi</h2>
                 <p className="mission-text">
-                  At TeachNova, we are dedicated to providing exceptional
-                  healthcare services that improve the quality of life for our
-                  patients and their families. We believe that everyone deserves
-                  access to world-class medical care, delivered with compassion,
-                  respect, and professionalism.
+                  Tại TechNova, chúng tôi cam kết cung cấp dịch vụ chăm sóc sức khỏe xuất sắc để cải thiện chất lượng cuộc sống cho bệnh nhân và gia đình họ. Chúng tôi tin rằng mọi người đều xứng đáng tiếp cận dịch vụ y tế đẳng cấp thế giới, được cung cấp với sự đồng cảm, tôn trọng và chuyên nghiệp.
                 </p>
                 <p className="mission-text">
-                  Our team of highly qualified medical professionals works
-                  together to ensure that each patient receives personalized,
-                  evidence-based treatment tailored to their unique needs and
-                  circumstances.
+                  Đội ngũ các chuyên gia y tế có trình độ cao của chúng tôi hợp tác cùng nhau để đảm bảo mỗi bệnh nhân nhận được điều trị cá nhân hóa, dựa trên bằng chứng, phù hợp với nhu cầu và hoàn cảnh riêng của họ.
                 </p>
               </div>
               <div className="mission-image">
                 <img
                   src={aboutImg}
-                  alt="About Us"
+                  alt="Về chúng tôi"
                   className="about-us-girl-image"
                 />
               </div>
@@ -106,7 +98,7 @@ const About = () => {
 
         <section className="values-section">
           <div className="container">
-            <h2 className="section-title centered">Our Core Values</h2>
+            <h2 className="section-title centered">Giá trị cốt lõi của chúng tôi</h2>
             <div className="values-grid">
               {values.map((value, index) => (
                 <div key={index} className="value-card">
@@ -119,50 +111,43 @@ const About = () => {
           </div>
         </section>
 
-        {/* History Section */}
         <section className="history-section">
           <div className="container">
-            <h2 className="section-title centered">Our Journey</h2>
+            <h2 className="section-title centered">Hành trình của chúng tôi</h2>
             <div className="timeline">
               <div className="timeline-item">
                 <div className="timeline-year">2010</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Founded</h3>
+                  <h3 className="timeline-title">Thành lập</h3>
                   <p className="timeline-text">
-                    ClinicCare was founded with a vision to revolutionize
-                    healthcare delivery, making quality medical care accessible
-                    to all.
+                    TechNova được thành lập với tầm nhìn cách mạng hóa việc cung cấp dịch vụ chăm sóc sức khỏe, làm cho dịch vụ y tế chất lượng trở nên dễ tiếp cận với tất cả mọi người.
                   </p>
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2015</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Expansion</h3>
+                  <h3 className="timeline-title">Mở rộng</h3>
                   <p className="timeline-text">
-                    We expanded our services to include specialized departments,
-                    offering comprehensive care under one roof.
+                    Chúng tôi mở rộng dịch vụ để bao gồm các khoa chuyên khoa, cung cấp chăm sóc toàn diện dưới một mái nhà.
                   </p>
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2020</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Digital Innovation</h3>
+                  <h3 className="timeline-title">Đổi mới số hóa</h3>
                   <p className="timeline-text">
-                    Launched our telemedicine platform and online appointment
-                    booking system to enhance patient convenience.
+                    Ra mắt nền tảng telemedicine và hệ thống đặt lịch hẹn trực tuyến để nâng cao sự tiện lợi cho bệnh nhân.
                   </p>
                 </div>
               </div>
               <div className="timeline-item">
                 <div className="timeline-year">2024</div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Today</h3>
+                  <h3 className="timeline-title">Ngày nay</h3>
                   <p className="timeline-text">
-                    Continuing to serve thousands of patients annually with
-                    state-of-the-art facilities and cutting-edge medical
-                    technology.
+                    Tiếp tục phục vụ hàng nghìn bệnh nhân hàng năm với cơ sở vật chất hiện đại và công nghệ y tế tiên tiến.
                   </p>
                 </div>
               </div>

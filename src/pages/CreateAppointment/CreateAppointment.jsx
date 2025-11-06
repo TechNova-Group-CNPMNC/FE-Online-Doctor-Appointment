@@ -16,7 +16,6 @@ const CreateAppointment = () => {
   const [success, setSuccess] = useState("");
   const [patientId, setPatientId] = useState(null);
 
-  // Form state
   const [formData, setFormData] = useState({
     doctorId: "",
     availabilityId: "",
@@ -25,7 +24,6 @@ const CreateAppointment = () => {
     appointmentTime: "",
   });
 
-  // Data for dropdowns
   const [doctors, setDoctors] = useState([]);
   const [availabilities, setAvailabilities] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -33,13 +31,13 @@ const CreateAppointment = () => {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      alert("Please login to access this page");
+      alert("Vui lòng đăng nhập để truy cập trang này");
       navigate("/login");
       return;
     }
 
     if (!isPatient()) {
-      setError("Access denied. Only patients can book appointments.");
+      setError("Truy cập bị từ chối. Chỉ bệnh nhân mới có thể đặt lịch hẹn.");
       setTimeout(() => navigate("/"), 2000);
       return;
     }
@@ -48,7 +46,7 @@ const CreateAppointment = () => {
     console.log("✅ Patient ID from token:", id);
 
     if (!id) {
-      setError("Patient profile not found. Please contact support.");
+      setError("Không tìm thấy hồ sơ bệnh nhân. Vui lòng liên hệ hỗ trợ.");
       setTimeout(() => navigate("/"), 2000);
       return;
     }
@@ -67,7 +65,7 @@ const CreateAppointment = () => {
       setDoctors(Array.isArray(doctorsList) ? doctorsList : []);
     } catch (err) {
       console.error("❌ Error fetching doctors:", err);
-      setError("Failed to load doctors list");
+      setError("Không thể tải danh sách bác sĩ");
     } finally {
       setLoading(false);
     }
@@ -94,12 +92,12 @@ const CreateAppointment = () => {
 
       if (availability.length === 0) {
         setError(
-          "No available slots found for this doctor. Please try another date or doctor."
+          "Không tìm thấy slot trống cho bác sĩ này. Vui lòng thử ngày khác hoặc bác sĩ khác."
         );
       }
     } catch (err) {
       console.error("❌ Error fetching availability:", err);
-      setError("Failed to load available slots");
+      setError("Không thể tải các slot trống");
       setAvailabilities([]);
     } finally {
       setLoading(false);
@@ -160,7 +158,7 @@ const CreateAppointment = () => {
       !formData.appointmentDate ||
       !formData.appointmentTime
     ) {
-      setError("Please fill in all required fields");
+      setError("Vui lòng điền đầy đủ các trường bắt buộc");
       return;
     }
 
@@ -169,7 +167,6 @@ const CreateAppointment = () => {
       setError("");
       setSuccess("");
 
-      // Combine date and time into ISO format for appointmentDateTime
       const appointmentDateTime = `${formData.appointmentDate}T${formData.appointmentTime}:00`;
 
       const appointmentData = {
@@ -185,10 +182,9 @@ const CreateAppointment = () => {
       console.log("✅ Appointment created:", response.data);
 
       setSuccess(
-        "Appointment booked successfully! Redirecting to your appointments..."
+        "Đặt lịch hẹn thành công! Đang chuyển hướng đến lịch hẹn của bạn..."
       );
 
-      // Reset form
       setFormData({
         doctorId: "",
         availabilityId: "",
@@ -200,7 +196,6 @@ const CreateAppointment = () => {
       setAvailabilities([]);
       setFilterDate("");
 
-      // Redirect to appointments page after 2 seconds
       setTimeout(() => {
         navigate("/appointments");
       }, 2000);
@@ -208,18 +203,17 @@ const CreateAppointment = () => {
       console.error("❌ Error creating appointment:", err);
 
       if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else if (err.response?.status === 409) {
         setError(
-          "This time slot is no longer available. Please choose another time."
+          "Khung giờ này không còn trống. Vui lòng chọn thời gian khác."
         );
-        // Refresh availability
         if (formData.doctorId) {
           fetchAvailability(formData.doctorId, filterDate);
         }
       } else {
-        setError(err.response?.data?.message || "Failed to create appointment");
+        setError(err.response?.data?.message || "Không thể tạo lịch hẹn");
       }
     } finally {
       setLoading(false);
@@ -228,7 +222,7 @@ const CreateAppointment = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("vi-VN", {
       weekday: "short",
       month: "short",
       day: "numeric",
@@ -239,7 +233,7 @@ const CreateAppointment = () => {
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     const hour = parseInt(hours);
-    const ampm = hour >= 12 ? "PM" : "AM";
+    const ampm = hour >= 12 ? "CH" : "SA";
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
   };
@@ -248,7 +242,6 @@ const CreateAppointment = () => {
     <>
       <Header />
       <div className="appointment-page">
-        {/* Hero Section */}
         <div className="appointment-hero">
           <div className="hero-background">
             <div className="hero-shape hero-shape-1"></div>
@@ -259,13 +252,12 @@ const CreateAppointment = () => {
               ))}
             </div>
           </div>
-          <h1 className="appointment-title">Book an Appointment</h1>
+          <h1 className="appointment-title">Đặt lịch hẹn</h1>
           <p className="appointment-subtitle">
-            Choose your doctor and schedule your visit
+            Chọn bác sĩ và lên lịch thăm khám
           </p>
         </div>
 
-        {/* Form Section */}
         <div className="appointment-section">
           <div className="container">
             {error && (
@@ -298,13 +290,11 @@ const CreateAppointment = () => {
             )}
 
             <div className="appointment-wrapper">
-              {/* Appointment Form */}
               <div className="appointment-form-container">
-                <h2 className="form-title">Appointment Details</h2>
+                <h2 className="form-title">Chi tiết lịch hẹn</h2>
                 <form onSubmit={handleSubmit} className="appointment-form">
-                  {/* Select Doctor */}
                   <div className="form-group">
-                    <label htmlFor="doctorId">Select Doctor *</label>
+                    <label htmlFor="doctorId">Chọn bác sĩ *</label>
                     <select
                       id="doctorId"
                       name="doctorId"
@@ -313,16 +303,15 @@ const CreateAppointment = () => {
                       required
                       disabled={loading}
                     >
-                      <option value="">Choose a doctor</option>
+                      <option value="">Chọn bác sĩ</option>
                       {doctors.map((doctor) => (
                         <option key={doctor.id} value={doctor.id}>
-                          Dr. {doctor.fullName} - {doctor.degree}
+                          Bác sĩ {doctor.fullName} - {doctor.degree}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Selected Doctor Info */}
                   {selectedDoctor && (
                     <div className="doctor-info-card">
                       <div className="doctor-avatar">
