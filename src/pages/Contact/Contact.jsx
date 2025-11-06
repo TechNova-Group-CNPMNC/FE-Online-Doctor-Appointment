@@ -1,17 +1,26 @@
 import MainLayout from "../../layouts/MainLayout";
 import "./Contact.css";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 const Contact = () => {
   return (
     <MainLayout>
       <div className="contact-page">
-        {/* Hero Section */}
         <section className="contact-hero">
+          <div className="hero-background">
+            <div className="hero-shape hero-shape-1"></div>
+            <div className="hero-shape hero-shape-2"></div>
+            <div className="particles">
+              {[...Array(15)].map((_, i) => (
+                <div key={i} className="particle"></div>
+              ))}
+            </div>
+          </div>
           <div className="container">
             <h1 className="contact-title">Liên Hệ</h1>
             <p className="contact-subtitle">
-              Có câu hỏi? Gửi cho chúng tôi một tin nhắn và chúng tôi sẽ trả lời
-              sớm nhất có thể.
+              Have questions? Send us a message and we'll respond as soon as
+              possible.
             </p>
           </div>
         </section>
@@ -19,8 +28,8 @@ const Contact = () => {
         <section className="contact-section">
           <div className="container">
             <div className="contact-wrapper">
-              {/* Contact Form */}
               <div className="contact-form-container">
+                <h2 className="form-title">Send Us a Message</h2>
                 <form className="contact-form">
                   <div className="form-group">
                     <label htmlFor="name">Name</label>
@@ -45,7 +54,7 @@ const Contact = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="message">Tin Nhắn</label>
+                    <label htmlFor="message">Message</label>
                     <textarea
                       id="message"
                       name="message"
@@ -62,20 +71,40 @@ const Contact = () => {
               </div>
 
               <div className="contact-info-container">
-                <h2 className="info-title">Liên Hệ</h2>
+                <h2 className="info-title">Get in Touch</h2>
 
                 <div className="contact-info-list">
                   <div className="contact-info-item">
-                    <div className="info-icon">📞</div>
+                    <Phone size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">+84 909090909</p>
                     </div>
                   </div>
 
                   <div className="contact-info-item">
-                    <div className="info-icon">✉️</div>
+                    <Mail size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">info@teachnova.com</p>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-item">
+                    <MapPin size={24} className="info-icon" />
+                    <div className="info-content">
+                      <p className="info-text">
+                        268 Lý Thường Kiệt, Phường Diên Hồng, TP.HCM
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-item">
+                    <Clock size={24} className="info-icon" />
+                    <div className="info-content">
+                      <p className="info-text">
+                        Mon-Fri: 9AM-5PM
+                        <br />
+                        Sat: 10AM-4PM
+                      </p>
                     </div>
                   </div>
                 </div>

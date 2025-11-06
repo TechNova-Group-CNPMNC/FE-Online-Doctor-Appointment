@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+
 import MainLayout from "../../layouts/MainLayout";
 import headerImg from "../../assets/header_img.png";
 import "./Home.css";
@@ -7,21 +7,15 @@ import {
   Search,
   Calendar,
   MessageSquare,
-  Lock,
   PenSquare,
   Hospital,
   BadgeCheck,
   Star,
-  Pill,
-  Stethoscope,
-  CalendarCheck,
   Sparkles,
   ArrowRight,
 } from "lucide-react";
 
 const Home = () => {
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-
   const features = [
     {
       icon: <Search size={40} />,
@@ -40,39 +34,6 @@ const Home = () => {
       title: "Online Consultation",
       description: "Video consultations from the comfort of your home",
       color: "#10B981",
-    },
-    {
-      icon: <Lock size={40} />,
-      title: "Secure & Private",
-      description: "Your health data is encrypted and fully protected",
-      color: "#F59E0B",
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Patient",
-      comment:
-        "The online consultation feature is a game-changer! I got expert medical advice without leaving my home. The doctors are professional and caring.",
-      rating: 5,
-      avatar: "👩‍💼",
-    },
-    {
-      name: "Michael Chen",
-      role: "Patient",
-      comment:
-        "Booking appointments has never been easier. The platform is intuitive and I love how I can see doctor availability in real-time.",
-      rating: 5,
-      avatar: "👨‍💻",
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Patient",
-      comment:
-        "Outstanding service! The doctors are highly qualified and the entire process is seamless. Highly recommend to everyone.",
-      rating: 5,
-      avatar: "👩‍🎓",
     },
   ];
 
@@ -102,13 +63,6 @@ const Home = () => {
       icon: <Hospital size={48} />,
     },
   ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
 
   return (
     <MainLayout>
@@ -169,28 +123,7 @@ const Home = () => {
 
             <div className="hero-image">
               <div className="image-container">
-                <img src={headerImg} alt="Doctor" />
-                <div className="floating-card card-1">
-                  <Pill size={32} className="card-icon-lucide" />
-                  <div className="card-content">
-                    <div className="card-title">Online Booking</div>
-                    <div className="card-subtitle">Easy & Fast</div>
-                  </div>
-                </div>
-                <div className="floating-card card-2">
-                  <Stethoscope size={32} className="card-icon-lucide" />
-                  <div className="card-content">
-                    <div className="card-title">Expert Doctors</div>
-                    <div className="card-subtitle">Certified Professionals</div>
-                  </div>
-                </div>
-                <div className="floating-card card-3">
-                  <CalendarCheck size={32} className="card-icon-lucide" />
-                  <div className="card-content">
-                    <div className="card-title">Easy Booking</div>
-                    <div className="card-subtitle">Instant Confirmation</div>
-                  </div>
-                </div>
+                <img src={headerImg} alt="Doctor" loading="lazy" />
               </div>
             </div>
           </div>
@@ -269,67 +202,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-
-        {/* <section className="testimonials-section">
-          <div className="container">
-            <div className="section-header">
-              <span className="section-badge">Testimonials</span>
-              <h2 className="section-title">What Our Patients Say</h2>
-              <p className="section-subtitle">
-                Real experiences from real people
-              </p>
-            </div>
-
-            <div className="testimonials-carousel">
-              <div
-                className="testimonial-track"
-                style={{
-                  transform: `translateX(-${activeTestimonial * 100}%)`,
-                }}
-              >
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="testimonial-slide">
-                    <div className="testimonial-card">
-                      <div className="testimonial-rating">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="star"
-                            size={24}
-                            fill="currentColor"
-                          />
-                        ))}
-                      </div>
-                      <p className="testimonial-comment">
-                        "{testimonial.comment}"
-                      </p>
-                      <div className="testimonial-author">
-                        <div className="author-avatar">
-                          {testimonial.avatar}
-                        </div>
-                        <div className="author-info">
-                          <div className="author-name">{testimonial.name}</div>
-                          <div className="author-role">{testimonial.role}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="carousel-dots">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`dot ${
-                      index === activeTestimonial ? "active" : ""
-                    }`}
-                    onClick={() => setActiveTestimonial(index)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section> */}
 
         <section className="cta-section">
           <div className="cta-background">

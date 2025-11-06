@@ -1,115 +1,230 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import "./Header.css";
+import { isDoctor, isAuthenticated } from "../../util/jwtdecoder";
 import logo from "../../assets/logo.png";
+import "./Header.css";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const isAuth = isAuthenticated();
+  const isDoctorUser = isDoctor();
+
+  const isActive = (path) => location.pathname === path;
+
+  const headerRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const headerHeight = headerRef.current ? headerRef.current.offsetHeight : 0;
+    document.body.style.paddingTop = `${headerHeight}px`;
   }, []);
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location]);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
   };
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Find a Doctor", path: "/find-a-doctor" },
-  ];
-
   return (
-    <header className={`header ${isScrolled ? "scrolled" : ""}`}>
-      <div className="header-container">
-        <Link to="/" className="header-logo">
-          <img src={logo} alt="HealthCare Logo" />
-        </Link>
+    <>
+      <header className="header" ref={headerRef}>
+        <div className="header-container">
+          <Link to="/" className="header-logo">
+            <img src={logo} alt="Doctor Appointment" />
+          </Link>
 
-        <nav className="header-nav desktop-nav">
-          {navLinks.map((link) => (
+          {/* Desktop Navigation */}
+          <nav className="header-nav desktop-nav">
             <Link
-              key={link.name}
-              to={link.path}
+              to="/"
+              className={`nav-link ${isActive("/") ? "active" : ""}`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/find-a-doctor"
               className={`nav-link ${
-                location.pathname === link.path ? "active" : ""
+                isActive("/find-a-doctor") ? "active" : ""
               }`}
             >
-              {link.name}
+              Find a Doctor
             </Link>
-          ))}
-        </nav>
 
-        <div className="header-actions">
-          <Link to="/login" className="btn-login">
-            Log In
-          </Link>
-          <Link to="/signup" className="btn-signup">
-            Sign Up
-          </Link>
+            {isAuth && !isDoctorUser && (
+              <Link
+                to="/create-appointment"
+                className={`nav-link ${
+                  isActive("/create-appointment") ? "active" : ""
+                }`}
+              >
+                Create Appointment
+              </Link>
+            )}
+            {isAuth && isDoctorUser && (
+              <Link
+                to="/doctor/my-availability"
+                className={`nav-link ${
+                  isActive("/doctor/my-availability") ? "active" : ""
+                }`}
+              >
+                My Availability
+              </Link>
+            )}
+            <Link
+              to="/about"
+              className={`nav-link ${isActive("/about") ? "active" : ""}`}
+            >
+              About
+            </Link>
+            <Link
+              to="/contact"
+              className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+            >
+              Contact
+            </Link>
+          </nav>
+
+          {/* Desktop Actions */}
+          <div className="header-actions">
+            {!isAuth ? (
+              <>
+                <Link to="/login" className="btn-login">
+                  Login
+                </Link>
+                <Link to="/signup" className="btn-signup">
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button onClick={handleLogout} className="btn-login">
+                Logout
+              </button>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
           <button
             className="mobile-menu-btn"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
+            onClick={() => setIsMobileMenuOpen(true)}
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M3 12h18M3 6h18M3 18h18"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
-        </div>
 
-        <nav className={`header-nav mobile-nav ${isMenuOpen ? "active" : ""}`}>
-          <div className="mobile-nav-overlay" onClick={toggleMenu}></div>
-          <div className="mobile-nav-content">
-            <div className="mobile-nav-header">
-              <Link to="/" className="mobile-logo">
-                <img src={logo} alt="HealthCare Logo" />
-              </Link>
-              <button
-                className="mobile-close-btn"
-                onClick={toggleMenu}
-                aria-label="Close menu"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="mobile-nav-links">
-              {navLinks.map((link, index) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`nav-link ${
-                    location.pathname === link.path ? "active" : ""
-                  }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
+          {/* Mobile Navigation */}
+          <div className={`mobile-nav ${isMobileMenuOpen ? "active" : ""}`}>
+            <div
+              className="mobile-nav-overlay"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <div className="mobile-nav-content">
+              <div className="mobile-nav-header">
+                <Link to="/" className="mobile-logo">
+                  <img src={logo} alt="Doctor Appointment" />
                 </Link>
-              ))}
-            </div>
-            <div className="mobile-nav-actions">
-              <Link to="/login" className="btn-login" onClick={toggleMenu}>
-                Log In
-              </Link>
-              <Link to="/signup" className="btn-signup" onClick={toggleMenu}>
-                Sign Up
-              </Link>
+                <button
+                  className="mobile-close-btn"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M18 6L6 18M6 6l12 12"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mobile-nav-links">
+                <Link
+                  to="/"
+                  className={`nav-link ${isActive("/") ? "active" : ""}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/about"
+                  className={`nav-link ${isActive("/about") ? "active" : ""}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <Link
+                  to="/find-a-doctor"
+                  className={`nav-link ${
+                    isActive("/find-a-doctor") ? "active" : ""
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Find a Doctor
+                </Link>
+                <Link
+                  to="/contact"
+                  className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+                {isAuth && isDoctorUser && (
+                  <Link
+                    to="/doctor/my-availability"
+                    className={`nav-link ${
+                      isActive("/doctor/my-availability") ? "active" : ""
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    My Availability
+                  </Link>
+                )}
+              </div>
+
+              <div className="mobile-nav-actions">
+                {!isAuth ? (
+                  <>
+                    <Link
+                      to="/login"
+                      className="btn-login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="btn-signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                ) : (
+                  <button onClick={handleLogout} className="btn-login">
+                    Logout
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </nav>
-      </div>
-    </header>
+        </div>
+      </header>
+    </>
   );
 };
 
