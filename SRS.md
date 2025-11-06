@@ -2,12 +2,6 @@
 ## HỆ THỐNG ĐẶT LỊCH KHÁM BỆNH TRỰC TUYẾN
 ### (Online Doctor Appointment System)
 
----
-
-**Phiên bản:** 1.0  
-**Ngày:** 06/11/2025  
-**Người soạn:** Development Team  
-**Trạng thái:** Draft  
 
 ---
 
@@ -74,7 +68,7 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 
 ## 3. YÊU CẦU CHỨC NĂNG
 
-### 3.1 SPRINT 1: ĐĂNG NHẬP VÀ TÌM KIẾM BÁC SĨ (2 tuần)
+### 3.1 SPRINT 1: ĐĂNG NHẬP VÀ TÌM KIẾM BÁC SĨ (4 giờ)
 
 **Mục tiêu Sprint:** Xây dựng hệ thống authentication và chức năng tìm kiếm bác sĩ cơ bản.
 
@@ -83,8 +77,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Người dùng có thể tạo tài khoản mới hoặc đăng nhập vào hệ thống.
 
 **Priority:** Critical (P0)  
-**Story Points:** 8  
-**Estimated Time:** 3-4 ngày
+**Story Points:** 3  
+**Estimated Time:** 1.5-2 giờ
 
 ##### Backend Tasks:
 
@@ -244,8 +238,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Bệnh nhân có thể tìm kiếm bác sĩ theo chuyên khoa, tên và ngày khám.
 
 **Priority:** Critical (P0)  
-**Story Points:** 13  
-**Estimated Time:** 5-6 ngày
+**Story Points:** 3  
+**Estimated Time:** 2-2.5 giờ
 
 ##### Backend Tasks:
 
@@ -450,7 +444,7 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 - [ ] Deployed to staging
 - [ ] Product owner approval
 
-### 3.2 SPRINT 2: ĐẶT LỊCH KHÁM (3 tuần)
+### 3.2 SPRINT 2: ĐẶT LỊCH KHÁM (4 giờ)
 
 **Mục tiêu Sprint:** Xây dựng trang chi tiết bác sĩ, quản lý lịch làm việc của bác sĩ và chức năng đặt lịch hẹn.
 
@@ -459,8 +453,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Hiển thị thông tin chi tiết bác sĩ và các khung giờ có sẵn để đặt lịch.
 
 **Priority:** Critical (P0)  
-**Story Points:** 13  
-**Estimated Time:** 5-6 ngày
+**Story Points:** 3  
+**Estimated Time:** 2 giờ
 
 ##### Backend Tasks:
 
@@ -694,8 +688,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Bệnh nhân có thể đặt lịch hẹn với bác sĩ thông qua time slot đã chọn.
 
 **Priority:** Critical (P0)  
-**Story Points:** 13  
-**Estimated Time:** 5-6 ngày
+**Story Points:** 3  
+**Estimated Time:** 2 giờ
 
 ##### Backend Tasks:
 
@@ -936,7 +930,7 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 - [ ] Deployed to staging
 - [ ] Product owner approval
 
-### 3.3 SPRINT 3: QUẢN LÝ LỊCH HẸN VÀ THÔNG TIN BỆNH NHÂN (3 tuần)
+### 3.3 SPRINT 3: QUẢN LÝ LỊCH HẸN VÀ THÔNG TIN BỆNH NHÂN (4 giờ)
 
 **Mục tiêu Sprint:** Xây dựng dashboard quản lý appointments, chức năng cancel/reschedule và xem thông tin bệnh nhân.
 
@@ -945,8 +939,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Bác sĩ có thể xem dashboard với tổng quan appointments và quản lý lịch trình.
 
 **Priority:** High (P1)  
-**Story Points:** 13  
-**Estimated Time:** 5-6 ngày
+**Story Points:** 2  
+**Estimated Time:** 1-1.5 giờ
 
 ##### Backend Tasks:
 
@@ -1151,8 +1145,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Bệnh nhân và bác sĩ có thể hủy hoặc reschedule appointments với business rules.
 
 **Priority:** Critical (P0)  
-**Story Points:** 13  
-**Estimated Time:** 5-6 ngày
+**Story Points:** 3  
+**Estimated Time:** 1.5-2 giờ
 
 ##### Backend Tasks:
 
@@ -1393,8 +1387,8 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 **Mô tả:** Bác sĩ có thể xem thông tin chi tiết bệnh nhân với proper authorization và audit logging.
 
 **Priority:** High (P1)  
-**Story Points:** 8  
-**Estimated Time:** 3-4 ngày
+**Story Points:** 2  
+**Estimated Time:** 1-1.5 giờ
 
 ##### Backend Tasks:
 
@@ -1665,9 +1659,10 @@ Hệ thống Đặt lịch Khám bệnh Trực tuyến là một ứng dụng we
 ## 7. KẾ HOẠCH PHÁT TRIỂN
 
 ### 7.1 Timeline
-- **Sprint 1 (2 tuần):** Authentication + Finding Doctor
-- **Sprint 2 (3 tuần):** Doctor Details + Make Appointment
-- **Sprint 3 (3 tuần):** Appointment Management + Patient Info
+- **Sprint 1 (4 giờ):** Authentication + Finding Doctor
+- **Sprint 2 (4 giờ):** Doctor Details + Make Appointment
+- **Sprint 3 (4 giờ):** Appointment Management + Patient Info
+- **Tổng thời gian:** 12 giờ (khoảng 1.5 ngày làm việc)
 
 ### 7.2 Milestones
 - **M1:** MVP với core features
@@ -2054,251 +2049,11 @@ Appointments:
 - CDN cho static assets
 - Full monitoring và alerting
 
-### 12.2 CI/CD Pipeline chi tiết
-
-**Continuous Integration:**
-1. Code commit → trigger build
-2. Compile và package
-3. Run unit tests
-4. Run integration tests
-5. Code quality analysis (SonarQube)
-6. Security vulnerability scan
-7. Build Docker image
-8. Push to container registry
-
-**Continuous Deployment:**
-1. Deploy to staging environment
-2. Run smoke tests
-3. Run E2E tests
-4. Performance testing
-5. Security scanning
-6. Manual approval gate
-7. Blue-green deployment to production
-8. Health check validation
-9. Rollback capability
-
-**Pipeline Tools:**
-- CI/CD: GitHub Actions / Jenkins / GitLab CI
-- Container Registry: Docker Hub / AWS ECR
-- Artifact Repository: Nexus / Artifactory
-- Deployment: Kubernetes / Docker Swarm
-
-### 12.3 Infrastructure as Code
-
-**Container Configuration:**
-- Docker cho application packaging
-- Docker Compose cho local development
-- Kubernetes cho orchestration
-- Helm charts cho deployment templates
-
-**Cloud Infrastructure:**
-- Infrastructure provisioning: Terraform
-- Configuration management: Ansible
-- Service mesh: Istio (future)
-- API Gateway: Kong / AWS API Gateway
-
-### 12.4 Monitoring và Logging
-
-**Application Monitoring:**
-- Application Performance Monitoring (APM): New Relic / Datadog
-- Error tracking: Sentry
-- Uptime monitoring: Pingdom / UptimeRobot
-- Synthetic monitoring: Catchpoint
-
-**Infrastructure Monitoring:**
-- Server metrics: Prometheus + Grafana
-- Container monitoring: cAdvisor
-- Database monitoring: pgAdmin / CloudWatch
-- Network monitoring: Nagios
-
-**Logging Strategy:**
-- Centralized logging: ELK Stack (Elasticsearch, Logstash, Kibana)
-- Log levels: ERROR, WARN, INFO, DEBUG
-- Structured logging (JSON format)
-- Log retention: 30 days hot, 90 days cold
-- PII scrubbing trong logs
-
-**Alerting:**
-- Error rate > 1%: Immediate alert
-- Response time > 5s: Warning
-- CPU usage > 80%: Warning
-- Memory usage > 85%: Warning
-- Disk usage > 90%: Critical
-- Alert channels: Slack, Email, PagerDuty
-
 ---
 
-## 13. USER EXPERIENCE VÀ ACCESSIBILITY
+## 13. PHỤ LỤC
 
-### 13.1 User Experience Design Principles
-
-**Jakob Nielsen's 10 Usability Heuristics:**
-1. **Visibility of system status:** Loading indicators, progress bars
-2. **Match between system và real world:** Familiar medical terminology
-3. **User control và freedom:** Cancel actions, undo capabilities
-4. **Consistency và standards:** Consistent UI patterns
-5. **Error prevention:** Validation, confirmation dialogs
-6. **Recognition rather than recall:** Visual cues, auto-complete
-7. **Flexibility và efficiency:** Keyboard shortcuts, quick actions
-8. **Aesthetic và minimalist design:** Clean, uncluttered interface
-9. **Help users recognize errors:** Clear error messages
-10. **Help và documentation:** Contextual help, tooltips
-
-**User Journey Optimization:**
-- **Finding Doctor:** 3 clicks từ homepage đến search results
-- **Booking Appointment:** 5 clicks từ doctor selection đến confirmation
-- **Managing Appointments:** 2 clicks từ dashboard đến appointment details
-- **Cancel/Reschedule:** 3 clicks với clear confirmation
-
-### 13.2 Accessibility Compliance
-
-**WCAG 2.1 Level AA Requirements:**
-
-**Perceivable:**
-- Text alternatives cho non-text content
-- Captions cho video/audio
-- Content có thể present theo different ways
-- Color contrast ratio >= 4.5:1 cho normal text
-- Color contrast ratio >= 3:1 cho large text
-- Text resizable up to 200%
-
-**Operable:**
-- Keyboard accessible (tab navigation)
-- No keyboard traps
-- Adjustable time limits
-- Seizure-safe (no flashing content)
-- Skip navigation links
-- Descriptive page titles
-- Focus order logical
-
-**Understandable:**
-- Language of page declared
-- Predictable navigation
-- Input assistance với labels
-- Error identification và suggestions
-- Help available
-
-**Robust:**
-- Valid HTML/CSS
-- Name, role, value cho UI components
-- Status messages properly announced
-- ARIA attributes correct
-
-### 13.3 Responsive Design Strategy
-
-**Mobile-First Approach:**
-- Design cho smallest screen first
-- Progressive enhancement cho larger screens
-- Touch targets >= 44x44 pixels
-- Thumb-friendly navigation zones
-
-**Breakpoints:**
-- Mobile: 320px - 767px
-- Tablet: 768px - 1023px
-- Desktop: 1024px - 1439px
-- Large Desktop: 1440px+
-
-**Performance on Mobile:**
-- Lazy loading images
-- Code splitting
-- Reduced animation trên low-end devices
-- Offline functionality (service workers)
-
----
-
-## 14. DATA MANAGEMENT VÀ ANALYTICS
-
-### 14.1 Data Collection
-
-**User Analytics:**
-- Page views và navigation paths
-- Feature usage statistics
-- Search queries và filters
-- Appointment booking funnels
-- User session duration
-
-**Performance Analytics:**
-- API response times
-- Page load times
-- Error rates
-- Resource utilization
-- Database query performance
-
-**Business Analytics:**
-- Appointment booking rates
-- Cancellation rates
-- Popular specialties
-- Doctor utilization
-- Patient retention
-
-### 14.2 Reporting
-
-**Operational Reports:**
-- Daily appointment summary
-- Doctor availability overview
-- System health status
-- Error logs summary
-
-**Business Reports:**
-- Monthly booking trends
-- Revenue analytics (future)
-- Patient demographics
-- Doctor performance metrics
-- Specialty demand analysis
-
-**Compliance Reports:**
-- Audit trail reports
-- Security incident reports
-- Data access logs
-- Privacy compliance reports
-
----
-
-## 15. DISASTER RECOVERY VÀ BUSINESS CONTINUITY
-
-### 15.1 Backup Strategy
-
-**Database Backups:**
-- Full backup: Daily at 2 AM
-- Incremental backup: Every 6 hours
-- Transaction log backup: Every hour
-- Backup retention: 30 days
-- Offsite backup: Cloud storage
-- Backup encryption: AES-256
-
-**Application Backups:**
-- Configuration files
-- Static assets
-- User-uploaded content
-- Container images
-- Infrastructure as Code
-
-### 15.2 Recovery Procedures
-
-**Recovery Time Objective (RTO):**
-- Critical systems: 1 hour
-- Non-critical systems: 4 hours
-- Full system restore: 24 hours
-
-**Recovery Point Objective (RPO):**
-- Database: Maximum 1 hour data loss
-- Files: Maximum 24 hours data loss
-
-**Disaster Recovery Plan:**
-1. Incident detection và assessment
-2. Team notification
-3. System isolation (if security breach)
-4. Recovery initiation
-5. Data restoration
-6. System validation
-7. Service resumption
-8. Post-incident review
-
----
-
-## 16. PHỤ LỤC
-
-### 16.1 Glossary (Bảng thuật ngữ)
+### 13.1 Glossary (Bảng thuật ngữ)
 
 **Technical Terms:**
 - **API:** Application Programming Interface - giao diện lập trình ứng dụng
@@ -2330,7 +2085,7 @@ Appointments:
 - **HIS:** Hospital Information System - hệ thống thông tin bệnh viện
 - **PACS:** Picture Archiving và Communication System
 
-### 16.2 References
+### 13.2 References
 
 **Standards và Guidelines:**
 - IEEE 830-1998 Standard for Software Requirements Specifications
