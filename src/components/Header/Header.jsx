@@ -62,7 +62,7 @@ const Header = () => {
             >
               Create Appointment
             </Link> */}
-            {isAuth && !isDoctorUser && (
+            {/* {isAuth && !isDoctorUser && (
               <Link
                 to="/create-appointment"
                 className={`nav-link ${
@@ -71,7 +71,7 @@ const Header = () => {
               >
                 Create Appointment
               </Link>
-            )}
+            )} */}
             {isAuth && isDoctorUser && (
               <Link
                 to="/doctor/my-availability"

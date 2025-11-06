@@ -769,6 +769,7 @@
   resize: vertical;
   min-height: 120px;
   transition: all 0.3s ease;
+  background-color: white;
 }
 
 .form-group textarea:focus {
@@ -1099,6 +1100,7 @@
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
+  background-color: white;
 }
 
 .form-group input[type="text"]:focus {
