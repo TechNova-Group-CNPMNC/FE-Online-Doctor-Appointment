@@ -17,47 +17,45 @@ const Appointments = () => {
   const [success, setSuccess] = useState("");
   const [patientId, setPatientId] = useState(null);
 
-  // Appointments data
   const [allAppointments, setAllAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const [groupedAppointments, setGroupedAppointments] = useState({});
   const [activeFilter, setActiveFilter] = useState("ALL");
 
-  // Modal states
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  // Update form data
   const [updateFormData, setUpdateFormData] = useState({
     symptoms: "",
     suspectedDisease: "",
   });
 
-  // Reschedule data
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [selectedNewTimeSlot, setSelectedNewTimeSlot] = useState(null);
   const [isRescheduling, setIsRescheduling] = useState(false);
 
-  // Loading states
   const [cancelLoading, setCancelLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      alert("Please login to access this page");
+      alert("Vui lòng đăng nhập để truy cập trang này");
       navigate("/login");
       return;
     }
 
     if (!isPatient()) {
-      setError("Access denied. Only patients can access this page.");
+      setError(
+        "Truy cập bị từ chối. Chỉ bệnh nhân mới có thể truy cập trang này."
+      );
       setTimeout(() => navigate("/"), 2000);
       return;
     }
 
     const id = getUserId();
     if (!id) {
-      setError("Patient profile not found. Please contact support.");
+      setError("Không tìm thấy hồ sơ bệnh nhân. Vui lòng liên hệ hỗ trợ.");
       setTimeout(() => navigate("/"), 2000);
       return;
     }
@@ -75,6 +73,10 @@ const Appointments = () => {
     filterAppointments();
   }, [activeFilter, allAppointments]);
 
+  useEffect(() => {
+    groupAppointmentsByDate();
+  }, [filteredAppointments]);
+
   const fetchAppointments = async (status = null) => {
     if (!patientId) return;
 
@@ -87,22 +89,21 @@ const Appointments = () => {
         url += `&status=${status}`;
       }
 
-      console.log("📡 Fetching appointments from:", url);
       const response = await api.get(url);
-      console.log("✅ Appointments response:", response.data);
-
       const appointments = response.data?.data || response.data || [];
       setAllAppointments(Array.isArray(appointments) ? appointments : []);
     } catch (err) {
       console.error("❌ Error fetching appointments:", err);
 
       if (err.response?.status === 403) {
-        setError("Access denied. You can only view your own appointments.");
+        setError(
+          "Truy cập bị từ chối. Bạn chỉ có thể xem các cuộc hẹn của chính mình."
+        );
       } else if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setError(err.response?.data?.message || "Failed to load appointments");
+        setError(err.response?.data?.message || "Không thể tải lịch hẹn");
       }
     } finally {
       setLoading(false);
@@ -119,6 +120,63 @@ const Appointments = () => {
     }
   };
 
+  const groupAppointmentsByDate = () => {
+    const grouped = {};
+
+    filteredAppointments.forEach((appointment) => {
+      const date = new Date(appointment.startTime);
+      const dateKey = date.toISOString().split("T")[0];
+
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey].push(appointment);
+    });
+
+    Object.keys(grouped).forEach((dateKey) => {
+      grouped[dateKey].sort(
+        (a, b) => new Date(a.startTime) - new Date(b.startTime)
+      );
+    });
+
+    const sortedGrouped = Object.keys(grouped)
+      .sort((a, b) => new Date(a) - new Date(b))
+      .reduce((acc, key) => {
+        acc[key] = grouped[key];
+        return acc;
+      }, {});
+
+    setGroupedAppointments(sortedGrouped);
+  };
+
+  const formatDateHeader = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    today.setHours(0, 0, 0, 0);
+    tomorrow.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+
+    if (date.getTime() === today.getTime()) {
+      return "Hôm nay";
+    } else if (date.getTime() === tomorrow.getTime()) {
+      return "Ngày mai";
+    } else {
+      return date.toLocaleDateString("vi-VN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+  };
+
+  const formatDateSubtitle = (dateString, count) => {
+    return `${count} lịch hẹn`;
+  };
+
   const handleCancelClick = (appointment) => {
     setSelectedAppointment(appointment);
     setShowCancelModal(true);
@@ -131,18 +189,12 @@ const Appointments = () => {
       setCancelLoading(true);
       setError("");
 
-      console.log("🗑️ Canceling appointment:", selectedAppointment.id);
+      await api.delete(`/appointments/${selectedAppointment.id}`);
 
-      const response = await api.delete(
-        `/appointments/${selectedAppointment.id}`
-      );
-      console.log("✅ Cancel response:", response.data);
-
-      setSuccess("Appointment canceled successfully!");
+      setSuccess("Đã hủy lịch hẹn thành công!");
       setShowCancelModal(false);
       setSelectedAppointment(null);
 
-      // Refresh appointments
       fetchAppointments();
 
       setTimeout(() => setSuccess(""), 3000);
@@ -152,12 +204,12 @@ const Appointments = () => {
       if (err.response?.status === 400) {
         setError(
           err.response?.data?.message ||
-            "Cannot cancel appointment. Must cancel at least 48 hours in advance."
+            "Không thể hủy lịch hẹn. Phải hủy trước ít nhất 48 giờ."
         );
       } else if (err.response?.status === 403) {
-        setError("You can only cancel your own appointments.");
+        setError("Bạn chỉ có thể hủy các cuộc hẹn của chính mình.");
       } else {
-        setError(err.response?.data?.message || "Failed to cancel appointment");
+        setError(err.response?.data?.message || "Hủy lịch hẹn thất bại");
       }
     } finally {
       setCancelLoading(false);
@@ -184,7 +236,6 @@ const Appointments = () => {
     setIsRescheduling(true);
     setShowUpdateModal(true);
 
-    // Fetch available time slots for the same doctor
     try {
       const response = await api.get(
         `/doctors/${appointment.doctorId}/timeslots?status=AVAILABLE`
@@ -193,7 +244,7 @@ const Appointments = () => {
       setAvailableTimeSlots(Array.isArray(timeSlots) ? timeSlots : []);
     } catch (err) {
       console.error("❌ Error fetching time slots:", err);
-      setError("Failed to load available time slots");
+      setError("Không thể tải các khung giờ trống");
     }
   };
 
@@ -213,26 +264,18 @@ const Appointments = () => {
         updateData.newTimeSlotId = selectedNewTimeSlot;
       }
 
-      console.log("📝 Updating appointment:", selectedAppointment.id);
-      console.log("📝 Update data:", updateData);
-
-      const response = await api.put(
-        `/appointments/${selectedAppointment.id}`,
-        updateData
-      );
-      console.log("✅ Update response:", response.data);
+      await api.put(`/appointments/${selectedAppointment.id}`, updateData);
 
       setSuccess(
         isRescheduling
-          ? "Appointment rescheduled successfully!"
-          : "Appointment updated successfully!"
+          ? "Đã dời lịch hẹn thành công!"
+          : "Đã cập nhật lịch hẹn thành công!"
       );
       setShowUpdateModal(false);
       setSelectedAppointment(null);
       setIsRescheduling(false);
       setSelectedNewTimeSlot(null);
 
-      // Refresh appointments
       fetchAppointments();
 
       setTimeout(() => setSuccess(""), 3000);
@@ -242,45 +285,41 @@ const Appointments = () => {
       if (err.response?.status === 400) {
         setError(
           err.response?.data?.message ||
-            "Cannot update appointment. Please check the requirements."
+            "Không thể cập nhật lịch hẹn. Vui lòng kiểm tra các yêu cầu."
         );
       } else if (err.response?.status === 403) {
-        setError("You can only update your own appointments.");
+        setError("Bạn chỉ có thể cập nhật các cuộc hẹn của chính mình.");
       } else {
-        setError(err.response?.data?.message || "Failed to update appointment");
+        setError(err.response?.data?.message || "Cập nhật lịch hẹn thất bại");
       }
     } finally {
       setUpdateLoading(false);
     }
   };
 
-  const formatDateTime = (dateTimeString) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString("vi-VN", {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
-  const formatTime = (timeString) => {
-    const date = new Date(timeString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const formatStatus = (status) => {
+    const statusMap = {
+      PENDING: "Chờ",
+      COMPLETED: "Hoàn thành",
+      CANCELED: "Đã hủy",
+      CONFIRMED: "Xác nhận",
+    };
+    return statusMap[status] || status;
   };
 
   const canCancelAppointment = (appointment) => {
     if (appointment.status !== "PENDING") return false;
-
     const appointmentTime = new Date(appointment.startTime);
     const now = new Date();
     const hoursUntilAppointment = (appointmentTime - now) / (1000 * 60 * 60);
-
     return hoursUntilAppointment >= 48;
   };
 
@@ -291,11 +330,9 @@ const Appointments = () => {
   const canRescheduleAppointment = (appointment) => {
     if (appointment.status !== "PENDING") return false;
     if ((appointment.rescheduleCount || 0) >= 2) return false;
-
     const appointmentTime = new Date(appointment.startTime);
     const now = new Date();
     const hoursUntilAppointment = (appointmentTime - now) / (1000 * 60 * 60);
-
     return hoursUntilAppointment >= 48;
   };
 
@@ -310,6 +347,16 @@ const Appointments = () => {
     };
   };
 
+  const getEmptyStateMessage = () => {
+    const messages = {
+      ALL: "Bạn chưa đặt lịch hẹn nào",
+      PENDING: "Không có lịch hẹn nào đang chờ",
+      COMPLETED: "Không có lịch hẹn nào đã hoàn thành",
+      CANCELED: "Không có lịch hẹn nào đã hủy",
+    };
+    return messages[activeFilter] || "Không có lịch hẹn";
+  };
+
   const statusCounts = getStatusCounts();
 
   return (
@@ -318,8 +365,8 @@ const Appointments = () => {
       <div className="appointments-page">
         <div className="appointments-container">
           <div className="page-header">
-            <h1>My Appointments</h1>
-            <p>Manage and track your medical appointments</p>
+            <h1>Lịch hẹn của tôi</h1>
+            <p>Quản lý và theo dõi các lịch hẹn y tế</p>
           </div>
 
           {error && (
@@ -359,7 +406,7 @@ const Appointments = () => {
                 }`}
                 onClick={() => setActiveFilter("ALL")}
               >
-                All Appointments
+                Tất cả
                 <span className="tab-count">{statusCounts.ALL}</span>
               </button>
               <button
@@ -368,7 +415,7 @@ const Appointments = () => {
                 }`}
                 onClick={() => setActiveFilter("PENDING")}
               >
-                Pending
+                Chờ
                 <span className="tab-count">{statusCounts.PENDING}</span>
               </button>
               <button
@@ -377,7 +424,7 @@ const Appointments = () => {
                 }`}
                 onClick={() => setActiveFilter("COMPLETED")}
               >
-                Completed
+                Hoàn thành
                 <span className="tab-count">{statusCounts.COMPLETED}</span>
               </button>
               <button
@@ -386,7 +433,7 @@ const Appointments = () => {
                 }`}
                 onClick={() => setActiveFilter("CANCELED")}
               >
-                Canceled
+                Đã hủy
                 <span className="tab-count">{statusCounts.CANCELED}</span>
               </button>
             </div>
@@ -395,7 +442,7 @@ const Appointments = () => {
           {loading && (
             <div className="loading-state">
               <div className="spinner"></div>
-              <p>Loading appointments...</p>
+              <p>Đang tải lịch hẹn...</p>
             </div>
           )}
 
@@ -410,276 +457,235 @@ const Appointments = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h3>No appointments found</h3>
-              <p>
-                {activeFilter === "ALL"
-                  ? "You haven't booked any appointments yet"
-                  : `No ${activeFilter.toLowerCase()} appointments`}
-              </p>
+              <h3>Không tìm thấy lịch hẹn</h3>
+              <p>{getEmptyStateMessage()}</p>
               {activeFilter === "ALL" && (
                 <button
                   className="btn-primary"
                   onClick={() => navigate("/find-a-doctor")}
                 >
-                  Book an Appointment
+                  Đặt lịch hẹn
                 </button>
               )}
             </div>
           )}
 
           {!loading && filteredAppointments.length > 0 && (
-            <div className="appointments-list">
-              {filteredAppointments.map((appointment) => (
-                <div
-                  key={appointment.id}
-                  className={`appointment-card ${appointment.status.toLowerCase()}`}
-                >
-                  <div className="card-header">
-                    <div className="doctor-info-section">
-                      <img
-                        src={
-                          appointment.doctorProfileImage ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            appointment.doctorName
-                          )}&size=120&background=667eea&color=fff&bold=true`
-                        }
-                        alt={appointment.doctorName}
-                        className="doctor-avatar"
-                        onError={(e) => {
-                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            appointment.doctorName
-                          )}&size=120&background=667eea&color=fff&bold=true`;
-                        }}
-                      />
-                      <div className="doctor-details">
-                        <h3>{appointment.doctorName}</h3>
-                        <span className="doctor-specialty">
-                          {appointment.doctorSpecialty || "General Practice"}
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className={`status-badge ${appointment.status.toLowerCase()}`}
-                    >
-                      <span className="status-dot"></span>
-                      {appointment.status}
-                    </div>
-                  </div>
-
-                  <div className="card-body">
-                    <div className="info-row">
-                      <div className="info-item">
-                        <div className="info-icon">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
-                              stroke="#667eea"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+            <div className="appointments-timeline">
+              {Object.entries(groupedAppointments).map(
+                ([date, appointments]) => (
+                  <div key={date} className="date-group">
+                    <div className="date-header">
+                      <div className="date-icon">
+                        <div className="date-day">
+                          {new Date(date).toLocaleDateString("vi-VN", {
+                            weekday: "short",
+                          })}
                         </div>
-                        <div className="info-content">
-                          <p className="info-label">Appointment Date</p>
-                          <p className="info-value">
-                            {formatDateTime(appointment.startTime)}
-                          </p>
+                        <div className="date-number">
+                          {new Date(date).getDate()}
                         </div>
                       </div>
-
-                      <div className="info-item">
-                        <div className="info-icon">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-                              stroke="#667eea"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M12 7V12L15 15"
-                              stroke="#667eea"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <div className="info-content">
-                          <p className="info-label">Duration</p>
-                          <p className="info-value">
-                            {formatTime(appointment.startTime)} -{" "}
-                            {formatTime(appointment.endTime)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {(appointment.symptoms || appointment.suspectedDisease) && (
-                      <div className="symptoms-section">
-                        {appointment.symptoms && (
-                          <>
-                            <h4>Symptoms</h4>
-                            <p>{appointment.symptoms}</p>
-                          </>
-                        )}
-                        {appointment.suspectedDisease && (
-                          <>
-                            <h4>Suspected Disease</h4>
-                            <p>{appointment.suspectedDisease}</p>
-                          </>
-                        )}
-                      </div>
-                    )}
-
-                    {appointment.rescheduleCount > 0 && (
-                      <div className="reschedule-warning">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <p>
-                          Rescheduled {appointment.rescheduleCount} time
-                          {appointment.rescheduleCount > 1 ? "s" : ""}
-                          {appointment.rescheduleCount >= 2 &&
-                            " (Maximum reached)"}
+                      <div className="date-info">
+                        <h2 className="date-title">{formatDateHeader(date)}</h2>
+                        <p className="date-subtitle">
+                          {formatDateSubtitle(date, appointments.length)}
                         </p>
                       </div>
-                    )}
-                  </div>
+                    </div>
 
-                  <div className="card-footer">
-                    {canUpdateAppointment(appointment) && (
-                      <button
-                        className="btn-secondary"
-                        onClick={() => handleUpdateClick(appointment)}
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
+                    <div className="appointments-grid">
+                      {appointments.map((appointment) => (
+                        <div
+                          key={appointment.id}
+                          className={`appointment-card ${appointment.status.toLowerCase()}`}
                         >
-                          <path
-                            d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M16.04 3.02001L8.16 10.9C7.86 11.2 7.56 11.79 7.5 12.22L7.07 15.23C6.91 16.32 7.68 17.08 8.77 16.93L11.78 16.5C12.2 16.44 12.79 16.14 13.1 15.84L20.98 7.96001C22.34 6.60001 22.98 5.02001 20.98 3.02001C18.98 1.02001 17.4 1.66001 16.04 3.02001Z"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        Update Info
-                      </button>
-                    )}
-
-                    {canRescheduleAppointment(appointment) && (
-                      <button
-                        className="btn-outline"
-                        onClick={() => handleRescheduleClick(appointment)}
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M22 12C22 17.52 17.52 22 12 22C6.48 22 3.11 16.44 3.11 16.44M3.11 16.44H7.63M3.11 16.44V21.44M2 12C2 6.48 6.44 2 12 2C18.67 2 22 7.56 22 7.56M22 7.56V2.56M22 7.56H17.56"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        Reschedule
-                      </button>
-                    )}
-
-                    {canCancelAppointment(appointment) && (
-                      <button
-                        className="btn-danger"
-                        onClick={() => handleCancelClick(appointment)}
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M9.17 14.83L14.83 9.17M14.83 14.83L9.17 9.17"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        Cancel
-                      </button>
-                    )}
-
-                    {!canCancelAppointment(appointment) &&
-                      appointment.status === "PENDING" && (
-                        <div className="alert alert-info">
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
+                          <div className="card-main">
+                            <img
+                              src={
+                                appointment.doctorProfileImage ||
+                                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                  appointment.doctorName
+                                )}&size=108&background=667eea&color=fff&bold=true`
+                              }
+                              alt={appointment.doctorName}
+                              className="doctor-avatar"
+                              onError={(e) => {
+                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                  appointment.doctorName
+                                )}&size=108&background=667eea&color=fff&bold=true`;
+                              }}
                             />
-                          </svg>
-                          Cannot cancel (less than 48 hours)
+                            <div className="card-info">
+                              <div className="card-header">
+                                <h3 className="doctor-name">
+                                  {appointment.doctorName}
+                                </h3>
+                                <div
+                                  className={`status-badge ${appointment.status.toLowerCase()}`}
+                                >
+                                  <span className="status-dot"></span>
+                                  {formatStatus(appointment.status)}
+                                </div>
+                              </div>
+                              <span className="doctor-specialty">
+                                {appointment.doctorSpecialty || "Đa khoa"}
+                              </span>
+                              <div className="time-info">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                  />
+                                  <path
+                                    d="M12 7V12L15 15"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                {formatTime(appointment.startTime)} -{" "}
+                                {formatTime(appointment.endTime)}
+                              </div>
+                            </div>
+                          </div>
+
+                          {(appointment.symptoms ||
+                            appointment.suspectedDisease) && (
+                            <div className="card-details">
+                              {appointment.symptoms && (
+                                <>
+                                  <span className="details-label">
+                                    Triệu chứng
+                                  </span>
+                                  {appointment.symptoms}
+                                </>
+                              )}
+                              {appointment.suspectedDisease && (
+                                <>
+                                  {appointment.symptoms && " • "}
+                                  <span className="details-label">
+                                    Bệnh nghi ngờ
+                                  </span>
+                                  {appointment.suspectedDisease}
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {appointment.rescheduleCount > 0 && (
+                            <div className="reschedule-badge">
+                              <svg viewBox="0 0 24 24" fill="none">
+                                <path
+                                  d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                              Dời {appointment.rescheduleCount} lần
+                            </div>
+                          )}
+
+                          <div className="card-actions">
+                            {canUpdateAppointment(appointment) && (
+                              <button
+                                className="btn-sm btn-secondary"
+                                onClick={() => handleUpdateClick(appointment)}
+                              >
+                                <svg viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M16.04 3.02001L8.16 10.9C7.86 11.2 7.56 11.79 7.5 12.22L7.07 15.23C6.91 16.32 7.68 17.08 8.77 16.93L11.78 16.5C12.2 16.44 12.79 16.14 13.1 15.84L20.98 7.96001C22.34 6.60001 22.98 5.02001 20.98 3.02001C18.98 1.02001 17.4 1.66001 16.04 3.02001Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                Sửa
+                              </button>
+                            )}
+
+                            {canRescheduleAppointment(appointment) && (
+                              <button
+                                className="btn-sm btn-outline"
+                                onClick={() =>
+                                  handleRescheduleClick(appointment)
+                                }
+                              >
+                                <svg viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M22 12C22 17.52 17.52 22 12 22C6.48 22 3.11 16.44 3.11 16.44M3.11 16.44H7.63M3.11 16.44V21.44M2 12C2 6.48 6.44 2 12 2C18.67 2 22 7.56 22 7.56M22 7.56V2.56M22 7.56H17.56"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                Dời
+                              </button>
+                            )}
+
+                            {canCancelAppointment(appointment) && (
+                              <button
+                                className="btn-sm btn-danger"
+                                onClick={() => handleCancelClick(appointment)}
+                              >
+                                <svg viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M9.17 14.83L14.83 9.17M14.83 14.83L9.17 9.17"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                Hủy
+                              </button>
+                            )}
+
+                            {!canCancelAppointment(appointment) &&
+                              appointment.status === "PENDING" && (
+                                <div className="alert alert-info">
+                                  <svg viewBox="0 0 24 24" fill="none">
+                                    <path
+                                      d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                  Không thể hủy
+                                </div>
+                              )}
+                          </div>
                         </div>
-                      )}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           )}
         </div>
       </div>
 
-      {/* Cancel Confirmation Modal */}
       {showCancelModal && selectedAppointment && (
         <div
           className="modal-overlay"
@@ -687,7 +693,7 @@ const Appointments = () => {
         >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Cancel Appointment</h3>
+              <h3>Hủy lịch hẹn</h3>
               <button
                 className="modal-close"
                 onClick={() => setShowCancelModal(false)}
@@ -697,10 +703,8 @@ const Appointments = () => {
             </div>
             <div className="modal-body">
               <p>
-                Are you sure you want to cancel your appointment with{" "}
-                <strong>{selectedAppointment.doctorName}</strong> on{" "}
-                <strong>{formatDateTime(selectedAppointment.startTime)}</strong>
-                ?
+                Bạn có chắc muốn hủy lịch hẹn với{" "}
+                <strong>{selectedAppointment.doctorName}</strong>?
               </p>
               <div className="alert alert-info">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -711,8 +715,7 @@ const Appointments = () => {
                     strokeLinecap="round"
                   />
                 </svg>
-                This action cannot be undone. The time slot will become
-                available for other patients.
+                Hành động này không thể hoàn tác
               </div>
             </div>
             <div className="modal-footer">
@@ -721,7 +724,7 @@ const Appointments = () => {
                 onClick={() => setShowCancelModal(false)}
                 disabled={cancelLoading}
               >
-                No, Keep It
+                Không
               </button>
               <button
                 className="btn-danger"
@@ -731,10 +734,10 @@ const Appointments = () => {
                 {cancelLoading ? (
                   <>
                     <span className="btn-spinner"></span>
-                    Canceling...
+                    Đang hủy...
                   </>
                 ) : (
-                  "Yes, Cancel Appointment"
+                  "Xác nhận hủy"
                 )}
               </button>
             </div>
@@ -742,7 +745,6 @@ const Appointments = () => {
         </div>
       )}
 
-      {/* Update/Reschedule Modal */}
       {showUpdateModal && selectedAppointment && (
         <div
           className="modal-overlay"
@@ -750,11 +752,7 @@ const Appointments = () => {
         >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>
-                {isRescheduling
-                  ? "Reschedule Appointment"
-                  : "Update Appointment"}
-              </h3>
+              <h3>{isRescheduling ? "Dời lịch hẹn" : "Cập nhật lịch hẹn"}</h3>
               <button
                 className="modal-close"
                 onClick={() => setShowUpdateModal(false)}
@@ -774,18 +772,14 @@ const Appointments = () => {
                     />
                   </svg>
                   <p>
-                    You have rescheduled this appointment{" "}
-                    {selectedAppointment.rescheduleCount || 0} time
-                    {(selectedAppointment.rescheduleCount || 0) !== 1
-                      ? "s"
-                      : ""}
-                    . Maximum 2 reschedules allowed.
+                    Đã dời {selectedAppointment.rescheduleCount || 0} lần (Tối
+                    đa 2 lần)
                   </p>
                 </div>
               )}
 
               <div className="form-group">
-                <label>Symptoms</label>
+                <label>Triệu chứng</label>
                 <textarea
                   value={updateFormData.symptoms}
                   onChange={(e) =>
@@ -794,12 +788,12 @@ const Appointments = () => {
                       symptoms: e.target.value,
                     })
                   }
-                  placeholder="Describe your symptoms..."
+                  placeholder="Mô tả triệu chứng..."
                 />
               </div>
 
               <div className="form-group">
-                <label>Suspected Disease (Optional)</label>
+                <label>Bệnh nghi ngờ</label>
                 <input
                   type="text"
                   value={updateFormData.suspectedDisease}
@@ -809,13 +803,13 @@ const Appointments = () => {
                       suspectedDisease: e.target.value,
                     })
                   }
-                  placeholder="e.g., Flu, Migraine..."
+                  placeholder="VD: Cảm cúm..."
                 />
               </div>
 
               {isRescheduling && (
                 <div className="form-group">
-                  <label>Select New Time Slot</label>
+                  <label>Chọn khung giờ mới</label>
                   <div className="time-slots-grid">
                     {availableTimeSlots.length > 0 ? (
                       availableTimeSlots.map((slot) => (
@@ -830,7 +824,7 @@ const Appointments = () => {
                         </button>
                       ))
                     ) : (
-                      <p>No available time slots</p>
+                      <p>Không có khung giờ trống</p>
                     )}
                   </div>
                 </div>
@@ -842,7 +836,7 @@ const Appointments = () => {
                 onClick={() => setShowUpdateModal(false)}
                 disabled={updateLoading}
               >
-                Cancel
+                Hủy
               </button>
               <button
                 className="btn-primary"
@@ -854,12 +848,12 @@ const Appointments = () => {
                 {updateLoading ? (
                   <>
                     <span className="btn-spinner"></span>
-                    Updating...
+                    Đang xử lý...
                   </>
                 ) : isRescheduling ? (
-                  "Confirm Reschedule"
+                  "Xác nhận dời"
                 ) : (
-                  "Update Appointment"
+                  "Cập nhật"
                 )}
               </button>
             </div>
