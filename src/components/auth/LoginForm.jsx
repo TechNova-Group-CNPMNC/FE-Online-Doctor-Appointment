@@ -159,21 +159,21 @@ const LoginForm = () => {
           </div>
         </label>
 
-        <div className="form-actions">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              name="remember"
-              checked={formData.remember}
-              onChange={handleChange}
-              disabled={loading}
-            />
-            <span>Remember me</span>
-          </label>
-          <Link to="#" className="link">
-            Forgot password?
-          </Link>
-        </div>
+        {/* <div className="form-actions">
+            <label className="checkbox">
+              <input
+                type="checkbox"
+                name="remember"
+                checked={formData.remember}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              <span>Remember me</span>
+            </label>
+            <Link to="#" className="link">
+              Forgot password?
+            </Link>
+          </div> */}
 
         <button type="submit" className="primary-button" disabled={loading}>
           <span

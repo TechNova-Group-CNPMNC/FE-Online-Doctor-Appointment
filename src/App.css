@@ -15,3 +15,18 @@ input, textarea, select, button {
     background-color: white;
     color: #334155;
 }
+
+input::placeholder, textarea::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+input:focus, textarea:focus, select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    background-color: white;
+}
+
+input:active, textarea:active, select:active, button:active {
+    background-color: white;
+}
