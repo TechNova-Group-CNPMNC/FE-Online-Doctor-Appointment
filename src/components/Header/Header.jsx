@@ -14,9 +14,19 @@ const Header = () => {
 
   const headerRef = useRef(null);
 
+  //chieu cao header flexible
   useEffect(() => {
-    const headerHeight = headerRef.current ? headerRef.current.offsetHeight : 0;
-    document.body.style.paddingTop = `${headerHeight}px`;
+    const updateHeaderPadding = () => {
+      const headerHeight = headerRef.current
+        ? headerRef.current.offsetHeight
+        : 0;
+      document.body.style.paddingTop = `${headerHeight}px`;
+    };
+    updateHeaderPadding();
+    window.addEventListener("resize", updateHeaderPadding);
+    return () => {
+      window.removeEventListener("resize", updateHeaderPadding);
+    };
   }, []);
 
   const handleLogout = () => {

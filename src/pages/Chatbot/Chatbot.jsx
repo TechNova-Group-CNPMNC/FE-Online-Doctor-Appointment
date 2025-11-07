@@ -19,6 +19,15 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null);
   const isAuth = isAuthenticated();
   const isDoctorUser = isDoctor();
+  const isOpenChatbot = isAuth && !isDoctorUser;
+
+  // reload khi isAuth hoac isDoctor thay doi
+  // wont work :((( stupid auth context :((
+  useEffect(() => {
+    if (!isOpenChatbot) {
+      setIsOpen(false);
+    }
+  }, [isOpenChatbot]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -111,7 +120,7 @@ const Chatbot = () => {
 
   return (
     <>
-      {isAuth && !isDoctorUser && (
+      {isOpenChatbot && (
         <>
           {/* Chatbot Button */}
           <button
@@ -282,7 +291,7 @@ const Chatbot = () => {
           )}
         </>
       )}
-      {(!isAuth || isDoctorUser) && (
+      {!isOpenChatbot && (
         <div className="chatbot-disabled-message">
           <button className="disabled-info-btn" aria-label="Thông báo">
             ×
