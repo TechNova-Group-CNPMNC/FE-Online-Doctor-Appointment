@@ -39,7 +39,14 @@ const Header = () => {
             >
               Trang chủ
             </Link>
-
+            {isAuth && !isDoctorUser && (
+              <Link
+                to="/profile"
+                className={`nav-link ${isActive("/profile") ? "active" : ""}`}
+              >
+                Hồ sơ
+              </Link>
+            )}
             {isAuth && !isDoctorUser && (
               <Link
                 to="/find-a-doctor"
@@ -60,7 +67,6 @@ const Header = () => {
                 Lịch trình của tôi
               </Link>
             )}
-
             {isAuth && !isDoctorUser && (
               <Link
                 to="/appointments"
@@ -159,7 +165,16 @@ const Header = () => {
                 >
                   Trang chủ
                 </Link>
-
+                {isAuth && !isDoctorUser && (
+                  <Link
+                    to="/profile"
+                    className={`nav-link ${
+                      isActive("/profile") ? "active" : ""
+                    }`}
+                  >
+                    Hồ sơ
+                  </Link>
+                )}
                 {isAuth && !isDoctorUser && (
                   <Link
                     to="/find-a-doctor"
@@ -183,7 +198,6 @@ const Header = () => {
                     Lịch trình của tôi
                   </Link>
                 )}
-
                 {isAuth && !isDoctorUser && (
                   <Link
                     to="/appointments"
