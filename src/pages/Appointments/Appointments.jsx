@@ -239,15 +239,83 @@ const handleRescheduleClick = async (appointment) => {
   setIsRescheduling(true);
   setShowUpdateModal(true);
 
+  //lấy ngày/giờ trống của bác sĩ
   try {
-    const response = await api.get(
-      `/doctors/${appointment.doctorId}/timeslots?status=AVAILABLE`
-    );
-    const timeSlots = response.data?.data || response.data || [];
-    setAvailableTimeSlots(Array.isArray(timeSlots) ? timeSlots : []);
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 14);
+
+    const startDateStr = today.toISOString().split("T")[0];
+    const endDateStr = endDate.toISOString().split("T")[0];
+
+    const response = await api.get(`/doctors/${appointment.doctorId}/detail`, {
+      params: {
+        startDate: startDateStr,
+        endDate: endDateStr,
+      },
+    });
+
+    const doctorData = response.data?.data || response.data;
+    const timeSlotsByDate = [];
+
+    if (doctorData.timeSlotsByDate) {
+      const sortedDates = Object.keys(doctorData.timeSlotsByDate).sort(
+        (a, b) => new Date(a) - new Date(b)
+      );
+
+      sortedDates.forEach((dateKey) => {
+        const slotsForDate = doctorData.timeSlotsByDate[dateKey];
+        // Chỉ lấy slots AVAILABLE
+        const availableSlots = slotsForDate.filter(
+          (slot) => slot.status === "AVAILABLE"
+        );
+
+        if (availableSlots.length > 0) {
+          timeSlotsByDate.push({
+            date: dateKey,
+            slots: availableSlots.sort(
+              (a, b) => new Date(a.startTime) - new Date(b.startTime)
+            ),
+          });
+        }
+      });
+    }
+
+    setAvailableTimeSlots(timeSlotsByDate);
+
+    if (timeSlotsByDate.length === 0) {
+      setError("Bác sĩ không có khung giờ trống trong 14 ngày tới");
+    }
   } catch (err) {
     console.error("❌ Error fetching time slots:", err);
-    setError("Không thể tải các khung giờ trống");
+    setError(
+      err.response?.data?.message ||
+        "Không thể tải các khung giờ trống của bác sĩ"
+    );
+    setAvailableTimeSlots([]);
+  }
+};
+
+const formatDateForSlot = (dateString) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  today.setHours(0, 0, 0, 0);
+  tomorrow.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+
+  if (date.getTime() === today.getTime()) {
+    return "Hôm nay";
+  } else if (date.getTime() === tomorrow.getTime()) {
+    return "Ngày mai";
+  } else {
+    return date.toLocaleDateString("vi-VN", {
+      weekday: "short",
+      day: "2-digit",
+      month: "2-digit",
+    });
   }
 };
 
@@ -288,14 +356,21 @@ const handleUpdateConfirm = async () => {
   } catch (err) {
     console.error("❌ Error updating appointment:", err);
 
+    // Lấy error message từ response
     const errorMessage =
-      err.response?.data?.message || "Cập nhật lịch hẹn thất bại";
-    setError(errorMessage);
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Cập nhật lịch hẹn thất bại";
 
-    setShowUpdateModal(false);
-    setSelectedAppointment(null);
-    setIsRescheduling(false);
-    setSelectedNewTimeSlot(null);
+    setError(errorMessage);
+    console.log("Error message set to:", errorMessage);
+
+    // Không đóng modal để user có thể thấy lỗi và sửa
+    // setShowUpdateModal(false);
+    // setSelectedAppointment(null);
+    // setIsRescheduling(false);
+    // setSelectedNewTimeSlot(null);
 
     setTimeout(() => setError(""), 5000);
   } finally {
@@ -719,19 +794,49 @@ return (
     )}
 
     {showUpdateModal && selectedAppointment && (
-      <div className="modal-overlay" onClick={() => setShowUpdateModal(false)}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-overlay"
+        onClick={() => {
+          setShowUpdateModal(false);
+          setError("");
+        }}
+      >
+        <div
+          className="modal-content large"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="modal-header">
             <h3>{isRescheduling ? "Dời lịch hẹn" : "Cập nhật lịch hẹn"}</h3>
             <button
               className="modal-close"
-              onClick={() => setShowUpdateModal(false)}
+              onClick={() => {
+                setShowUpdateModal(false);
+                setError("");
+              }}
             >
               ×
             </button>
           </div>
           <div className="modal-body">
-            {isRescheduling && (
+            {/* Hiển thị lỗi trong modal */}
+            {error && (
+              <div
+                className="alert alert-error"
+                style={{ marginBottom: "16px" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                {error}
+              </div>
+            )}
+
+            {/* {isRescheduling && (
               <div className="reschedule-warning">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path
@@ -743,7 +848,7 @@ return (
                 </svg>
                 <p>Đã dời {selectedAppointment.rescheduleCount || 0} lần</p>
               </div>
-            )}
+            )} */}
 
             <div className="form-group">
               <label>Triệu chứng</label>
@@ -777,30 +882,77 @@ return (
             {isRescheduling && (
               <div className="form-group">
                 <label>Chọn khung giờ mới</label>
-                <div className="time-slots-grid">
-                  {availableTimeSlots.length > 0 ? (
-                    availableTimeSlots.map((slot) => (
-                      <button
-                        key={slot.id}
-                        className={`time-slot-btn ${
-                          selectedNewTimeSlot === slot.id ? "selected" : ""
-                        }`}
-                        onClick={() => setSelectedNewTimeSlot(slot.id)}
-                      >
-                        {formatTime(slot.startTime)}
-                      </button>
-                    ))
-                  ) : (
+                {availableTimeSlots.length > 0 ? (
+                  <div className="time-slots-by-date">
+                    {availableTimeSlots.map((dateGroup) => (
+                      <div key={dateGroup.date} className="date-slot-group">
+                        <div className="date-slot-header">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          {formatDateForSlot(dateGroup.date)}
+                          <span className="slot-count">
+                            ({dateGroup.slots.length} khung giờ)
+                          </span>
+                        </div>
+                        <div className="time-slots-grid">
+                          {dateGroup.slots.map((slot) => (
+                            <button
+                              key={slot.id}
+                              className={`time-slot-btn ${
+                                selectedNewTimeSlot === slot.id
+                                  ? "selected"
+                                  : ""
+                              }`}
+                              onClick={() => setSelectedNewTimeSlot(slot.id)}
+                            >
+                              <div className="slot-time">
+                                {formatTime(slot.startTime)}
+                              </div>
+                              <div className="slot-end-time">
+                                {formatTime(slot.endTime)}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-slots">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M8 2V5M16 2V5M3.5 9.09H20.5M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"
+                        stroke="#cbd5e1"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                     <p>Không có khung giờ trống</p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
           <div className="modal-footer">
             <button
               className="btn-outline"
-              onClick={() => setShowUpdateModal(false)}
+              onClick={() => {
+                setShowUpdateModal(false);
+                setError("");
+              }}
               disabled={updateLoading}
             >
               Hủy
