@@ -17,10 +17,10 @@ const Contact = () => {
             </div>
           </div>
           <div className="container">
-            <h1 className="contact-title">Liên Hệ</h1>
+            <h1 className="contact-title">Liên hệ với chúng tôi</h1>
             <p className="contact-subtitle">
-              Have questions? Send us a message and we'll respond as soon as
-              possible.
+              Có câu hỏi? Gửi tin nhắn cho chúng tôi và chúng tôi sẽ phản hồi
+              sớm nhất có thể.
             </p>
           </div>
         </section>
@@ -29,15 +29,15 @@ const Contact = () => {
           <div className="container">
             <div className="contact-wrapper">
               <div className="contact-form-container">
-                <h2 className="form-title">Send Us a Message</h2>
+                <h2 className="form-title">Gửi tin nhắn cho chúng tôi</h2>
                 <form className="contact-form">
                   <div className="form-group">
-                    <label htmlFor="name">Name</label>
+                    <label htmlFor="name">Tên</label>
                     <input
                       type="text"
                       id="name"
                       name="name"
-                      placeholder="Your name"
+                      placeholder="Tên của bạn"
                       required
                     />
                   </div>
@@ -48,36 +48,36 @@ const Contact = () => {
                       type="email"
                       id="email"
                       name="email"
-                      placeholder="Your email"
+                      placeholder="Email của bạn"
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="message">Message</label>
+                    <label htmlFor="message">Tin nhắn</label>
                     <textarea
                       id="message"
                       name="message"
                       rows="5"
-                      placeholder="Your message..."
+                      placeholder="Tin nhắn của bạn..."
                       required
                     ></textarea>
                   </div>
 
                   <button type="submit" className="btn-submit">
-                    Send Message
+                    Gửi tin nhắn
                   </button>
                 </form>
               </div>
 
               <div className="contact-info-container">
-                <h2 className="info-title">Get in Touch</h2>
+                <h2 className="info-title">Liên hệ</h2>
 
                 <div className="contact-info-list">
                   <div className="contact-info-item">
                     <Phone size={24} className="info-icon" />
                     <div className="info-content">
-                      <p className="info-text">+84 909090909</p>
+                      <p className="info-text">+84 901 234 567</p>
                     </div>
                   </div>
 
@@ -92,7 +92,7 @@ const Contact = () => {
                     <MapPin size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">
-                        268 Lý Thường Kiệt, Phường Diên Hồng, TP.HCM
+                        123 Đường Sức khỏe, Thành phố Y tế, Việt Nam
                       </p>
                     </div>
                   </div>
@@ -101,9 +101,9 @@ const Contact = () => {
                     <Clock size={24} className="info-icon" />
                     <div className="info-content">
                       <p className="info-text">
-                        Mon-Fri: 9AM-5PM
+                        Thứ 2 - Thứ 6: 9:00 - 18:00
                         <br />
-                        Sat: 10AM-4PM
+                        Thứ 7 - Chủ nhật: 10:00 - 16:00
                       </p>
                     </div>
                   </div>

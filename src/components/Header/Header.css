@@ -137,6 +137,16 @@
   overflow: hidden;
 }
 
+.lgout{
+  background-color: #ff6767ff !important;
+  color: white !important;
+}
+
+.lgout:hover{
+  background-color: #ff4c4cff !important;
+  border-color: #ff4c4cff !important;
+}
+
 .btn-login::before,
 .btn-signup::before {
   content: '';

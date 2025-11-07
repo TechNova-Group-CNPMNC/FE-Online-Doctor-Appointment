@@ -57,7 +57,7 @@ const LoginForm = () => {
       console.error("Login error:", err);
       console.error("Error response:", err.response);
 
-      let errorMessage = "Login failed. Please try again.";
+      let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại.";
 
       if (err.response) {
         const serverMessage =
@@ -68,17 +68,17 @@ const LoginForm = () => {
         if (serverMessage) {
           errorMessage = serverMessage;
         } else if (err.response.status === 401) {
-          errorMessage = "Incorrect email or password.";
+          errorMessage = "Email hoặc mật khẩu không đúng.";
         } else if (err.response.status === 404) {
-          errorMessage = "Account does not exist.";
+          errorMessage = "Tài khoản không tồn tại.";
         } else {
-          errorMessage = `Error: ${err.response.status}`;
+          errorMessage = `Lỗi: ${err.response.status}`;
         }
       } else if (err.request) {
         errorMessage =
-          "Unable to connect to server. Please check your network connection.";
+          "Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối mạng.";
       } else if (err.code === "ERR_NETWORK") {
-        errorMessage = "Network error. Please try again.";
+        errorMessage = "Lỗi mạng. Vui lòng thử lại.";
       }
 
       setError(errorMessage);
@@ -94,9 +94,9 @@ const LoginForm = () => {
         onSubmit={handleSubmit}
         aria-labelledby="login-title"
       >
-        <h2 id="login-title">Log In</h2>
+        <h2 id="login-title">Đăng nhập</h2>
         <p className="form-subtitle">
-          Enter your information to continue booking appointments.
+          Nhập thông tin của bạn để tiếp tục đặt lịch hẹn.
         </p>
 
         {error && (
@@ -133,7 +133,7 @@ const LoginForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Password</span>
+          <span>Mật khẩu</span>
           <div style={{ position: "relative" }}>
             <Lock
               style={{
@@ -159,22 +159,6 @@ const LoginForm = () => {
           </div>
         </label>
 
-        <div className="form-actions">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              name="remember"
-              checked={formData.remember}
-              onChange={handleChange}
-              disabled={loading}
-            />
-            <span>Remember me</span>
-          </label>
-          <Link to="#" className="link">
-            Forgot password?
-          </Link>
-        </div>
-
         <button type="submit" className="primary-button" disabled={loading}>
           <span
             style={{
@@ -185,10 +169,10 @@ const LoginForm = () => {
             }}
           >
             {loading ? (
-              "Logging in..."
+              "Đang đăng nhập..."
             ) : (
               <>
-                Log In
+                Đăng nhập
                 <ArrowRight />
               </>
             )}
@@ -196,9 +180,9 @@ const LoginForm = () => {
         </button>
 
         <p className="form-footer">
-          Don't have an account?{" "}
+          Chưa có tài khoản?{" "}
           <Link to="/signup" className="link">
-            Sign up now
+            Đăng ký ngay
           </Link>
         </p>
       </form>

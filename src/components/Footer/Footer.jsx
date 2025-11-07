@@ -18,8 +18,9 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-logo">TechNova</h3>
             <p className="footer-description">
-              Your trusted platform for finding and booking appointments with
-              qualified doctors. Quality healthcare made accessible.
+              Nền tảng đáng tin cậy của bạn để tìm kiếm và đặt lịch hẹn với các
+              bác sĩ có trình độ. Chăm sóc sức khỏe chất lượng được tiếp cận dễ
+              dàng.
             </p>
             <div className="footer-social">
               <a href="#" className="social-link" aria-label="Facebook">
@@ -38,68 +39,50 @@ const Footer = () => {
           </div>
 
           <div className="footer-column">
-            <h4 className="footer-title">Quick Links</h4>
+            <h4 className="footer-title">Liên kết nhanh</h4>
             <ul className="footer-links">
               <li>
-                <Link to="/">Home</Link>
+                <Link to="/">Trang chủ</Link>
               </li>
               <li>
-                <Link to="/find-a-doctor">Find a Doctor</Link>
+                <Link to="/find-a-doctor">Tìm bác sĩ</Link>
               </li>
               <li>
-                <Link to="/about">About Us</Link>
+                <Link to="/about">Giới thiệu</Link>
               </li>
               <li>
-                <Link to="/contact">Contact</Link>
+                <Link to="/contact">Liên hệ</Link>
               </li>
             </ul>
           </div>
 
           <div className="footer-column">
-            <h4 className="footer-title">Services</h4>
+            <h4 className="footer-title">Dịch vụ</h4>
             <ul className="footer-links">
               <li>
-                <Link to="/find-a-doctor">Book Appointment</Link>
+                <Link to="/find-a-doctor">Đặt lịch hẹn</Link>
               </li>
               <li>
-                <Link to="/find-a-doctor">Online Consultation</Link>
+                <Link to="/find-a-doctor">Tư vấn trực tuyến</Link>
               </li>
               <li>
-                <Link to="/find-a-doctor">Find Specialists</Link>
+                <Link to="/find-a-doctor">Tìm chuyên gia</Link>
               </li>
               <li>
-                <Link to="/profile">My Appointments</Link>
+                <Link to="/profile">Lịch hẹn của tôi</Link>
               </li>
             </ul>
           </div>
-
-          {/* <div className="footer-column">
-            <h4 className="footer-title">Contact Info</h4>
-            <ul className="footer-contact">
-              <li>
-                <MapPin size={18} />
-                <span>123 Healthcare Street, Medical District</span>
-              </li>
-              <li>
-                <Phone size={18} />
-                <span>+1 (555) 123-4567</span>
-              </li>
-              <li>
-                <Mail size={18} />
-                <span>support@healthcare.com</span>
-              </li>
-            </ul>
-          </div> */}
         </div>
 
         <div className="footer-bottom">
           <p className="footer-copyright">
-            © {new Date().getFullYear()} TechNova. All rights reserved.
+            © {new Date().getFullYear()} TechNova. Tất cả quyền được bảo lưu.
           </p>
           <div className="footer-legal">
-            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/privacy">Chính sách bảo mật</Link>
             <span className="separator">•</span>
-            <Link to="/terms">Terms of Service</Link>
+            <Link to="/terms">Điều khoản dịch vụ</Link>
           </div>
         </div>
       </div>

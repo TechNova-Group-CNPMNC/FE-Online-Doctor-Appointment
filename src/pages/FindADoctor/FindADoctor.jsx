@@ -64,14 +64,14 @@ const FindADoctor = () => {
     } catch (err) {
       console.error("Error fetching specialties:", err);
       setAvailableSpecialties([
-        { id: 1, name: "Cardiology" },
-        { id: 2, name: "Dermatology" },
-        { id: 3, name: "Pediatrics" },
-        { id: 4, name: "Neurology" },
-        { id: 5, name: "Orthopedics" },
-        { id: 6, name: "Oncology" },
-        { id: 7, name: "Psychiatry" },
-        { id: 192, name: "General Medicine" },
+        { id: 1, name: "Tim mạch" },
+        { id: 2, name: "Da liễu" },
+        { id: 3, name: "Nhi khoa" },
+        { id: 4, name: "Thần kinh" },
+        { id: 5, name: "Chỉnh hình" },
+        { id: 6, name: "Ung bướu" },
+        { id: 7, name: "Tâm thần" },
+        { id: 192, name: "Y khoa tổng quát" },
       ]);
     }
   };
@@ -87,7 +87,7 @@ const FindADoctor = () => {
       setDoctors(doctorsData);
     } catch (err) {
       console.error("Error fetching doctors:", err);
-      setError("Cannot load doctors list. Please try again.");
+      setError("Không thể tải danh sách bác sĩ. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ const FindADoctor = () => {
 
   const handleSearch = async () => {
     if (!selectedSpecialty || !selectedDate) {
-      setError("Please select specialty and date");
+      setError("Vui lòng chọn chuyên khoa và ngày");
       return;
     }
 
@@ -130,9 +130,9 @@ const FindADoctor = () => {
       if (err.response?.status === 404) {
         setSearchResults([]);
         setHasSearched(true);
-        setError("No doctors found matching your criteria.");
+        setError("Không tìm thấy bác sĩ nào phù hợp với tiêu chí của bạn.");
       } else {
-        setError("Cannot search doctors. Please try again.");
+        setError("Không thể tìm kiếm bác sĩ. Vui lòng thử lại.");
         setSearchResults([]);
         setHasSearched(true);
       }
@@ -163,7 +163,7 @@ const FindADoctor = () => {
       !Array.isArray(specialties) ||
       specialties.length === 0
     ) {
-      return "General Practice";
+      return "Khoa tổng quát";
     }
     return specialties.map((s) => s.name).join(", ");
   };
@@ -174,19 +174,19 @@ const FindADoctor = () => {
       <div className="find-doctor-page">
         <div className="container">
           <div className="search-section">
-            <h1>Find A Doctor</h1>
+            <h1>Tìm bác sĩ</h1>
 
             <div className="search-form">
               {/* Specialty Selector */}
               <div className="form-group">
-                <label className="form-label">Specialty *</label>
+                <label className="form-label">Chuyên khoa *</label>
                 <select
                   className="form-select"
                   value={selectedSpecialty}
                   onChange={(e) => setSelectedSpecialty(e.target.value)}
                   disabled={loading}
                 >
-                  <option value="">Select Specialty</option>
+                  <option value="">Chọn chuyên khoa</option>
                   {availableSpecialties.map((specialty) => (
                     <option key={specialty.id} value={specialty.id}>
                       {specialty.name}
@@ -196,10 +196,10 @@ const FindADoctor = () => {
 
                 {/* Doctor Name Input */}
                 <div className="form-group">
-                  <label className="form-label">Doctor Name (Optional)</label>
+                  <label className="form-label">Tên bác sĩ (Tùy chọn)</label>
                   <input
                     type="text"
-                    placeholder="Search by name..."
+                    placeholder="Tìm theo tên..."
                     className="form-input"
                     value={selectedName}
                     onChange={(e) => setSelectedName(e.target.value)}
@@ -211,8 +211,8 @@ const FindADoctor = () => {
               {/* Date Selector - Next 7 Days */}
               <div className="form-group date-group">
                 <label className="form-label">
-                  Available Date *
-                  <span className="label-hint">(Next 7 days)</span>
+                  Ngày có sẵn *
+                  <span className="label-hint">(7 ngày tiếp theo)</span>
                 </label>
                 <div className="date-picker-grid">
                   {availableDates.map((dateObj) => (
@@ -229,7 +229,7 @@ const FindADoctor = () => {
                       <span className="date-number">{dateObj.dayNum}</span>
                       <span className="date-month">{dateObj.monthName}</span>
                       {dateObj.isToday && (
-                        <span className="today-badge">Today</span>
+                        <span className="today-badge">Hôm nay</span>
                       )}
                     </button>
                   ))}
@@ -247,7 +247,7 @@ const FindADoctor = () => {
                 {loading ? (
                   <>
                     <span className="btn-spinner"></span>
-                    Searching...
+                    Đang tìm...
                   </>
                 ) : (
                   <>
@@ -260,7 +260,7 @@ const FindADoctor = () => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    Search Doctors
+                    Tìm bác sĩ
                   </>
                 )}
               </button>
@@ -278,7 +278,7 @@ const FindADoctor = () => {
                       strokeLinecap="round"
                     />
                   </svg>
-                  Reset
+                  Đặt lại
                 </button>
               )}
             </div>

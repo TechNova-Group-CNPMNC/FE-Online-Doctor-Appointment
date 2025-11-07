@@ -27,19 +27,19 @@ const SignupForm = () => {
 
   const validateForm = () => {
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError("Mật khẩu không khớp");
       return false;
     }
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError("Mật khẩu phải có ít nhất 8 ký tự");
       return false;
     }
     if (!formData.dateOfBirth) {
-      setError("Please select a date of birth");
+      setError("Vui lòng chọn ngày sinh");
       return false;
     }
     if (!formData.phoneNumber.startsWith("+84")) {
-      setError("Phone number must start with +84");
+      setError("Số điện thoại phải bắt đầu bằng +84");
       return false;
     }
     return true;
@@ -78,13 +78,13 @@ const SignupForm = () => {
       }
 
       navigate("/login", {
-        state: { message: "Registration successful! Please log in." },
+        state: { message: "Đăng ký thành công! Vui lòng đăng nhập." },
       });
     } catch (err) {
       console.error("Registration error:", err);
       console.error("Error response:", err.response);
 
-      let errorMessage = "Registration failed. Please try again.";
+      let errorMessage = "Đăng ký thất bại. Vui lòng thử lại.";
 
       if (err.response) {
         const serverMessage =
@@ -95,17 +95,17 @@ const SignupForm = () => {
         if (serverMessage) {
           errorMessage = serverMessage;
         } else if (err.response.status === 409) {
-          errorMessage = "Email already registered.";
+          errorMessage = "Email đã được đăng ký.";
         } else if (err.response.status === 400) {
-          errorMessage = "Invalid information. Please check again.";
+          errorMessage = "Thông tin không hợp lệ. Vui lòng kiểm tra lại.";
         } else {
-          errorMessage = `Error: ${err.response.status}`;
+          errorMessage = `Lỗi: ${err.response.status}`;
         }
       } else if (err.request) {
         errorMessage =
-          "Unable to connect to server. Please check your network connection.";
+          "Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối mạng.";
       } else if (err.code === "ERR_NETWORK") {
-        errorMessage = "Network error. Please try again.";
+        errorMessage = "Lỗi mạng. Vui lòng thử lại.";
       }
 
       setError(errorMessage);
@@ -121,9 +121,9 @@ const SignupForm = () => {
         onSubmit={handleSubmit}
         aria-labelledby="signup-title"
       >
-        <h2 id="signup-title">Sign Up</h2>
+        <h2 id="signup-title">Đăng ký</h2>
         <p className="form-subtitle">
-          Create an account to manage your appointments and health information.
+          Tạo tài khoản để quản lý lịch hẹn và thông tin sức khỏe của bạn.
         </p>
 
         {error && (
@@ -133,7 +133,7 @@ const SignupForm = () => {
         )}
 
         <label className="input-group">
-          <span>Full Name</span>
+          <span>Họ và tên</span>
           <input
             type="text"
             name="fullName"
@@ -161,7 +161,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Phone Number</span>
+          <span>Số điện thoại</span>
           <input
             type="tel"
             name="phoneNumber"
@@ -175,7 +175,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Date of Birth</span>
+          <span>Ngày sinh</span>
           <input
             type="date"
             name="dateOfBirth"
@@ -188,7 +188,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Gender</span>
+          <span>Giới tính</span>
           <select
             name="gender"
             required
@@ -196,14 +196,14 @@ const SignupForm = () => {
             onChange={handleChange}
             disabled={loading}
           >
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-            <option value="OTHER">Other</option>
+            <option value="MALE">Nam</option>
+            <option value="FEMALE">Nữ</option>
+            <option value="OTHER">Khác</option>
           </select>
         </label>
 
         <label className="input-group">
-          <span>Password</span>
+          <span>Mật khẩu</span>
           <input
             type="password"
             name="password"
@@ -218,7 +218,7 @@ const SignupForm = () => {
         </label>
 
         <label className="input-group">
-          <span>Confirm Password</span>
+          <span>Xác nhận mật khẩu</span>
           <input
             type="password"
             name="confirmPassword"
@@ -233,13 +233,13 @@ const SignupForm = () => {
         </label>
 
         <button type="submit" className="primary-button" disabled={loading}>
-          {loading ? "Creating account..." : "Create Account"}
+          {loading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
         </button>
 
         <p className="form-footer">
-          Already have an account?{" "}
+          Đã có tài khoản?{" "}
           <Link to="/login" className="link">
-            Log In
+            Đăng nhập
           </Link>
         </p>
       </form>

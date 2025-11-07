@@ -21,10 +21,8 @@ const DoctorDetail = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [bookingDates, setBookingDates] = useState([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-  // const [reason, setReason] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [suspectedDisease, setSuspectedDisease] = useState("");
-  //
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -35,7 +33,6 @@ const DoctorDetail = () => {
     fetchDoctorDetail();
   }, [id]);
 
-  // Update time slots when date is selected
   useEffect(() => {
     if (selectedDate && doctor?.timeSlotsByDate) {
       const dateKey = selectedDate.formattedDate;
@@ -101,7 +98,9 @@ const DoctorDetail = () => {
       console.error("Error details:", err.response?.data);
 
       if (err.response?.status === 404) {
-        alert(`Doctor with ID ${id} not found. Please select a valid doctor.`);
+        alert(
+          `Không tìm thấy bác sĩ với ID ${id}. Vui lòng chọn bác sĩ hợp lệ.`
+        );
         navigate("/find-a-doctor");
       }
     } finally {
@@ -110,7 +109,7 @@ const DoctorDetail = () => {
   };
 
   const generateBookingDatesFromAvailable = (availableDates) => {
-    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const daysOfWeek = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
     const dates = availableDates.map((dateStr) => {
       const date = new Date(dateStr);
@@ -161,15 +160,14 @@ const DoctorDetail = () => {
   };
 
   const handleTimeSlotClick = (slot) => {
-    // Check authentication first
     if (!isAuthenticated()) {
-      alert("Please login to book an appointment");
+      alert("Vui lòng đăng nhập để đặt lịch hẹn");
       navigate("/login");
       return;
     }
 
     if (!isPatient()) {
-      alert("Only patients can book appointments");
+      alert("Chỉ bệnh nhân mới có thể đặt lịch hẹn");
       return;
     }
 
@@ -181,18 +179,18 @@ const DoctorDetail = () => {
 
   const handleBookAppointment = async () => {
     if (!selectedDate || !selectedTime) {
-      setError("Please select both date and time");
+      setError("Vui lòng chọn cả ngày và giờ");
       return;
     }
 
     if (!symptoms.trim()) {
-      setError("Please describe your symptoms");
+      setError("Vui lòng mô tả triệu chứng của bạn");
       return;
     }
 
     const patientId = getPatientId();
     if (!patientId) {
-      setError("Patient profile not found. Please contact support.");
+      setError("Không tìm thấy hồ sơ bệnh nhân. Vui lòng liên hệ hỗ trợ.");
       return;
     }
 
@@ -214,38 +212,33 @@ const DoctorDetail = () => {
       const response = await api.post("/appointments", appointmentData);
       console.log("✅ Appointment created:", response.data);
 
-      // Lưu appointment details để hiển thị trong success modal
       const appointmentResponse = response.data?.data || response.data;
       setAppointmentDetails(appointmentResponse);
 
-      // Đóng reason modal và mở success modal
       setShowReasonModal(false);
       setShowSuccessModal(true);
 
       setSymptoms("");
       setSuspectedDisease("");
 
-      // Refresh doctor detail để update available slots
       fetchDoctorDetail();
     } catch (err) {
       console.error("❌ Error creating appointment:", err);
 
       if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else if (err.response?.status === 409) {
-        setError(
-          "This time slot is no longer available. Please choose another time."
-        );
+        setError("Khung giờ này không còn trống. Vui lòng chọn giờ khác.");
         fetchDoctorDetail();
       } else if (err.response?.status === 400) {
         setError(
           err.response?.data?.message ||
             err.response?.data ||
-            "Invalid appointment data. Please try again."
+            "Dữ liệu lịch hẹn không hợp lệ. Vui lòng thử lại."
         );
       } else {
-        setError(err.response?.data?.message || "Failed to create appointment");
+        setError(err.response?.data?.message || "Tạo lịch hẹn thất bại");
       }
     } finally {
       setBookingLoading(false);
@@ -254,14 +247,14 @@ const DoctorDetail = () => {
 
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
-    return date.toLocaleString("en-US", {
+    return date.toLocaleString("vi-VN", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
+      hour12: false,
     });
   };
 
@@ -289,7 +282,7 @@ const DoctorDetail = () => {
       !Array.isArray(specialties) ||
       specialties.length === 0
     ) {
-      return "General Physician";
+      return "Bác sĩ Đa khoa";
     }
     return specialties
       .map((s) => (typeof s === "string" ? s : s.name))
@@ -302,7 +295,7 @@ const DoctorDetail = () => {
         <Header />
         <div className="doctor-detail-loading">
           <div className="loading-spinner"></div>
-          <p>Loading doctor information...</p>
+          <p>Đang tải thông tin bác sĩ...</p>
         </div>
       </>
     );
@@ -313,12 +306,12 @@ const DoctorDetail = () => {
       <>
         <Header />
         <div className="doctor-detail-error">
-          <h2>Doctor not found</h2>
+          <h2>Không tìm thấy bác sĩ</h2>
           <button
             className="back-btn"
             onClick={() => navigate("/find-a-doctor")}
           >
-            Back to Doctors
+            Quay lại danh sách bác sĩ
           </button>
         </div>
       </>
@@ -330,7 +323,6 @@ const DoctorDetail = () => {
       <Header />
       <div className="doctor-detail-page">
         <div className="doctor-detail-container">
-          {/* Success/Error Alerts */}
           {success && (
             <div className="alert alert-success">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -346,16 +338,14 @@ const DoctorDetail = () => {
             </div>
           )}
 
-          {/* Breadcrumb */}
           <div className="breadcrumb">
-            <span onClick={() => navigate("/")}>Home</span>
+            <span onClick={() => navigate("/")}>Trang chủ</span>
             <span className="separator">/</span>
-            <span onClick={() => navigate("/find-a-doctor")}>Doctors</span>
+            <span onClick={() => navigate("/find-a-doctor")}>Bác sĩ</span>
             <span className="separator">/</span>
             <span className="current">{doctor.fullName}</span>
           </div>
 
-          {/* Doctor Info Section */}
           <div className="doctor-info-section">
             <div className="doctor-profile-card">
               <div className="doctor-image-wrapper">
@@ -411,16 +401,16 @@ const DoctorDetail = () => {
                     ? `${doctor.degree || "MD"} - ${formatSpecialties(
                         doctor.specialties
                       )}`
-                    : "General Physician"}
+                    : "Bác sĩ Đa khoa"}
                   <span className="experience-badge">
-                    {doctor.experienceYears || 5}+ Years
+                    {doctor.experienceYears || 5}+ Năm
                   </span>
                 </div>
               </div>
 
               <div className="doctor-about">
                 <h3>
-                  About
+                  Giới thiệu
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                       d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
@@ -437,13 +427,13 @@ const DoctorDetail = () => {
                 </h3>
                 <p>
                   {doctor.bio ||
-                    "Experienced physician committed to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies."}
+                    "Bác sĩ giàu kinh nghiệm, cam kết cung cấp dịch vụ chăm sóc y tế toàn diện, tập trung vào y học dự phòng, chẩn đoán sớm và chiến lược điều trị hiệu quả."}
                 </p>
               </div>
 
               {doctor.averageRating && (
                 <div className="doctor-rating">
-                  <span className="rating-label">Rating:</span>
+                  <span className="rating-label">Đánh giá:</span>
                   <span className="rating-value">
                     ⭐ {doctor.averageRating.toFixed(1)}
                   </span>
@@ -451,17 +441,18 @@ const DoctorDetail = () => {
               )}
 
               <div className="appointment-fee">
-                <span>Appointment fee:</span>
+                <span>Phí tư vấn:</span>
                 <span className="fee-amount">
-                  ${doctor.consultationFee || 50}
+                  {doctor.consultationFee
+                    ? `${doctor.consultationFee.toLocaleString("vi-VN")} VNĐ`
+                    : "600,000 VNĐ"}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Booking Section */}
           <div className="booking-section">
-            <h2>Booking slots</h2>
+            <h2>Khung giờ đặt khám</h2>
 
             {bookingDates.length > 0 ? (
               <>
@@ -497,28 +488,26 @@ const DoctorDetail = () => {
                     ))
                   ) : (
                     <div className="no-slots-message">
-                      <p>No available time slots for this date.</p>
-                      <p className="no-slots-hint">
-                        Please select another date.
-                      </p>
+                      <p>Không có lịch trống cho ngày này.</p>
+                      <p className="no-slots-hint">Vui lòng chọn ngày khác.</p>
                     </div>
                   )}
                 </div>
               </>
             ) : (
               <div className="no-slots-message">
-                <p>No available booking slots at the moment.</p>
-                <p className="no-slots-hint">Please check back later.</p>
+                <p>Hiện tại không có lịch khám trống.</p>
+                <p className="no-slots-hint">Vui lòng kiểm tra lại sau.</p>
               </div>
             )}
           </div>
 
-          {/* Related Doctors Section */}
           {relatedDoctors.length > 0 && (
             <div className="related-doctors-section">
-              <h2>Related Doctors</h2>
+              <h2>Bác sĩ liên quan</h2>
               <p className="related-subtitle">
-                Other specialists in {formatSpecialties(doctor.specialties)}
+                Các chuyên gia khác trong lĩnh vực{" "}
+                {formatSpecialties(doctor.specialties)}
               </p>
 
               <div className="related-doctors-grid">
@@ -550,7 +539,7 @@ const DoctorDetail = () => {
                     <div className="related-doctor-info">
                       <div className="availability-badge">
                         <span className="availability-dot"></span>
-                        Available
+                        Có lịch khám
                       </div>
                       <h3>{relDoc.fullName}</h3>
                       <p>{formatSpecialties(relDoc.specialties)}</p>
@@ -567,12 +556,11 @@ const DoctorDetail = () => {
           )}
         </div>
 
-        {/* Reason Modal */}
         {showReasonModal && (
           <div className="modal-overlay" onClick={handleCloseModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>Appointment Details</h3>
+                <h3>Chi tiết Lịch hẹn</h3>
                 <button className="modal-close" onClick={handleCloseModal}>
                   ×
                 </button>
@@ -595,23 +583,23 @@ const DoctorDetail = () => {
 
                 <div className="appointment-summary">
                   <p>
-                    <strong>Doctor:</strong> {doctor.fullName}
+                    <strong>Bác sĩ:</strong> {doctor.fullName}
                   </p>
                   <p>
-                    <strong>Date:</strong> {selectedDate?.formattedDate}
+                    <strong>Ngày:</strong> {selectedDate?.formattedDate}
                   </p>
                   <p>
-                    <strong>Time:</strong> {selectedTime?.time}
+                    <strong>Giờ:</strong> {selectedTime?.time}
                   </p>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="symptoms">Symptoms *</label>
+                  <label htmlFor="symptoms">Triệu chứng *</label>
                   <textarea
                     id="symptoms"
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    placeholder="Describe your symptoms (e.g., headache, fever, cough)..."
+                    placeholder="Mô tả triệu chứng của bạn (ví dụ: đau đầu, sốt, ho...)"
                     rows="3"
                     disabled={bookingLoading}
                   />
@@ -619,14 +607,14 @@ const DoctorDetail = () => {
 
                 <div className="form-group">
                   <label htmlFor="suspectedDisease">
-                    Suspected Disease (Optional)
+                    Bệnh nghi ngờ (Không bắt buộc)
                   </label>
                   <input
                     type="text"
                     id="suspectedDisease"
                     value={suspectedDisease}
                     onChange={(e) => setSuspectedDisease(e.target.value)}
-                    placeholder="If you suspect any specific condition..."
+                    placeholder="Nếu bạn nghi ngờ bất kỳ tình trạng cụ thể nào..."
                     disabled={bookingLoading}
                   />
                 </div>
@@ -638,7 +626,7 @@ const DoctorDetail = () => {
                   onClick={handleCloseModal}
                   disabled={bookingLoading}
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   className="btn-confirm"
@@ -648,10 +636,10 @@ const DoctorDetail = () => {
                   {bookingLoading ? (
                     <>
                       <div className="spinner-small"></div>
-                      Booking...
+                      Đang đặt lịch...
                     </>
                   ) : (
-                    "Confirm Booking"
+                    "Xác nhận Đặt lịch"
                   )}
                 </button>
               </div>
@@ -687,7 +675,7 @@ const DoctorDetail = () => {
               </div>
 
               <div className="modal-header success-header">
-                <h3>Appointment Booked Successfully! 🎉</h3>
+                <h3>Đặt lịch hẹn thành công! 🎉</h3>
                 <button
                   className="modal-close"
                   onClick={() => setShowSuccessModal(false)}
@@ -699,7 +687,7 @@ const DoctorDetail = () => {
               <div className="modal-body">
                 <div className="appointment-card">
                   <div className="appointment-card-header">
-                    <h4>Appointment Details</h4>
+                    <h4>Chi tiết Lịch hẹn</h4>
                     <span
                       className="status-badge"
                       style={{
@@ -737,7 +725,7 @@ const DoctorDetail = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="info-label">Doctor</p>
+                        <p className="info-label">Bác sĩ</p>
                         <p className="info-value">
                           {appointmentDetails.doctorName}
                         </p>
@@ -777,7 +765,7 @@ const DoctorDetail = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="info-label">Date & Time</p>
+                        <p className="info-label">Ngày & Giờ</p>
                         <p className="info-value">
                           {formatDateTime(appointmentDetails.startTime)}
                         </p>
@@ -808,8 +796,8 @@ const DoctorDetail = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="info-label">Duration</p>
-                        <p className="info-value">30 minutes</p>
+                        <p className="info-label">Thời lượng</p>
+                        <p className="info-value">30 phút</p>
                       </div>
                     </div>
 
@@ -834,7 +822,7 @@ const DoctorDetail = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="info-label">Symptoms</p>
+                        <p className="info-label">Triệu chứng</p>
                         <p className="info-value">
                           {appointmentDetails.symptoms}
                         </p>
@@ -859,7 +847,7 @@ const DoctorDetail = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="info-label">Suspected Disease</p>
+                          <p className="info-label">Bệnh nghi ngờ</p>
                           <p className="info-value">
                             {appointmentDetails.suspectedDisease}
                           </p>
@@ -870,13 +858,13 @@ const DoctorDetail = () => {
 
                   <div className="appointment-id">
                     <p>
-                      Appointment ID: <strong>#{appointmentDetails.id}</strong>
+                      Mã lịch hẹn: <strong>#{appointmentDetails.id}</strong>
                     </p>
                   </div>
                 </div>
 
                 <div className="next-steps">
-                  <h4>What's Next?</h4>
+                  <h4>Tiếp theo là gì?</h4>
                   <ul>
                     <li>
                       <svg
@@ -893,7 +881,7 @@ const DoctorDetail = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      You'll receive a confirmation email shortly
+                      Bạn sẽ sớm nhận được email xác nhận
                     </li>
                     <li>
                       <svg
@@ -910,7 +898,7 @@ const DoctorDetail = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      Please arrive 10 minutes before your appointment
+                      Vui lòng đến trước 10 phút so với giờ hẹn
                     </li>
                     <li>
                       <svg
@@ -927,7 +915,7 @@ const DoctorDetail = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      You can reschedule or cancel up to 24 hours before
+                      Bạn có thể đổi lịch hoặc hủy hẹn 24 giờ trước lịch khám
                     </li>
                   </ul>
                 </div>
@@ -950,7 +938,7 @@ const DoctorDetail = () => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  Back to Home
+                  Về Trang chủ
                 </button>
                 <button
                   className="btn-primary"
@@ -971,7 +959,7 @@ const DoctorDetail = () => {
                     />
                     <path d="M3 10H21" stroke="currentColor" strokeWidth="2" />
                   </svg>
-                  View My Appointments
+                  Xem Lịch hẹn của tôi
                 </button>
               </div>
             </div>

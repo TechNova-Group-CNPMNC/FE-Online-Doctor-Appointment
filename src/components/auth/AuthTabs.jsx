@@ -13,14 +13,14 @@ const AuthTabs = () => {
         role="tab"
         className={({ isActive }) => (isActive ? "tab active" : "tab")}
       >
-        Log In
+        Đăng nhập
       </NavLink>
       <NavLink
         to="/signup"
         role="tab"
         className={({ isActive }) => (isActive ? "tab active" : "tab")}
       >
-        Sign Up
+        Đăng kí
       </NavLink>
     </div>
   );

@@ -29,16 +29,15 @@ const Header = () => {
       <header className="header" ref={headerRef}>
         <div className="header-container">
           <Link to="/" className="header-logo">
-            <img src={logo} alt="Doctor Appointment" />
+            <img src={logo} alt="Đặt lịch bác sĩ" />
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="header-nav desktop-nav">
             <Link
               to="/"
               className={`nav-link ${isActive("/") ? "active" : ""}`}
             >
-              Home
+              Trang chủ
             </Link>
             <Link
               to="/find-a-doctor"
@@ -46,19 +45,8 @@ const Header = () => {
                 isActive("/find-a-doctor") ? "active" : ""
               }`}
             >
-              Find a Doctor
+              Tìm bác sĩ
             </Link>
-
-            {isAuth && !isDoctorUser && (
-              <Link
-                to="/create-appointment"
-                className={`nav-link ${
-                  isActive("/create-appointment") ? "active" : ""
-                }`}
-              >
-                Create Appointment
-              </Link>
-            )}
             {isAuth && isDoctorUser && (
               <Link
                 to="/doctor/my-availability"
@@ -66,42 +54,40 @@ const Header = () => {
                   isActive("/doctor/my-availability") ? "active" : ""
                 }`}
               >
-                My Availability
+                Lịch trình của tôi
               </Link>
             )}
             <Link
               to="/about"
               className={`nav-link ${isActive("/about") ? "active" : ""}`}
             >
-              About
+              Giới thiệu
             </Link>
             <Link
               to="/contact"
               className={`nav-link ${isActive("/contact") ? "active" : ""}`}
             >
-              Contact
+              Liên hệ
             </Link>
           </nav>
 
-          {/* Desktop Actions */}
           <div className="header-actions">
             {!isAuth ? (
               <>
                 <Link to="/login" className="btn-login">
-                  Login
+                  Đăng nhập
                 </Link>
                 <Link to="/signup" className="btn-signup">
-                  Sign Up
+                  Đăng ký
                 </Link>
               </>
             ) : (
-              <button onClick={handleLogout} className="btn-login">
-                Logout
+              <button onClick={handleLogout} className="btn-login lgout">
+                Đăng xuất
               </button>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(true)}
@@ -121,7 +107,6 @@ const Header = () => {
             </svg>
           </button>
 
-          {/* Mobile Navigation */}
           <div className={`mobile-nav ${isMobileMenuOpen ? "active" : ""}`}>
             <div
               className="mobile-nav-overlay"
@@ -130,7 +115,7 @@ const Header = () => {
             <div className="mobile-nav-content">
               <div className="mobile-nav-header">
                 <Link to="/" className="mobile-logo">
-                  <img src={logo} alt="Doctor Appointment" />
+                  <img src="/logo.png" alt="Đặt lịch bác sĩ" />
                 </Link>
                 <button
                   className="mobile-close-btn"
@@ -158,14 +143,14 @@ const Header = () => {
                   className={`nav-link ${isActive("/") ? "active" : ""}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Home
+                  Trang chủ
                 </Link>
                 <Link
                   to="/about"
                   className={`nav-link ${isActive("/about") ? "active" : ""}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  About
+                  Giới thiệu
                 </Link>
                 <Link
                   to="/find-a-doctor"
@@ -174,14 +159,14 @@ const Header = () => {
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Find a Doctor
+                  Tìm bác sĩ
                 </Link>
                 <Link
                   to="/contact"
                   className={`nav-link ${isActive("/contact") ? "active" : ""}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Contact
+                  Liên hệ
                 </Link>
                 {isAuth && isDoctorUser && (
                   <Link
@@ -191,7 +176,7 @@ const Header = () => {
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    My Availability
+                    Lịch trình của tôi
                   </Link>
                 )}
               </div>
@@ -204,19 +189,19 @@ const Header = () => {
                       className="btn-login"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Login
+                      Đăng nhập
                     </Link>
                     <Link
                       to="/signup"
                       className="btn-signup"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Sign Up
+                      Đăng ký
                     </Link>
                   </>
                 ) : (
                   <button onClick={handleLogout} className="btn-login">
-                    Logout
+                    Đăng xuất
                   </button>
                 )}
               </div>

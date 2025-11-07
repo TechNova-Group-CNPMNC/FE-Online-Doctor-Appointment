@@ -32,13 +32,13 @@ const DoctorAvailability = () => {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      alert("Please login to access this page");
+      alert("Vui lòng đăng nhập để truy cập trang này");
       navigate("/login");
       return;
     }
 
     if (!isDoctor()) {
-      setError("Access denied. Only doctors can access this page.");
+      setError("Truy cập bị từ chối. Chỉ bác sĩ mới có thể truy cập trang này.");
       setTimeout(() => navigate("/"), 2000);
       return;
     }
@@ -47,7 +47,7 @@ const DoctorAvailability = () => {
     console.log("✅ Doctor ID from token:", id);
 
     if (!id) {
-      setError("Doctor profile not found. Please contact support.");
+      setError("Không tìm thấy hồ sơ bác sĩ. Vui lòng liên hệ hỗ trợ.");
       setTimeout(() => navigate("/"), 2000);
       return;
     }
@@ -86,10 +86,10 @@ const DoctorAvailability = () => {
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
-        setError("Access denied. Only doctors can access this page.");
+        setError("Truy cập bị từ chối. Chỉ bác sĩ mới có thể truy cập trang này.");
         setTimeout(() => navigate("/"), 2000);
       } else if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else if (err.response?.status === 404) {
         // Doctor not found - might need to use different endpoint
@@ -105,12 +105,12 @@ const DoctorAvailability = () => {
         } catch (altErr) {
           console.error("❌ Alternative endpoint also failed:", altErr);
           setError(
-            "Could not load availability blocks. Your doctor profile may not be set up yet."
+            "Không thể tải khối thời gian có sẵn. Hồ sơ bác sĩ của bạn có thể chưa được thiết lập."
           );
         }
       } else {
         setError(
-          err.response?.data?.message || "Failed to load availability blocks"
+          err.response?.data?.message || "Không thể tải khối thời gian có sẵn"
         );
       }
     } finally {
@@ -130,13 +130,13 @@ const DoctorAvailability = () => {
     e.preventDefault();
 
     if (!formData.workDate || !formData.startTime || !formData.endTime) {
-      setError("Please fill in all fields");
+      setError("Vui lòng điền đầy đủ thông tin");
       return;
     }
 
     // Validate time range
     if (formData.startTime >= formData.endTime) {
-      setError("Start time must be before end time");
+      setError("Thời gian bắt đầu phải trước thời gian kết thúc");
       return;
     }
 
@@ -166,7 +166,7 @@ const DoctorAvailability = () => {
       console.log("✅ Create availability response:", response.data);
 
       setSuccess(
-        "Availability block created successfully! Time slots generated automatically."
+        "Khối thời gian có sẵn đã được tạo thành công! Các khung giờ sẽ được tạo tự động."
       );
 
       // Reset form
@@ -186,13 +186,13 @@ const DoctorAvailability = () => {
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
-        setError("Access denied. Only doctors can create availability blocks.");
+        setError("Truy cập bị từ chối. Chỉ bác sĩ mới có thể tạo khối thời gian có sẵn.");
       } else if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else {
         setError(
-          err.response?.data?.message || "Failed to create availability block"
+          err.response?.data?.message || "Không thể tạo khối thời gian có sẵn"
         );
       }
     } finally {
@@ -203,7 +203,7 @@ const DoctorAvailability = () => {
   const handleDeleteAvailability = async (blockId) => {
     if (
       !window.confirm(
-        "Are you sure you want to delete this availability block? All associated time slots will be deleted."
+        "Bạn có chắc chắn muốn xóa khối thời gian có sẵn này? Tất cả các khung giờ liên quan sẽ bị xóa."
       )
     ) {
       return;
@@ -230,7 +230,7 @@ const DoctorAvailability = () => {
         }
       }
 
-      setSuccess("Availability block deleted successfully");
+      setSuccess("Khối thời gian có sẵn đã được xóa thành công");
 
       // Refresh availability blocks
       fetchAvailabilityBlocks(filterDate);
@@ -243,18 +243,18 @@ const DoctorAvailability = () => {
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
         setError(
-          "Access denied. You can only delete your own availability blocks."
+          "Truy cập bị từ chối. Bạn chỉ có thể xóa khối thời gian có sẵn của mình."
         );
       } else if (err.response?.status === 401) {
-        setError("Session expired. Please login again.");
+        setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else if (err.response?.status === 409) {
         setError(
-          "Cannot delete availability block. Some time slots may already be booked."
+          "Không thể xóa khối thời gian có sẵn. Một số khung giờ có thể đã được đặt."
         );
       } else {
         setError(
-          err.response?.data?.message || "Failed to delete availability block"
+          err.response?.data?.message || "Không thể xóa khối thời gian có sẵn"
         );
       }
     } finally {
@@ -264,7 +264,7 @@ const DoctorAvailability = () => {
 
   const handleFilterByDate = () => {
     if (!filterDate) {
-      setError("Please select a date to filter");
+      setError("Vui lòng chọn ngày để lọc");
       return;
     }
     fetchAvailabilityBlocks(filterDate);
@@ -300,8 +300,8 @@ const DoctorAvailability = () => {
       <div className="availability-page">
         <div className="availability-container">
           <div className="page-header">
-            <h1>Manage Your Availability</h1>
-            <p>Create and manage your working hours and time slots</p>
+            <h1>Quản lý lịch trình của bạn</h1>
+            <p>Tạo và quản lý giờ làm việc và khung giờ của bạn</p>
           </div>
 
           {error && (
@@ -336,10 +336,10 @@ const DoctorAvailability = () => {
           <div className="content-grid">
             {/* Create Availability Form */}
             <div className="form-card">
-              <h2>Create New Availability Block</h2>
+              <h2>Tạo khối thời gian có sẵn mới</h2>
               <form onSubmit={handleCreateAvailability}>
                 <div className="form-group">
-                  <label htmlFor="workDate">Work Date *</label>
+                  <label htmlFor="workDate">Ngày làm việc *</label>
                   <input
                     type="date"
                     id="workDate"
@@ -353,7 +353,7 @@ const DoctorAvailability = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="startTime">Start Time *</label>
+                    <label htmlFor="startTime">Thời gian bắt đầu *</label>
                     <input
                       type="time"
                       id="startTime"
@@ -365,7 +365,7 @@ const DoctorAvailability = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="endTime">End Time *</label>
+                    <label htmlFor="endTime">Thời gian kết thúc *</label>
                     <input
                       type="time"
                       id="endTime"
@@ -377,27 +377,12 @@ const DoctorAvailability = () => {
                   </div>
                 </div>
 
-                {/* <div className="info-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 16V12M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <p>
-                    Time slots will be automatically generated in 30-minute
-                    intervals
-                  </p>
-                </div> */}
-
                 <button
                   type="submit"
                   className="btn-primary"
                   disabled={loading || !doctorId}
                 >
-                  {loading ? "Creating..." : "Create Availability Block"}
+                  {loading ? "Đang tạo..." : "Tạo khối thời gian có sẵn"}
                 </button>
               </form>
             </div>
@@ -405,21 +390,21 @@ const DoctorAvailability = () => {
             {/* Availability Blocks List */}
             <div className="list-card">
               <div className="list-header">
-                <h2>Your Availability Blocks</h2>
+                <h2>Khối thời gian có sẵn của bạn</h2>
 
                 <div className="filter-section">
                   <input
                     type="date"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
-                    placeholder="Filter by date"
+                    placeholder="Lọc theo ngày"
                   />
                   <button
                     onClick={handleFilterByDate}
                     className="btn-secondary"
                     disabled={loading || !filterDate}
                   >
-                    Filter
+                    Lọc
                   </button>
                   {filterDate && (
                     <button
@@ -427,7 +412,7 @@ const DoctorAvailability = () => {
                       className="btn-text"
                       disabled={loading}
                     >
-                      Clear
+                      Xóa
                     </button>
                   )}
                 </div>
@@ -436,7 +421,7 @@ const DoctorAvailability = () => {
               {loading && (
                 <div className="loading-state">
                   <div className="spinner"></div>
-                  <p>Loading availability blocks...</p>
+                  <p>Đang tải khối thời gian có sẵn...</p>
                 </div>
               )}
 
@@ -451,10 +436,9 @@ const DoctorAvailability = () => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <h3>No availability blocks yet</h3>
+                  <h3>Chưa có khối thời gian nào</h3>
                   <p>
-                    Create your first availability block to start accepting
-                    appointments
+                    Tạo khối thời gian có sẵn đầu tiên để bắt đầu nhận lịch hẹn
                   </p>
                 </div>
               )}
@@ -512,7 +496,7 @@ const DoctorAvailability = () => {
                         onClick={() => handleDeleteAvailability(block.id)}
                         className="btn-delete"
                         disabled={loading}
-                        title="Delete availability block"
+                        title="Xóa khối thời gian có sẵn"
                       >
                         <svg
                           width="18"
