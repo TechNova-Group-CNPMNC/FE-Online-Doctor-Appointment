@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
 
@@ -16,13 +16,22 @@ const SignupForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!error) return;
+    const timeout = setTimeout(() => {
+      setError("");
+      window.location.reload();
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [error]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    if (error) setError("");
+    // if (error) setError("");
   };
 
   const validateForm = () => {

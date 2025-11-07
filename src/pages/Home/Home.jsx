@@ -33,12 +33,12 @@ const Home = () => {
       description: "Đặt lịch chỉ với vài cú nhấp chuột, 24/7",
       color: "#8B5CF6",
     },
-    {
-      icon: <MessageSquare size={40} />,
-      title: "Tư vấn trực tuyến",
-      description: "Tư vấn qua video ngay tại nhà của bạn",
-      color: "#10B981",
-    },
+    // {
+    //   icon: <MessageSquare size={40} />,
+    //   title: "Tư vấn trực tuyến",
+    //   description: "Tư vấn qua video ngay tại nhà của bạn",
+    //   color: "#10B981",
+    // },
     {
       icon: <Lock size={40} />,
       title: "Bảo mật & Riêng tư",

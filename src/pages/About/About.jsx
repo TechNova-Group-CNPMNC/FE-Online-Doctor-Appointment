@@ -98,7 +98,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="stats-section">
+        {/* <section className="stats-section">
           <div className="container">
             <div className="stats-grid">
               {stats.map((stat, index) => (
@@ -110,7 +110,7 @@ const About = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="values-section">
           <div className="container">
@@ -129,7 +129,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="history-section">
+        {/* <section className="history-section">
           <div className="container">
             <h2 className="section-title centered">Hành trình của chúng tôi</h2>
             <div className="timeline">
@@ -176,7 +176,7 @@ const About = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </MainLayout>
   );

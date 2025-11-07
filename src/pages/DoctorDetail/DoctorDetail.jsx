@@ -881,23 +881,6 @@ const DoctorDetail = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      Bạn sẽ sớm nhận được email xác nhận
-                    </li>
-                    <li>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M9 12L11 14L15 10"
-                          stroke="#10B981"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
                       Vui lòng đến trước 10 phút so với giờ hẹn
                     </li>
                     <li>
@@ -915,7 +898,7 @@ const DoctorDetail = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      Bạn có thể đổi lịch hoặc hủy hẹn 24 giờ trước lịch khám
+                      Sau khi khám xong, bạn có thể đánh giá bác sĩ
                     </li>
                   </ul>
                 </div>

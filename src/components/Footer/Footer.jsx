@@ -63,7 +63,7 @@ const Footer = () => {
                 <Link to="/find-a-doctor">Đặt lịch hẹn</Link>
               </li>
               <li>
-                <Link to="/find-a-doctor">Tư vấn trực tuyến</Link>
+                {/* <Link to="/find-a-doctor">Tư vấn trực tuyến</Link> */}
               </li>
               <li>
                 <Link to="/find-a-doctor">Tìm chuyên gia</Link>

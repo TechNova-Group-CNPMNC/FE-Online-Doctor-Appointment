@@ -1118,3 +1118,18 @@
   background: #f8fafc;
   cursor: not-allowed;
 }
+
+.next-steps ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.next-steps ul li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
