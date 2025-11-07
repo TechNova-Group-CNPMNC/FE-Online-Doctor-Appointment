@@ -439,7 +439,7 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  display: inline;
+  display: block;
   margin-right: 4px;
 }
 
@@ -1074,4 +1074,142 @@
 
 .time-slots-by-date::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.rating-display {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFF4CC 100%);
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.stars-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.stars-display svg {
+  flex-shrink: 0;
+}
+
+.rating-text {
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400E;
+}
+
+.feedback-text {
+  font-size: 13px;
+  color: #78350F;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.btn-rating {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: white;
+  border: none;
+}
+
+.btn-rating:hover {
+  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  transform: translateY(-2px);
+}
+
+.rating-modal {
+  max-width: 500px;
+}
+
+.appointment-info-summary {
+  background: #F8FAFC;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.appointment-info-summary p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+.appointment-info-summary strong {
+  color: #1E293B;
+  font-weight: 600;
+}
+
+.stars-input {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+}
+
+.star-btn:hover {
+  transform: scale(1.1);
+}
+
+.star-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.star-btn.active {
+  animation: starPop 0.3s ease;
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rating-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.rating-labels span {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .rating-modal {
+    max-width: 100%;
+  }
+
+  .stars-input {
+    gap: 4px;
+  }
+
+  .star-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .rating-labels {
+    font-size: 10px;
+  }
 }
