@@ -84,4 +84,32 @@ export const authAPI = {
   },
 };
 
+//ai
+export const chatbotAPI = {
+  // gợi ý chuyên khoa dựa trên triệu chứng
+  suggestSpecialty: async (data) => {
+    try {
+      console.log("Chatbot suggest specialty request:", data);
+      const response = await api.post("/chatbot/suggest-specialty", data);
+      console.log("Chatbot API response:", response);
+      return response.data;
+    } catch (error) {
+      console.error("Chatbot API error:", error);
+      console.error("Error details:", error.response?.data);
+      throw error;
+    }
+  },
+
+  // Health check
+  health: async () => {
+    try {
+      const response = await api.get("/chatbot/health");
+      return response.data;
+    } catch (error) {
+      console.error("Chatbot health check error:", error);
+      throw error;
+    }
+  },
+};
+
 export default api;

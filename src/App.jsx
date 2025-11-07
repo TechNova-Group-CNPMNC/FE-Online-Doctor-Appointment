@@ -11,10 +11,12 @@ import DoctorAvailability from "./pages/DoctorAvailability/DoctorAvailability";
 import ProtectedRoute from "./util/ProtectedRoute.jsx";
 import CreateAppointment from "./pages/CreateAppointment/CreateAppointment.jsx";
 import Appointments from "./pages/Appointments/Appointments.jsx";
+import Chatbot from "./pages/Chatbot/Chatbot.jsx";
 
 function App() {
   return (
     <BrowserRouter>
+      <Chatbot />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />

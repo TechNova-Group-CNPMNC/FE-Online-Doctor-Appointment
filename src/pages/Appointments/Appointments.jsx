@@ -859,6 +859,7 @@ return (
                     ...updateFormData,
                     symptoms: e.target.value,
                   })
+
                 }
                 placeholder="Mô tả triệu chứng..."
               />
