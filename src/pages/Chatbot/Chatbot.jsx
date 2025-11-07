@@ -3,6 +3,20 @@ import ReactMarkdown from "react-markdown";
 import { analyzeSymptoms } from "../../services/analyzeSymptoms";
 import "./Chatbot.css";
 import { isDoctor, isAuthenticated } from "../../util/jwtdecoder";
+import {
+  MessageCircle,
+  X,
+  Send,
+  Bot,
+  User,
+  Loader2,
+  AlertTriangle,
+  Zap,
+  Hospital,
+  Lightbulb,
+  ClipboardList,
+  Activity,
+} from "lucide-react";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +24,7 @@ const Chatbot = () => {
     {
       type: "bot",
       content:
-        "Xin chào! Tôi là trợ lý y tế AI của TechNova. Hãy mô tả triệu chứng của bạn để tôi có thể tư vấn chuyên khoa phù hợp 😊. Ví dụ: **Tôi bị ngu.**",
+        "Xin chào! Tôi là trợ lý y tế AI của TechNova. Hãy mô tả triệu chứng của bạn để tôi có thể tư vấn chuyên khoa phù hợp 😊. Ví dụ: **Tôi bị cảm sốt và đau họng.**",
       timestamp: new Date(),
     },
   ]);
@@ -57,58 +71,169 @@ const Chatbot = () => {
 
     try {
       setLoading(true);
-      addMessage("bot", "Đang phân tích triệu chứng của bạn...");
+
+      // Loading message với component riêng
+      addMessage("bot", {
+        type: "loading",
+        content: "Đang phân tích triệu chứng của bạn...",
+      });
 
       const response = await analyzeSymptoms(userMessage);
 
+      // Xóa message loading
       setMessages((prev) => prev.slice(0, -1));
 
-      addMessage("bot", `📋 **Phân tích:**\n\n${response.analysis}`);
+      // Tạo structured response thay vì plain text
+      const structuredResponse = {
+        type: "analysis",
+        data: {
+          analysis: response.analysis,
+          emergencyLevel: response.emergencyLevel,
+          suggestedSpecialties:
+            response.suggestedSpecialties?.slice(0, 2) || [],
+          advice: response.advice,
+        },
+      };
 
-      if (response.emergencyLevel === "HIGH") {
-        addMessage(
-          "bot",
-          "⚠️ **CẢNH BÁO KHẨN CẤP**: Triệu chứng của bạn có thể nghiêm trọng. Vui lòng đến cơ sở y tế ngay lập tức hoặc gọi cấp cứu 115!"
-        );
-      } else if (response.emergencyLevel === "MEDIUM") {
-        addMessage(
-          "bot",
-          "⚡ **Lưu ý**: Bạn nên sắp xếp khám bác sĩ trong thời gian sớm nhất."
-        );
-      }
-
-      // gợi ý chuyên khoa
-      if (response.suggestedSpecialties?.length > 0) {
-        let specialtiesText = "🏥 **Chuyên khoa được đề xuất:**\n\n";
-        response.suggestedSpecialties.forEach((specialty, index) => {
-          specialtiesText += `${index + 1}. **${specialty.name}** (${
-            specialty.confidence
-          }% phù hợp)\n`;
-          specialtiesText += `   📌 ${specialty.reason}\n\n`;
-        });
-        addMessage("bot", specialtiesText);
-      }
-
-      // lời khuyên
-      if (response.advice) {
-        addMessage("bot", `💡 **Lời khuyên:**\n\n${response.advice}`);
-      }
-
-      // kết thúc
-      addMessage(
-        "bot",
-        "Bạn có thể tìm và đặt lịch với bác sĩ tại trang **Tìm bác sĩ** của chúng tôi.\n\nCó triệu chứng khác cần tư vấn không? 😊"
-      );
+      addMessage("bot", structuredResponse);
     } catch (error) {
       console.error("Error analyzing symptoms:", error);
       setMessages((prev) => prev.slice(0, -1));
-      addMessage(
-        "bot",
-        "Xin lỗi, đã có lỗi xảy ra khi phân tích. Vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ trực tiếp. 🙏"
-      );
+      addMessage("bot", {
+        type: "error",
+        content: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau!",
+      });
     } finally {
       setLoading(false);
     }
+  };
+  const MessageContent = ({ message }) => {
+    if (typeof message.content === "string") {
+      return <ReactMarkdown>{message.content}</ReactMarkdown>;
+    }
+
+    // Loading state
+    if (message.content.type === "loading") {
+      return (
+        <div className="analysis-loading">
+          <Loader2 className="loading-icon" size={20} />
+          <span>{message.content.content}</span>
+        </div>
+      );
+    }
+
+    // Error state
+    if (message.content.type === "error") {
+      return (
+        <div className="analysis-error">
+          <AlertTriangle className="error-icon" size={18} />
+          <span>{message.content.content}</span>
+        </div>
+      );
+    }
+
+    // Analysis result
+    if (message.content.type === "analysis") {
+      const { analysis, emergencyLevel, suggestedSpecialties, advice } =
+        message.content.data;
+
+      return (
+        <div className="analysis-result">
+          {/* Analysis */}
+          <div className="analysis-section">
+            <div className="section-header">
+              <ClipboardList size={18} className="section-icon" />
+              <strong>Phân tích</strong>
+            </div>
+            <p>{analysis}</p>
+          </div>
+
+          {/* Emergency Level */}
+          {emergencyLevel && (
+            <div
+              className={`emergency-badge emergency-${emergencyLevel.toLowerCase()}`}
+            >
+              {emergencyLevel === "HIGH" && (
+                <>
+                  <AlertTriangle size={16} className="badge-icon pulse" />
+                  <span>
+                    <strong>KHẨN CẤP</strong> - Đi bệnh viện ngay hoặc gọi 115!
+                  </span>
+                </>
+              )}
+              {emergencyLevel === "MEDIUM" && (
+                <>
+                  <Zap size={16} className="badge-icon" />
+                  <span>
+                    <strong>Lưu ý:</strong> Nên khám sớm trong vài ngày tới
+                  </span>
+                </>
+              )}
+              {emergencyLevel === "LOW" && (
+                <>
+                  <Activity size={16} className="badge-icon" />
+                  <span>Theo dõi và đặt lịch khám nếu cần</span>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Suggested Specialties */}
+          {suggestedSpecialties.length > 0 && (
+            <div className="analysis-section specialties-section">
+              <div className="section-header">
+                <Hospital size={18} className="section-icon" />
+                <strong>Chuyên khoa đề xuất</strong>
+              </div>
+              <div className="specialties-list">
+                {suggestedSpecialties.map((specialty, index) => (
+                  <div
+                    key={index}
+                    className="specialty-card fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="specialty-header">
+                      <span className="specialty-number">{index + 1}</span>
+                      <strong className="specialty-name">
+                        {specialty.name}
+                      </strong>
+                      <span className="specialty-confidence">
+                        {specialty.confidence}%
+                      </span>
+                    </div>
+                    <p className="specialty-reason">{specialty.reason}</p>
+                    <div className="confidence-bar">
+                      <div
+                        className="confidence-fill"
+                        style={{ width: `${specialty.confidence}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Advice */}
+          {advice && (
+            <div className="analysis-section advice-section">
+              <div className="section-header">
+                <Lightbulb size={18} className="section-icon" />
+                <strong>Lời khuyên</strong>
+              </div>
+              <p>{advice}</p>
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="analysis-footer">
+            <p>Nếu bạn có các triệu chứng gì khác, cứ mô tả thêm nhé! 😊</p>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   const handleKeyPress = (e) => {
@@ -128,26 +253,7 @@ const Chatbot = () => {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle chatbot"
           >
-            {isOpen ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M18 6L6 18M6 6L18 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M8 12H8.01M12 12H12.01M16 12H16.01M21 12C21 16.9706 16.9706 21 12 21C10.4649 21 9.03071 20.5875 7.8 19.8649L3 21L4.13506 16.2C3.41248 14.9693 3 13.5351 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
+            {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
           </button>
 
           {/* Chatbot Window */}
@@ -156,16 +262,7 @@ const Chatbot = () => {
               <div className="chatbot-header">
                 <div className="chatbot-header-info">
                   <div className="chatbot-avatar">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="M7 9C5.89543 9 5 9.89543 5 11V13C5 14.1046 5.89543 15 7 15H9V22H15V15H17C18.1046 15 19 14.1046 19 13V11C19 9.89543 18.1046 9 17 9H7Z"
-                        fill="currentColor"
-                      />
-                    </svg>
+                    <Bot size={24} />
                   </div>
                   <div>
                     <h3>Trợ lý Y tế AI</h3>
@@ -180,14 +277,7 @@ const Chatbot = () => {
                   onClick={() => setIsOpen(false)}
                   aria-label="Close chatbot"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M18 6L6 18M6 6L18 18"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                  <X size={20} />
                 </button>
               </div>
 
@@ -201,26 +291,17 @@ const Chatbot = () => {
                   >
                     {message.type === "bot" && (
                       <div className="message-avatar">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M7 9C5.89543 9 5 9.89543 5 11V13C5 14.1046 5.89543 15 7 15H9V22H15V15H17C18.1046 15 19 14.1046 19 13V11C19 9.89543 18.1046 9 17 9H7Z"
-                            fill="currentColor"
-                          />
-                        </svg>
+                        <Bot size={20} />
+                      </div>
+                    )}
+                    {message.type === "user" && (
+                      <div className="message-avatar user-avatar">
+                        <User size={20} />
                       </div>
                     )}
                     <div className="message-content">
                       <div className="message-text">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                        <MessageContent message={message} />
                       </div>
                       <span className="message-time">
                         {message.timestamp.toLocaleTimeString("vi-VN", {
@@ -234,21 +315,7 @@ const Chatbot = () => {
                 {loading && (
                   <div className="message bot">
                     <div className="message-avatar">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M7 9C5.89543 9 5 9.89543 5 11V13C5 14.1046 5.89543 15 7 15H9V22H15V15H17C18.1046 15 19 14.1046 19 13V11C19 9.89543 18.1046 9 17 9H7Z"
-                          fill="currentColor"
-                        />
-                      </svg>
+                      <Bot size={20} />
                     </div>
                     <div className="message-content">
                       <div className="typing-indicator">
@@ -276,15 +343,11 @@ const Chatbot = () => {
                   disabled={!inputMessage.trim() || loading}
                   aria-label="Send message"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  {loading ? (
+                    <Loader2 size={20} className="button-loading" />
+                  ) : (
+                    <Send size={20} />
+                  )}
                 </button>
               </div>
             </div>
@@ -294,7 +357,7 @@ const Chatbot = () => {
       {!isOpenChatbot && (
         <div className="chatbot-disabled-message">
           <button className="disabled-info-btn" aria-label="Thông báo">
-            ×
+            <X size={20} />
             <span className="disabled-info-tooltip">
               Chatbot trợ lý y tế AI chỉ dành cho bệnh nhân đã đăng nhập
             </span>
