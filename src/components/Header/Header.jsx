@@ -57,6 +57,17 @@ const Header = () => {
                 Lịch trình của tôi
               </Link>
             )}
+
+            {isAuth && !isDoctorUser && (
+              <Link
+                to="/appointments"
+                className={`nav-link ${
+                  isActive("/appointments") ? "active" : ""
+                }`}
+              >
+                Lịch khám
+              </Link>
+            )}
             <Link
               to="/about"
               className={`nav-link ${isActive("/about") ? "active" : ""}`}
@@ -180,6 +191,17 @@ const Header = () => {
                   </Link>
                 )}
               </div>
+
+              {isAuth && !isDoctorUser && (
+                <Link
+                  to="/appointments"
+                  className={`nav-link ${
+                    isActive("/appointments") ? "active" : ""
+                  }`}
+                >
+                  Lịch khám
+                </Link>
+              )}
 
               <div className="mobile-nav-actions">
                 {!isAuth ? (
