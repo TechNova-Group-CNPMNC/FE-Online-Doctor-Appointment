@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
 import { Mail, Lock, ArrowRight } from "lucide-react";
@@ -13,18 +13,27 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!error) return;
+    const timeout = setTimeout(() => {
+      setError("");
+      window.location.reload();
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [error]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    if (error) setError("");
+    // if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    // setError("");
     setLoading(true);
 
     try {
@@ -82,6 +91,7 @@ const LoginForm = () => {
       }
 
       setError(errorMessage);
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

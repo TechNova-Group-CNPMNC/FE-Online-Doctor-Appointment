@@ -54,7 +54,8 @@ const About = () => {
           <div className="container">
             <h1 className="about-title">Về TechNova</h1>
             <p className="about-subtitle">
-              Đối tác chăm sóc sức khỏe đáng tin cậy của bạn, cung cấp dịch vụ y tế toàn diện và đầy lòng nhân ái hơn một thập kỷ.
+              Đối tác chăm sóc sức khỏe đáng tin cậy của bạn, cung cấp dịch vụ y
+              tế toàn diện và đầy lòng nhân ái hơn một thập kỷ.
             </p>
           </div>
         </section>
@@ -65,10 +66,17 @@ const About = () => {
               <div className="mission-content">
                 <h2 className="section-title">Sứ mệnh của chúng tôi</h2>
                 <p className="mission-text">
-                  Tại TechNova, chúng tôi cam kết cung cấp dịch vụ chăm sóc sức khỏe xuất sắc để cải thiện chất lượng cuộc sống cho bệnh nhân và gia đình họ. Chúng tôi tin rằng mọi người đều xứng đáng tiếp cận dịch vụ y tế đẳng cấp thế giới, được cung cấp với sự đồng cảm, tôn trọng và chuyên nghiệp.
+                  Tại TechNova, chúng tôi cam kết cung cấp dịch vụ chăm sóc sức
+                  khỏe xuất sắc để cải thiện chất lượng cuộc sống cho bệnh nhân
+                  và gia đình họ. Chúng tôi tin rằng mọi người đều xứng đáng
+                  tiếp cận dịch vụ y tế đẳng cấp thế giới, được cung cấp với sự
+                  đồng cảm, tôn trọng và chuyên nghiệp.
                 </p>
                 <p className="mission-text">
-                  Đội ngũ các chuyên gia y tế có trình độ cao của chúng tôi hợp tác cùng nhau để đảm bảo mỗi bệnh nhân nhận được điều trị cá nhân hóa, dựa trên bằng chứng, phù hợp với nhu cầu và hoàn cảnh riêng của họ.
+                  Đội ngũ các chuyên gia y tế có trình độ cao của chúng tôi hợp
+                  tác cùng nhau để đảm bảo mỗi bệnh nhân nhận được điều trị cá
+                  nhân hóa, dựa trên bằng chứng, phù hợp với nhu cầu và hoàn
+                  cảnh riêng của họ.
                 </p>
               </div>
               <div className="mission-image">
@@ -82,7 +90,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="stats-section">
+        {/* <section className="stats-section">
           <div className="container">
             <div className="stats-grid">
               {stats.map((stat, index) => (
@@ -94,11 +102,13 @@ const About = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="values-section">
           <div className="container">
-            <h2 className="section-title centered">Giá trị cốt lõi của chúng tôi</h2>
+            <h2 className="section-title centered">
+              Giá trị cốt lõi của chúng tôi
+            </h2>
             <div className="values-grid">
               {values.map((value, index) => (
                 <div key={index} className="value-card">
@@ -111,7 +121,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="history-section">
+        {/* <section className="history-section">
           <div className="container">
             <h2 className="section-title centered">Hành trình của chúng tôi</h2>
             <div className="timeline">
@@ -153,7 +163,7 @@ const About = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </MainLayout>
   );
