@@ -10,7 +10,7 @@ const Chatbot = () => {
     {
       type: "bot",
       content:
-        "Xin chào! Tôi là trợ lý y tế AI của TechNova. Hãy mô tả triệu chứng của bạn để tôi có thể tư vấn chuyên khoa phù hợp 😊. Ví dụ: **Tôi bị ngu.**",
+        "Xin chào! Tôi là trợ lý y tế AI của TechNova. Hãy mô tả triệu chứng của bạn để tôi có thể tư vấn chuyên khoa phù hợp 😊.",
       timestamp: new Date(),
     },
   ]);
