@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { chatbotAPI } from "../../services/api";
+import ReactMarkdown from "react-markdown";
+import { analyzeSymptoms } from "../../services/analyzeSymptoms";
 import "./Chatbot.css";
 
 const Chatbot = () => {
@@ -8,17 +9,11 @@ const Chatbot = () => {
     {
       type: "bot",
       content:
-        "Xin chào! Tôi là trợ lý y tế AI. Hãy mô tả triệu chứng của bạn để tôi gợi ý chuyên khoa phù hợp.",
+        "Xin chào! Tôi là trợ lý y tế AI. Hãy mô tả triệu chứng của bạn để tôi có thể tư vấn chuyên khoa phù hợp. 😊",
       timestamp: new Date(),
     },
   ]);
   const [inputMessage, setInputMessage] = useState("");
-  const [userInfo, setUserInfo] = useState({
-    age: "",
-    gender: "",
-    medicalHistory: "",
-  });
-  const [step, setStep] = useState("initial"); // initial, collecting-info, analyzing
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -42,115 +37,67 @@ const Chatbot = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || loading) return;
 
     const userMessage = inputMessage.trim();
     addMessage("user", userMessage);
     setInputMessage("");
 
-    if (step === "initial") {
-      // Lưu triệu chứng và hỏi thêm thông tin
-      setUserInfo((prev) => ({ ...prev, symptoms: userMessage }));
-      addMessage(
-        "bot",
-        "Cảm ơn bạn! Để tôi có thể tư vấn chính xác hơn, vui lòng cho biết thêm một số thông tin:"
-      );
-      addMessage("bot", "Tuổi của bạn là bao nhiêu?");
-      setStep("collecting-age");
-    } else if (step === "collecting-age") {
-      setUserInfo((prev) => ({ ...prev, age: userMessage }));
-      addMessage("bot", "Giới tính của bạn? (Nam/Nữ/Khác)");
-      setStep("collecting-gender");
-    } else if (step === "collecting-gender") {
-      const gender = userMessage.toLowerCase().includes("nam")
-        ? "MALE"
-        : userMessage.toLowerCase().includes("nữ")
-        ? "FEMALE"
-        : "OTHER";
-      setUserInfo((prev) => ({ ...prev, gender }));
-      addMessage(
-        "bot",
-        "Bạn có tiền sử bệnh lý gì không? (Nếu không, gõ 'Không')"
-      );
-      setStep("collecting-history");
-    } else if (step === "collecting-history") {
-      setUserInfo((prev) => ({ ...prev, medicalHistory: userMessage }));
-      await analyzeSymptomsAndSuggest({
-        ...userInfo,
-        medicalHistory: userMessage,
-      });
-    }
-  };
-
-  const analyzeSymptomsAndSuggest = async (info) => {
     try {
       setLoading(true);
       addMessage("bot", "Đang phân tích triệu chứng của bạn...");
 
-      const response = await chatbotAPI.suggestSpecialty({
-        symptoms: info.symptoms,
-        age: info.age,
-        gender: info.gender,
-        medicalHistory: info.medicalHistory,
-      });
+      const response = await analyzeSymptoms(userMessage);
+
+      // Xóa message "Đang phân tích..."
+      setMessages((prev) => prev.slice(0, -1));
 
       // Hiển thị phân tích
-      addMessage("bot", "📋 Phân tích:");
-      addMessage("bot", response.analysis);
+      addMessage("bot", `📋 **Phân tích:**\n\n${response.analysis}`);
 
-      // Cảnh báo khẩn cấp nếu có
-      if (response.emergencyWarning) {
+      // Cảnh báo khẩn cấp
+      if (response.emergencyLevel === "HIGH") {
         addMessage(
           "bot",
-          "⚠️ CẢNH BÁO: Triệu chứng của bạn có thể nghiêm trọng. Vui lòng đến cơ sở y tế ngay lập tức hoặc gọi cấp cứu 115!"
+          "⚠️ **CẢNH BÁO KHẨN CẤP**: Triệu chứng của bạn có thể nghiêm trọng. Vui lòng đến cơ sở y tế ngay lập tức hoặc gọi cấp cứu 115!"
+        );
+      } else if (response.emergencyLevel === "MEDIUM") {
+        addMessage(
+          "bot",
+          "⚡ **Lưu ý**: Bạn nên sắp xếp khám bác sĩ trong thời gian sớm nhất."
         );
       }
 
       // Gợi ý chuyên khoa
       if (response.suggestedSpecialties?.length > 0) {
-        addMessage("bot", "\n🏥 Chuyên khoa được đề xuất:");
+        let specialtiesText = "🏥 **Chuyên khoa được đề xuất:**\n\n";
         response.suggestedSpecialties.forEach((specialty, index) => {
-          addMessage(
-            "bot",
-            `${index + 1}. ${specialty.specialtyName} (${
-              specialty.confidenceScore
-            }% phù hợp)\n   Lý do: ${specialty.reason}`
-          );
+          specialtiesText += `${index + 1}. **${specialty.name}** (${
+            specialty.confidence
+          }% phù hợp)\n`;
+          specialtiesText += `   📌 ${specialty.reason}\n\n`;
         });
+        addMessage("bot", specialtiesText);
       }
 
-      // Gợi ý bác sĩ
-      if (response.suggestedDoctors?.length > 0) {
-        addMessage("bot", "\n👨‍⚕️ Bác sĩ được đề xuất:");
-        response.suggestedDoctors.forEach((doctor, index) => {
-          addMessage(
-            "bot",
-            `${index + 1}. ${doctor.fullName} - ${doctor.specialtyName}\n   ${
-              doctor.bio || ""
-            }`
-          );
-        });
-
-        addMessage(
-          "bot",
-          "\nBạn có thể đặt lịch khám với các bác sĩ trên tại trang 'Tìm bác sĩ'."
-        );
+      // Lời khuyên
+      if (response.advice) {
+        addMessage("bot", `💡 **Lời khuyên:**\n\n${response.advice}`);
       }
 
-      // Reset
+      // Kết thúc
       addMessage(
         "bot",
-        "\nBạn có triệu chứng khác cần tư vấn không? Hãy mô tả cho tôi biết!"
+        "Bạn có thể tìm và đặt lịch với bác sĩ tại trang **Tìm bác sĩ** của chúng tôi.\n\nCó triệu chứng khác cần tư vấn không? 😊"
       );
-      setStep("initial");
-      setUserInfo({});
     } catch (error) {
       console.error("Error analyzing symptoms:", error);
+      // Xóa message "Đang phân tích..."
+      setMessages((prev) => prev.slice(0, -1));
       addMessage(
         "bot",
-        "Xin lỗi, đã có lỗi xảy ra khi phân tích. Vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ."
+        "Xin lỗi, đã có lỗi xảy ra khi phân tích. Vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ trực tiếp. 🙏"
       );
-      setStep("initial");
     } finally {
       setLoading(false);
     }
@@ -257,7 +204,9 @@ const Chatbot = () => {
                   </div>
                 )}
                 <div className="message-content">
-                  <p>{message.content}</p>
+                  <div className="message-text">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
                   <span className="message-time">
                     {message.timestamp.toLocaleTimeString("vi-VN", {
                       hour: "2-digit",
@@ -298,7 +247,7 @@ const Chatbot = () => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Nhập tin nhắn..."
+              placeholder="Mô tả triệu chứng của bạn..."
               rows="1"
               disabled={loading}
             />
