@@ -52,13 +52,10 @@ const Chatbot = () => {
 
       const response = await analyzeSymptoms(userMessage);
 
-      // Xóa message "Đang phân tích..."
       setMessages((prev) => prev.slice(0, -1));
 
-      // Hiển thị phân tích
       addMessage("bot", `📋 **Phân tích:**\n\n${response.analysis}`);
 
-      // Cảnh báo khẩn cấp
       if (response.emergencyLevel === "HIGH") {
         addMessage(
           "bot",
@@ -71,7 +68,7 @@ const Chatbot = () => {
         );
       }
 
-      // Gợi ý chuyên khoa
+      // gợi ý chuyên khoa
       if (response.suggestedSpecialties?.length > 0) {
         let specialtiesText = "🏥 **Chuyên khoa được đề xuất:**\n\n";
         response.suggestedSpecialties.forEach((specialty, index) => {
@@ -83,19 +80,18 @@ const Chatbot = () => {
         addMessage("bot", specialtiesText);
       }
 
-      // Lời khuyên
+      // lời khuyên
       if (response.advice) {
         addMessage("bot", `💡 **Lời khuyên:**\n\n${response.advice}`);
       }
 
-      // Kết thúc
+      // kết thúc
       addMessage(
         "bot",
         "Bạn có thể tìm và đặt lịch với bác sĩ tại trang **Tìm bác sĩ** của chúng tôi.\n\nCó triệu chứng khác cần tư vấn không? 😊"
       );
     } catch (error) {
       console.error("Error analyzing symptoms:", error);
-      // Xóa message "Đang phân tích..."
       setMessages((prev) => prev.slice(0, -1));
       addMessage(
         "bot",
