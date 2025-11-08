@@ -107,119 +107,52 @@ const Chatbot = () => {
       setLoading(false);
     }
   };
-const MessageContent = ({ message }) => {
-  if (typeof message.content === "string") {
-    return (
-      <ReactMarkdown
-        components={{
-          p: ({ children }) => (
-            <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
-          ),
-        }}
-      >
-        {message.content}
-      </ReactMarkdown>
-    );
-  }
+  const MessageContent = ({ message }) => {
+    if (typeof message.content === "string") {
+      return (
+        <ReactMarkdown
+          components={{
+            p: ({ children }) => (
+              <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+            ),
+          }}
+        >
+          {message.content}
+        </ReactMarkdown>
+      );
+    }
 
-  // Loading state
-  if (message.content.type === "loading") {
-    return (
-      <div className="analysis-loading">
-        <Loader2 className="loading-icon" size={20} />
-        <span>{message.content.content}</span>
-      </div>
-    );
-  }
-
-  // Error state
-  if (message.content.type === "error") {
-    return (
-      <div className="analysis-error">
-        <AlertTriangle className="error-icon" size={18} />
-        <span>{message.content.content}</span>
-      </div>
-    );
-  }
-
-  // Analysis result
-  if (message.content.type === "analysis") {
-    const { analysis, emergencyLevel, suggestedSpecialties, advice } =
-      message.content.data;
-
-    return (
-      <div className="analysis-result">
-        {/* Analysis */}
-        <div className="analysis-section">
-          <div className="section-header">
-            <ClipboardList size={18} className="section-icon" />
-            <strong>Phân tích</strong>
-          </div>
-          <ReactMarkdown
-            components={{
-              p: ({ children }) => (
-                <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
-              ),
-            }}
-          >
-            {analysis}
-          </ReactMarkdown>
+    // Loading state
+    if (message.content.type === "loading") {
+      return (
+        <div className="analysis-loading">
+          <Loader2 className="loading-icon" size={20} />
+          <span>{message.content.content}</span>
         </div>
+      );
+    }
 
-        {/* ...existing code... */}
+    // Error state
+    if (message.content.type === "error") {
+      return (
+        <div className="analysis-error">
+          <AlertTriangle className="error-icon" size={18} />
+          <span>{message.content.content}</span>
+        </div>
+      );
+    }
 
-        {/* Suggested Specialties */}
-        {suggestedSpecialties.length > 0 && (
-          <div className="analysis-section specialties-section">
+    // Analysis result
+    if (message.content.type === "analysis") {
+      const { analysis, suggestedSpecialties, advice } = message.content.data;
+
+      return (
+        <div className="analysis-result">
+          {/* Analysis */}
+          <div className="analysis-section">
             <div className="section-header">
-              <Hospital size={18} className="section-icon" />
-              <strong>Chuyên khoa đề xuất</strong>
-            </div>
-            <div className="specialties-list">
-              {suggestedSpecialties.map((specialty, index) => (
-                <div
-                  key={index}
-                  className="specialty-card fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="specialty-header">
-                    <span className="specialty-number">{index + 1}</span>
-                    <strong className="specialty-name">{specialty.name}</strong>
-                    <span className="specialty-confidence">
-                      {specialty.confidence}%
-                    </span>
-                  </div>
-                  <div className="specialty-reason">
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children }) => (
-                          <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
-                            {children}
-                          </p>
-                        ),
-                      }}
-                    >
-                      {specialty.reason}
-                    </ReactMarkdown>
-                  </div>
-                  <div className="confidence-bar">
-                    <div
-                      className="confidence-fill"
-                      style={{ width: `${specialty.confidence}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Advice */}
-        {advice && (
-          <div className="analysis-section advice-section">
-            <div className="section-header">
-              <Lightbulb size={18} className="section-icon" />
-              <strong>Lời khuyên</strong>
+              <ClipboardList size={18} className="section-icon" />
+              <strong>Phân tích</strong>
             </div>
             <ReactMarkdown
               components={{
@@ -228,21 +161,87 @@ const MessageContent = ({ message }) => {
                 ),
               }}
             >
-              {advice}
+              {analysis}
             </ReactMarkdown>
           </div>
-        )}
 
-        {/* Footer */}
-        <div className="analysis-footer">
-          <p>Nếu bạn có các triệu chứng gì khác, cứ mô tả thêm nhé! 😊</p>
+          {/* Suggested Specialties */}
+          {suggestedSpecialties.length > 0 && (
+            <div className="analysis-section specialties-section">
+              <div className="section-header">
+                <Hospital size={18} className="section-icon" />
+                <strong>Chuyên khoa đề xuất</strong>
+              </div>
+              <div className="specialties-list">
+                {suggestedSpecialties.map((specialty, index) => (
+                  <div
+                    key={index}
+                    className="specialty-card fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="specialty-header">
+                      <span className="specialty-number">{index + 1}</span>
+                      <strong className="specialty-name">
+                        {specialty.name}
+                      </strong>
+                      <span className="specialty-confidence">
+                        {specialty.confidence}%
+                      </span>
+                    </div>
+                    <div className="specialty-reason">
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => (
+                            <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+                              {children}
+                            </p>
+                          ),
+                        }}
+                      >
+                        {specialty.reason}
+                      </ReactMarkdown>
+                    </div>
+                    <div className="confidence-bar">
+                      <div
+                        className="confidence-fill"
+                        style={{ width: `${specialty.confidence}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Advice */}
+          {advice && (
+            <div className="analysis-section advice-section">
+              <div className="section-header">
+                <Lightbulb size={18} className="section-icon" />
+                <strong>Lời khuyên</strong>
+              </div>
+              <ReactMarkdown
+                components={{
+                  p: ({ children }) => (
+                    <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+                  ),
+                }}
+              >
+                {advice}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="analysis-footer">
+            <p>Nếu bạn có các triệu chứng gì khác, cứ mô tả thêm nhé! 😊</p>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  return null;
-};
+    return null;
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -270,7 +269,7 @@ const MessageContent = ({ message }) => {
               <div className="chatbot-header">
                 <div className="chatbot-header-info">
                   <div className="chatbot-avatar">
-                    <Bot size={24} />
+                    <Bot size={20} />
                   </div>
                   <div>
                     <h3>Trợ lý Y tế AI</h3>
@@ -299,12 +298,12 @@ const MessageContent = ({ message }) => {
                   >
                     {message.type === "bot" && (
                       <div className="message-avatar">
-                        <Bot size={20} />
+                        <Bot size={18} />
                       </div>
                     )}
                     {message.type === "user" && (
                       <div className="message-avatar user-avatar">
-                        <User size={20} />
+                        <User size={18} />
                       </div>
                     )}
                     <div className="message-content">
@@ -323,7 +322,7 @@ const MessageContent = ({ message }) => {
                 {loading && (
                   <div className="message bot">
                     <div className="message-avatar">
-                      <Bot size={20} />
+                      <Bot size={18} />
                     </div>
                     <div className="message-content">
                       <div className="typing-indicator">
@@ -352,9 +351,9 @@ const MessageContent = ({ message }) => {
                   aria-label="Send message"
                 >
                   {loading ? (
-                    <Loader2 size={20} className="button-loading" />
+                    <Loader2 size={18} className="button-loading" />
                   ) : (
-                    <Send size={20} />
+                    <Send size={18} />
                   )}
                 </button>
               </div>
