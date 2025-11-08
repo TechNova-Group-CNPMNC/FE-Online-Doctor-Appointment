@@ -279,15 +279,15 @@ const DoctorAvailability = () => {
     fetchAvailabilityBlocks();
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
   const formatTime = (timeString) => {
     // Convert HH:mm:ss to HH:mm AM/PM

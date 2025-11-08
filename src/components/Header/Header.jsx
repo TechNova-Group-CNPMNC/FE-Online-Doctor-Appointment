@@ -41,14 +41,15 @@ const Header = () => {
           <Link to="/" className="header-logo">
             <img src={logo} alt="Đặt lịch bác sĩ" />
           </Link>
-
-          <nav className="header-nav desktop-nav">
+          {!isDoctorUser && (
             <Link
               to="/"
               className={`nav-link ${isActive("/") ? "active" : ""}`}
             >
               Trang chủ
             </Link>
+          )}
+          <nav className="header-nav desktop-nav">
             {isAuth && !isDoctorUser && (
               <Link
                 to="/profile"
@@ -97,19 +98,22 @@ const Header = () => {
                 Lịch khám
               </Link>
             )}
-
-            <Link
-              to="/about"
-              className={`nav-link ${isActive("/about") ? "active" : ""}`}
-            >
-              Giới thiệu
-            </Link>
-            <Link
-              to="/contact"
-              className={`nav-link ${isActive("/contact") ? "active" : ""}`}
-            >
-              Liên hệ
-            </Link>
+            {!isDoctorUser && (
+              <Link
+                to="/about"
+                className={`nav-link ${isActive("/about") ? "active" : ""}`}
+              >
+                Giới thiệu
+              </Link>
+            )}
+            {!isDoctorUser && (
+              <Link
+                to="/contact"
+                className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+              >
+                Liên hệ
+              </Link>
+            )}
           </nav>
 
           <div className="header-actions">
@@ -179,13 +183,15 @@ const Header = () => {
               </div>
 
               <div className="mobile-nav-links">
-                <Link
-                  to="/"
-                  className={`nav-link ${isActive("/") ? "active" : ""}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Trang chủ
-                </Link>
+                {!isDoctorUser && (
+                  <Link
+                    to="/"
+                    className={`nav-link ${isActive("/") ? "active" : ""}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Trang chủ
+                  </Link>
+                )}
                 {isAuth && !isDoctorUser && (
                   <Link
                     to="/profile"
@@ -240,20 +246,26 @@ const Header = () => {
                     Lịch khám
                   </Link>
                 )}
-                <Link
-                  to="/about"
-                  className={`nav-link ${isActive("/about") ? "active" : ""}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Giới thiệu
-                </Link>
-                <Link
-                  to="/contact"
-                  className={`nav-link ${isActive("/contact") ? "active" : ""}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Liên hệ
-                </Link>
+                {!isDoctorUser && (
+                  <Link
+                    to="/about"
+                    className={`nav-link ${isActive("/about") ? "active" : ""}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Giới thiệu
+                  </Link>
+                )}
+                {!isDoctorUser && (
+                  <Link
+                    to="/contact"
+                    className={`nav-link ${
+                      isActive("/contact") ? "active" : ""
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Liên hệ
+                  </Link>
+                )}
               </div>
 
               <div className="mobile-nav-actions">
