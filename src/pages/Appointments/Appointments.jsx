@@ -726,7 +726,7 @@ const Appointments = () => {
                               )}
                               {appointment.suspectedDisease && (
                                 <>
-                                  {appointment.symptoms && " • "}
+                                  {appointment.symptoms && ""}
                                   <span className="details-label">
                                     Bệnh nghi ngờ:
                                   </span>

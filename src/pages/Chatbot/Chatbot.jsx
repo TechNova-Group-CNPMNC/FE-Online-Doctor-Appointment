@@ -109,7 +109,17 @@ const Chatbot = () => {
   };
   const MessageContent = ({ message }) => {
     if (typeof message.content === "string") {
-      return <ReactMarkdown>{message.content}</ReactMarkdown>;
+      return (
+        <ReactMarkdown
+          components={{
+            p: ({ children }) => (
+              <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+            ),
+          }}
+        >
+          {message.content}
+        </ReactMarkdown>
+      );
     }
 
     // Loading state
@@ -145,38 +155,16 @@ const Chatbot = () => {
               <ClipboardList size={18} className="section-icon" />
               <strong>Phân tích</strong>
             </div>
-            <p>{analysis}</p>
-          </div>
-
-          {/* Emergency Level */}
-          {emergencyLevel && (
-            <div
-              className={`emergency-badge emergency-${emergencyLevel.toLowerCase()}`}
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => (
+                  <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+                ),
+              }}
             >
-              {emergencyLevel === "HIGH" && (
-                <>
-                  <AlertTriangle size={16} className="badge-icon pulse" />
-                  <span>
-                    <strong>KHẨN CẤP</strong> - Đi bệnh viện ngay hoặc gọi 115!
-                  </span>
-                </>
-              )}
-              {emergencyLevel === "MEDIUM" && (
-                <>
-                  <Zap size={16} className="badge-icon" />
-                  <span>
-                    <strong>Lưu ý:</strong> Nên khám sớm trong vài ngày tới
-                  </span>
-                </>
-              )}
-              {emergencyLevel === "LOW" && (
-                <>
-                  <Activity size={16} className="badge-icon" />
-                  <span>Theo dõi và đặt lịch khám nếu cần</span>
-                </>
-              )}
-            </div>
-          )}
+              {analysis}
+            </ReactMarkdown>
+          </div>
 
           {/* Suggested Specialties */}
           {suggestedSpecialties.length > 0 && (
@@ -201,7 +189,19 @@ const Chatbot = () => {
                         {specialty.confidence}%
                       </span>
                     </div>
-                    <p className="specialty-reason">{specialty.reason}</p>
+                    <div className="specialty-reason">
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => (
+                            <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+                              {children}
+                            </p>
+                          ),
+                        }}
+                      >
+                        {specialty.reason}
+                      </ReactMarkdown>
+                    </div>
                     <div className="confidence-bar">
                       <div
                         className="confidence-fill"
@@ -221,7 +221,15 @@ const Chatbot = () => {
                 <Lightbulb size={18} className="section-icon" />
                 <strong>Lời khuyên</strong>
               </div>
-              <p>{advice}</p>
+              <ReactMarkdown
+                components={{
+                  p: ({ children }) => (
+                    <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+                  ),
+                }}
+              >
+                {advice}
+              </ReactMarkdown>
             </div>
           )}
 

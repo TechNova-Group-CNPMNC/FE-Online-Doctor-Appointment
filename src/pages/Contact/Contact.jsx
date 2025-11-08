@@ -28,48 +28,6 @@ const Contact = () => {
         <section className="contact-section">
           <div className="container">
             <div className="contact-wrapper">
-              <div className="contact-form-container">
-                <h2 className="form-title">Gửi tin nhắn cho chúng tôi</h2>
-                <form className="contact-form">
-                  <div className="form-group">
-                    <label htmlFor="name">Tên</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Tên của bạn"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      placeholder="Email của bạn"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="message">Tin nhắn</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows="5"
-                      placeholder="Tin nhắn của bạn..."
-                      required
-                    ></textarea>
-                  </div>
-
-                  <button type="submit" className="btn-submit">
-                    Gửi tin nhắn
-                  </button>
-                </form>
-              </div>
-
               <div className="contact-info-container">
                 <h2 className="info-title">Liên hệ</h2>
 
