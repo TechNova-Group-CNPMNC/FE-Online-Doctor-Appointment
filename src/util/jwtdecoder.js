@@ -53,6 +53,7 @@ export const isPatient = () => {
     const decoded = jwtDecode(token);
     return decoded.role === "PATIENT";
   } catch (error) {
+    console.error("Error decoding token:", error);
     return false;
   }
 };

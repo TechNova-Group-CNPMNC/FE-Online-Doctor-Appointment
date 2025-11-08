@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+
 import MainLayout from "../../layouts/MainLayout";
 import headerImg from "../../assets/header_img.png";
 import "./Home.css";
@@ -20,8 +20,6 @@ import {
 } from "lucide-react";
 
 const Home = () => {
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-
   const features = [
     {
       icon: <Search size={40} />,
@@ -75,13 +73,6 @@ const Home = () => {
       icon: <Hospital size={48} />,
     },
   ];
-
-  //   useEffect(() => {
-  //     const interval = setInterval(() => {
-  //       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-  //     }, 5000);
-  //     return () => clearInterval(interval);
-  //   }, [testimonials.length]);
 
   return (
     <MainLayout>
