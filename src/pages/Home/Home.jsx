@@ -114,8 +114,8 @@ const Home = () => {
                   <span>Tìm bác sĩ</span>
                   <ArrowRight size={20} />
                 </Link>
-                <Link to="/signup" className="btn-secondary">
-                  <span>Bắt đầu</span>
+                <Link to="/about" className="btn-secondary">
+                  <span>Về chúng tôi</span>
                 </Link>
               </div>
 
@@ -251,8 +251,8 @@ const Home = () => {
                 Tham gia cộng đồng và trải nghiệm chăm sóc sức khỏe đơn giản
               </p>
               <div className="cta-actions">
-                <Link to="/signup" className="btn-cta-primary">
-                  Bắt đầu miễn phí
+                <Link to="/contact" className="btn-cta-primary">
+                  Liên hệ với chúng tôi
                   <ArrowRight size={20} />
                 </Link>
                 <Link to="/find-a-doctor" className="btn-cta-secondary">

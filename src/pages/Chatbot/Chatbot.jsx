@@ -107,134 +107,142 @@ const Chatbot = () => {
       setLoading(false);
     }
   };
-  const MessageContent = ({ message }) => {
-    if (typeof message.content === "string") {
-      return <ReactMarkdown>{message.content}</ReactMarkdown>;
-    }
+const MessageContent = ({ message }) => {
+  if (typeof message.content === "string") {
+    return (
+      <ReactMarkdown
+        components={{
+          p: ({ children }) => (
+            <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+          ),
+        }}
+      >
+        {message.content}
+      </ReactMarkdown>
+    );
+  }
 
-    // Loading state
-    if (message.content.type === "loading") {
-      return (
-        <div className="analysis-loading">
-          <Loader2 className="loading-icon" size={20} />
-          <span>{message.content.content}</span>
+  // Loading state
+  if (message.content.type === "loading") {
+    return (
+      <div className="analysis-loading">
+        <Loader2 className="loading-icon" size={20} />
+        <span>{message.content.content}</span>
+      </div>
+    );
+  }
+
+  // Error state
+  if (message.content.type === "error") {
+    return (
+      <div className="analysis-error">
+        <AlertTriangle className="error-icon" size={18} />
+        <span>{message.content.content}</span>
+      </div>
+    );
+  }
+
+  // Analysis result
+  if (message.content.type === "analysis") {
+    const { analysis, emergencyLevel, suggestedSpecialties, advice } =
+      message.content.data;
+
+    return (
+      <div className="analysis-result">
+        {/* Analysis */}
+        <div className="analysis-section">
+          <div className="section-header">
+            <ClipboardList size={18} className="section-icon" />
+            <strong>Phân tích</strong>
+          </div>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+              ),
+            }}
+          >
+            {analysis}
+          </ReactMarkdown>
         </div>
-      );
-    }
 
-    // Error state
-    if (message.content.type === "error") {
-      return (
-        <div className="analysis-error">
-          <AlertTriangle className="error-icon" size={18} />
-          <span>{message.content.content}</span>
-        </div>
-      );
-    }
+        {/* ...existing code... */}
 
-    // Analysis result
-    if (message.content.type === "analysis") {
-      const { analysis, emergencyLevel, suggestedSpecialties, advice } =
-        message.content.data;
-
-      return (
-        <div className="analysis-result">
-          {/* Analysis */}
-          <div className="analysis-section">
+        {/* Suggested Specialties */}
+        {suggestedSpecialties.length > 0 && (
+          <div className="analysis-section specialties-section">
             <div className="section-header">
-              <ClipboardList size={18} className="section-icon" />
-              <strong>Phân tích</strong>
+              <Hospital size={18} className="section-icon" />
+              <strong>Chuyên khoa đề xuất</strong>
             </div>
-            <p>{analysis}</p>
-          </div>
-
-          {/* Emergency Level */}
-          {emergencyLevel && (
-            <div
-              className={`emergency-badge emergency-${emergencyLevel.toLowerCase()}`}
-            >
-              {emergencyLevel === "HIGH" && (
-                <>
-                  <AlertTriangle size={16} className="badge-icon pulse" />
-                  <span>
-                    <strong>KHẨN CẤP</strong> - Đi bệnh viện ngay hoặc gọi 115!
-                  </span>
-                </>
-              )}
-              {emergencyLevel === "MEDIUM" && (
-                <>
-                  <Zap size={16} className="badge-icon" />
-                  <span>
-                    <strong>Lưu ý:</strong> Nên khám sớm trong vài ngày tới
-                  </span>
-                </>
-              )}
-              {emergencyLevel === "LOW" && (
-                <>
-                  <Activity size={16} className="badge-icon" />
-                  <span>Theo dõi và đặt lịch khám nếu cần</span>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Suggested Specialties */}
-          {suggestedSpecialties.length > 0 && (
-            <div className="analysis-section specialties-section">
-              <div className="section-header">
-                <Hospital size={18} className="section-icon" />
-                <strong>Chuyên khoa đề xuất</strong>
-              </div>
-              <div className="specialties-list">
-                {suggestedSpecialties.map((specialty, index) => (
-                  <div
-                    key={index}
-                    className="specialty-card fade-in"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="specialty-header">
-                      <span className="specialty-number">{index + 1}</span>
-                      <strong className="specialty-name">
-                        {specialty.name}
-                      </strong>
-                      <span className="specialty-confidence">
-                        {specialty.confidence}%
-                      </span>
-                    </div>
-                    <p className="specialty-reason">{specialty.reason}</p>
-                    <div className="confidence-bar">
-                      <div
-                        className="confidence-fill"
-                        style={{ width: `${specialty.confidence}%` }}
-                      ></div>
-                    </div>
+            <div className="specialties-list">
+              {suggestedSpecialties.map((specialty, index) => (
+                <div
+                  key={index}
+                  className="specialty-card fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="specialty-header">
+                    <span className="specialty-number">{index + 1}</span>
+                    <strong className="specialty-name">{specialty.name}</strong>
+                    <span className="specialty-confidence">
+                      {specialty.confidence}%
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div className="specialty-reason">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => (
+                          <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+                            {children}
+                          </p>
+                        ),
+                      }}
+                    >
+                      {specialty.reason}
+                    </ReactMarkdown>
+                  </div>
+                  <div className="confidence-bar">
+                    <div
+                      className="confidence-fill"
+                      style={{ width: `${specialty.confidence}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
-
-          {/* Advice */}
-          {advice && (
-            <div className="analysis-section advice-section">
-              <div className="section-header">
-                <Lightbulb size={18} className="section-icon" />
-                <strong>Lời khuyên</strong>
-              </div>
-              <p>{advice}</p>
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="analysis-footer">
-            <p>Nếu bạn có các triệu chứng gì khác, cứ mô tả thêm nhé! 😊</p>
           </div>
-        </div>
-      );
-    }
+        )}
 
-    return null;
-  };
+        {/* Advice */}
+        {advice && (
+          <div className="analysis-section advice-section">
+            <div className="section-header">
+              <Lightbulb size={18} className="section-icon" />
+              <strong>Lời khuyên</strong>
+            </div>
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => (
+                  <p style={{ whiteSpace: "pre-wrap" }}>{children}</p>
+                ),
+              }}
+            >
+              {advice}
+            </ReactMarkdown>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="analysis-footer">
+          <p>Nếu bạn có các triệu chứng gì khác, cứ mô tả thêm nhé! 😊</p>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

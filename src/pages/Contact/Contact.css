@@ -144,8 +144,8 @@
 }
 
 .contact-wrapper {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  /* display: grid;
+  grid-template-columns: 1.5fr 1fr; */
   gap: 50px;
   align-items: start;
 }
@@ -155,6 +155,7 @@
   background: white;
   padding: 40px;
   border-radius: 20px;
+  width: 100vw;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   animation: fadeInLeft 1s ease-out;
 }

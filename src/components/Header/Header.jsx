@@ -57,7 +57,7 @@ const Header = () => {
                 Hồ sơ
               </Link>
             )}
-            {isAuth && !isDoctorUser && (
+            {!isDoctorUser && (
               <Link
                 to="/find-a-doctor"
                 className={`nav-link ${
@@ -77,6 +77,16 @@ const Header = () => {
                 Lịch trình của tôi
               </Link>
             )}
+            {isAuth && isDoctorUser && (
+              <Link
+                to="/doctor/appointments"
+                className={`nav-link ${
+                  isActive("/doctor/appointments") ? "active" : ""
+                }`}
+              >
+                Lịch hẹn
+              </Link>
+            )}
             {isAuth && !isDoctorUser && (
               <Link
                 to="/appointments"
@@ -87,6 +97,7 @@ const Header = () => {
                 Lịch khám
               </Link>
             )}
+
             <Link
               to="/about"
               className={`nav-link ${isActive("/about") ? "active" : ""}`}
@@ -206,6 +217,17 @@ const Header = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Lịch trình của tôi
+                  </Link>
+                )}
+                {isAuth && isDoctorUser && (
+                  <Link
+                    to="/doctor/appointments"
+                    className={`nav-link ${
+                      isActive("/doctor/appointments") ? "active" : ""
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Lịch hẹn
                   </Link>
                 )}
                 {isAuth && !isDoctorUser && (

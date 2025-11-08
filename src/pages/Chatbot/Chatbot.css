@@ -561,10 +561,18 @@
 .message-text p {
   margin: 0 0 12px 0;
   line-height: 1.75;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .message-text p:last-child {
   margin-bottom: 0;
+}
+
+.message-text br {
+  display: block;
+  content: "";
+  margin: 8px 0;
 }
 
 .message-text strong {
@@ -1069,6 +1077,7 @@
   margin: 8px 0 0 0;
   line-height: 1.7;
   color: #475569;
+  white-space: pre-wrap;
 }
 
 /* Emergency Badge */
@@ -1236,6 +1245,12 @@
   font-size: 13px;
   line-height: 1.6;
   padding-left: 40px;
+  white-space: pre-wrap;
+}
+
+.specialty-reason p {
+  margin: 0;
+  white-space: pre-wrap;
 }
 
 /* Confidence Bar */
@@ -1285,8 +1300,8 @@
 .advice-section p {
   color: #92400e;
   font-weight: 500;
+  white-space: pre-wrap;
 }
-
 /* Analysis Footer */
 .analysis-footer {
   padding: 12px 0 0 0;

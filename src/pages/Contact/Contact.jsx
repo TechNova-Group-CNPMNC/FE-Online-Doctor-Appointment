@@ -28,7 +28,7 @@ const Contact = () => {
         <section className="contact-section">
           <div className="container">
             <div className="contact-wrapper">
-              <div className="contact-form-container">
+              {/* <div className="contact-form-container">
                 <h2 className="form-title">Gửi tin nhắn cho chúng tôi</h2>
                 <form className="contact-form">
                   <div className="form-group">
@@ -68,7 +68,7 @@ const Contact = () => {
                     Gửi tin nhắn
                   </button>
                 </form>
-              </div>
+              </div> */}
 
               <div className="contact-info-container">
                 <h2 className="info-title">Liên hệ</h2>

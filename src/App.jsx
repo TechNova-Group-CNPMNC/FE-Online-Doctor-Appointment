@@ -13,6 +13,7 @@ import CreateAppointment from "./pages/CreateAppointment/CreateAppointment.jsx";
 import Appointments from "./pages/Appointments/Appointments.jsx";
 import Chatbot from "./pages/Chatbot/Chatbot.jsx";
 import PatientProfile from "./pages/PatientProfile/PatientProfile.jsx";
+import DoctorAppointments from "./pages/DoctorAppointments/DoctorAppointments.jsx";
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
           element={
             <ProtectedRoute requireDoctor={true}>
               <DoctorAvailability />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor/appointments"
+          element={
+            <ProtectedRoute requireDoctor={true}>
+              <DoctorAppointments />
             </ProtectedRoute>
           }
         />
