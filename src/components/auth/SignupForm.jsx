@@ -20,7 +20,6 @@ const SignupForm = () => {
     if (!error) return;
     const timeout = setTimeout(() => {
       setError("");
-      window.location.reload();
     }, 5000);
     return () => clearTimeout(timeout);
   }, [error]);
@@ -31,26 +30,88 @@ const SignupForm = () => {
       ...prev,
       [name]: value,
     }));
-    // if (error) setError("");
+    if (error) setError("");
+  };
+
+  const validateEmail = (email) => {
+    // Regex cho email hợp lệ (user@domain.com)
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    // Kiểm tra độ dài 8-20 ký tự
+    if (password.length < 8 || password.length > 20) {
+      return {
+        valid: false,
+        message: "Mật khẩu phải có từ 8-20 ký tự",
+      };
+    }
+
+    // Kiểm tra có ít nhất một chữ số
+    const hasNumber = /\d/.test(password);
+    if (!hasNumber) {
+      return {
+        valid: false,
+        message: "Mật khẩu phải chứa ít nhất một chữ số",
+      };
+    }
+
+    // Kiểm tra có ít nhất một ký tự đặc biệt
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/';`~]/.test(
+      password
+    );
+    if (!hasSpecialChar) {
+      return {
+        valid: false,
+        message: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt (!@#$%^&*...)",
+      };
+    }
+
+    return { valid: true };
   };
 
   const validateForm = () => {
+    // Validate email
+    if (!validateEmail(formData.email)) {
+      setError(
+        "Email không hợp lệ. Vui lòng nhập đúng định dạng (user@domain.com)"
+      );
+      return false;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.valid) {
+      setError(passwordValidation.message);
+      return false;
+    }
+
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setError("Mật khẩu không khớp");
       return false;
     }
-    if (formData.password.length < 8) {
-      setError("Mật khẩu phải có ít nhất 8 ký tự");
-      return false;
-    }
+
+    // Validate date of birth
     if (!formData.dateOfBirth) {
       setError("Vui lòng chọn ngày sinh");
       return false;
     }
+
+    // Validate phone number
     if (!formData.phoneNumber.startsWith("+84")) {
       setError("Số điện thoại phải bắt đầu bằng +84");
       return false;
     }
+
+    // Validate phone number length (10-11 digits after +84)
+    const phoneDigits = formData.phoneNumber.replace("+84", "");
+    if (phoneDigits.length < 9 || phoneDigits.length > 10) {
+      setError("Số điện thoại không hợp lệ");
+      return false;
+    }
+
     return true;
   };
 
@@ -81,14 +142,14 @@ const SignupForm = () => {
 
       if (token) {
         localStorage.setItem("token", token);
+        console.log("Token stored after registration:", token);
       }
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
+        console.log("User stored after registration:", user);
       }
 
-      navigate("/login", {
-        state: { message: "Đăng ký thành công! Vui lòng đăng nhập." },
-      });
+      navigate("/find-a-doctor");
     } catch (err) {
       console.error("Registration error:", err);
       console.error("Error response:", err.response);
@@ -167,6 +228,11 @@ const SignupForm = () => {
             onChange={handleChange}
             disabled={loading}
           />
+          <small
+            style={{ color: "#64748b", fontSize: "12px", marginTop: "4px" }}
+          >
+            Định dạng: user@domain.com
+          </small>
         </label>
 
         <label className="input-group">
@@ -223,7 +289,13 @@ const SignupForm = () => {
             onChange={handleChange}
             disabled={loading}
             minLength={8}
+            maxLength={20}
           />
+          <small
+            style={{ color: "#64748b", fontSize: "12px", marginTop: "4px" }}
+          >
+            8-20 ký tự, có ít nhất 1 chữ số và 1 ký tự đặc biệt (!@#$%^&*...)
+          </small>
         </label>
 
         <label className="input-group">
@@ -238,6 +310,7 @@ const SignupForm = () => {
             onChange={handleChange}
             disabled={loading}
             minLength={8}
+            maxLength={20}
           />
         </label>
 
