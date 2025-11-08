@@ -128,11 +128,20 @@
 }
 
 .contact-wrapper {
-  display: flex;
-  justify-content: center;
+  /* display: grid;
+  grid-template-columns: 1.5fr 1fr; */
+  gap: 50px;
+  align-items: start;
+}
 
-  gap: 20px;
-  align-items: center;
+/* Contact Form */
+.contact-form-container {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  width: 100vw;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  animation: fadeInLeft 1s ease-out;
 }
 
 @keyframes fadeInLeft {

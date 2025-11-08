@@ -144,8 +144,7 @@ const Chatbot = () => {
 
     // Analysis result
     if (message.content.type === "analysis") {
-      const { analysis, emergencyLevel, suggestedSpecialties, advice } =
-        message.content.data;
+      const { analysis, suggestedSpecialties, advice } = message.content.data;
 
       return (
         <div className="analysis-result">
@@ -270,7 +269,7 @@ const Chatbot = () => {
               <div className="chatbot-header">
                 <div className="chatbot-header-info">
                   <div className="chatbot-avatar">
-                    <Bot size={24} />
+                    <Bot size={20} />
                   </div>
                   <div>
                     <h3>Trợ lý Y tế AI</h3>
@@ -299,12 +298,12 @@ const Chatbot = () => {
                   >
                     {message.type === "bot" && (
                       <div className="message-avatar">
-                        <Bot size={20} />
+                        <Bot size={18} />
                       </div>
                     )}
                     {message.type === "user" && (
                       <div className="message-avatar user-avatar">
-                        <User size={20} />
+                        <User size={18} />
                       </div>
                     )}
                     <div className="message-content">
@@ -323,7 +322,7 @@ const Chatbot = () => {
                 {loading && (
                   <div className="message bot">
                     <div className="message-avatar">
-                      <Bot size={20} />
+                      <Bot size={18} />
                     </div>
                     <div className="message-content">
                       <div className="typing-indicator">
@@ -352,9 +351,9 @@ const Chatbot = () => {
                   aria-label="Send message"
                 >
                   {loading ? (
-                    <Loader2 size={20} className="button-loading" />
+                    <Loader2 size={18} className="button-loading" />
                   ) : (
-                    <Send size={20} />
+                    <Send size={18} />
                   )}
                 </button>
               </div>
