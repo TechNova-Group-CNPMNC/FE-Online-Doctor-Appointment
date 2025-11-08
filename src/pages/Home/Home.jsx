@@ -108,8 +108,6 @@ const Home = () => {
               <h1 className="hero-title">
                 Tìm & Đặt lịch
                 <span className="text-gradient"> Bác sĩ hàng đầu</span>
-                <br />
-                Gần bạn
               </h1>
 
               <p className="hero-subtitle">

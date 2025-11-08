@@ -86,7 +86,9 @@ const DoctorAvailability = () => {
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
-        setError("Truy cập bị từ chối. Chỉ bác sĩ mới có thể truy cập trang này.");
+        setError(
+          "Truy cập bị từ chối. Chỉ bác sĩ mới có thể truy cập trang này."
+        );
         setTimeout(() => navigate("/"), 2000);
       } else if (err.response?.status === 401) {
         setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
@@ -105,12 +107,12 @@ const DoctorAvailability = () => {
         } catch (altErr) {
           console.error("❌ Alternative endpoint also failed:", altErr);
           setError(
-            "Không thể tải khối thời gian có sẵn. Hồ sơ bác sĩ của bạn có thể chưa được thiết lập."
+            "Không thể tải thời gian có sẵn. Hồ sơ bác sĩ của bạn có thể chưa được thiết lập."
           );
         }
       } else {
         setError(
-          err.response?.data?.message || "Không thể tải khối thời gian có sẵn"
+          err.response?.data?.message || "Không thể tải thời gian có sẵn"
         );
       }
     } finally {
@@ -166,7 +168,7 @@ const DoctorAvailability = () => {
       console.log("✅ Create availability response:", response.data);
 
       setSuccess(
-        "Khối thời gian có sẵn đã được tạo thành công! Các khung giờ sẽ được tạo tự động."
+        " thời gian có sẵn đã được tạo thành công! Các khung giờ sẽ được tạo tự động."
       );
 
       // Reset form
@@ -186,13 +188,15 @@ const DoctorAvailability = () => {
 
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
-        setError("Truy cập bị từ chối. Chỉ bác sĩ mới có thể tạo khối thời gian có sẵn.");
+        setError(
+          "Truy cập bị từ chối. Chỉ bác sĩ mới có thể tạo thời gian có sẵn."
+        );
       } else if (err.response?.status === 401) {
         setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else {
         setError(
-          err.response?.data?.message || "Không thể tạo khối thời gian có sẵn"
+          err.response?.data?.message || "Không thể tạo thời gian có sẵn"
         );
       }
     } finally {
@@ -203,7 +207,7 @@ const DoctorAvailability = () => {
   const handleDeleteAvailability = async (blockId) => {
     if (
       !window.confirm(
-        "Bạn có chắc chắn muốn xóa khối thời gian có sẵn này? Tất cả các khung giờ liên quan sẽ bị xóa."
+        "Bạn có chắc chắn muốn xóa thời gian có sẵn này? Tất cả các khung giờ liên quan sẽ bị xóa."
       )
     ) {
       return;
@@ -230,7 +234,7 @@ const DoctorAvailability = () => {
         }
       }
 
-      setSuccess("Khối thời gian có sẵn đã được xóa thành công");
+      setSuccess(" thời gian có sẵn đã được xóa thành công");
 
       // Refresh availability blocks
       fetchAvailabilityBlocks(filterDate);
@@ -243,18 +247,18 @@ const DoctorAvailability = () => {
       // Handle permission error
       if (err.response?.status === 403 || err.response?.status === 400) {
         setError(
-          "Truy cập bị từ chối. Bạn chỉ có thể xóa khối thời gian có sẵn của mình."
+          "Truy cập bị từ chối. Bạn chỉ có thể xóa thời gian có sẵn của mình."
         );
       } else if (err.response?.status === 401) {
         setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
         setTimeout(() => navigate("/login"), 2000);
       } else if (err.response?.status === 409) {
         setError(
-          "Không thể xóa khối thời gian có sẵn. Một số khung giờ có thể đã được đặt."
+          "Không thể xóa thời gian có sẵn. Một số khung giờ có thể đã được đặt."
         );
       } else {
         setError(
-          err.response?.data?.message || "Không thể xóa khối thời gian có sẵn"
+          err.response?.data?.message || "Không thể xóa thời gian có sẵn"
         );
       }
     } finally {
@@ -336,7 +340,7 @@ const DoctorAvailability = () => {
           <div className="content-grid">
             {/* Create Availability Form */}
             <div className="form-card">
-              <h2>Tạo khối thời gian có sẵn mới</h2>
+              <h2>Tạo thời gian làm việc mới </h2>
               <form onSubmit={handleCreateAvailability}>
                 <div className="form-group">
                   <label htmlFor="workDate">Ngày làm việc *</label>
@@ -382,7 +386,7 @@ const DoctorAvailability = () => {
                   className="btn-primary"
                   disabled={loading || !doctorId}
                 >
-                  {loading ? "Đang tạo..." : "Tạo khối thời gian có sẵn"}
+                  {loading ? "Đang tạo..." : "Xác nhận"}
                 </button>
               </form>
             </div>
@@ -390,7 +394,7 @@ const DoctorAvailability = () => {
             {/* Availability Blocks List */}
             <div className="list-card">
               <div className="list-header">
-                <h2>Khối thời gian có sẵn của bạn</h2>
+                <h2>Thời gian làm việc của bạn</h2>
 
                 <div className="filter-section">
                   <input
@@ -421,7 +425,7 @@ const DoctorAvailability = () => {
               {loading && (
                 <div className="loading-state">
                   <div className="spinner"></div>
-                  <p>Đang tải khối thời gian có sẵn...</p>
+                  <p>Đang tải thời gian có sẵn...</p>
                 </div>
               )}
 
@@ -436,10 +440,8 @@ const DoctorAvailability = () => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <h3>Chưa có khối thời gian nào</h3>
-                  <p>
-                    Tạo khối thời gian có sẵn đầu tiên để bắt đầu nhận lịch hẹn
-                  </p>
+                  <h3>Chưa có thời gian nào</h3>
+                  <p>Tạo thời gian có sẵn đầu tiên để bắt đầu nhận lịch hẹn</p>
                 </div>
               )}
 
@@ -496,7 +498,7 @@ const DoctorAvailability = () => {
                         onClick={() => handleDeleteAvailability(block.id)}
                         className="btn-delete"
                         disabled={loading}
-                        title="Xóa khối thời gian có sẵn"
+                        title="Xóa thời gian có sẵn"
                       >
                         <svg
                           width="18"

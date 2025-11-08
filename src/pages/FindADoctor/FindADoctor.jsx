@@ -211,7 +211,7 @@ const FindADoctor = () => {
               <div className="form-group date-group">
                 <label className="form-label">
                   Ngày có sẵn *
-                  <span className="label-hint">(7 ngày tiếp theo)</span>
+                  <span className="label-hint">(10 ngày tiếp theo)</span>
                 </label>
                 <div className="date-picker-grid">
                   {availableDates.map((dateObj) => (

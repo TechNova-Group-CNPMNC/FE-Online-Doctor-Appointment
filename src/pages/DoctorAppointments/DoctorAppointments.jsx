@@ -120,7 +120,6 @@ const DoctorAppointments = () => {
     }
   };
 
-  // ...existing code... (keep all other functions unchanged)
   const filterAppointments = () => {
     if (activeFilter === "ALL") {
       setFilteredAppointments(allAppointments);
@@ -195,7 +194,7 @@ const DoctorAppointments = () => {
 
   const formatStatus = (status) => {
     const statusMap = {
-      PENDING: "Chờ xác nhận",
+      PENDING: "Chờ khám",
       CONFIRMED: "Đã xác nhận",
       COMPLETED: "Hoàn thành",
       CANCELLED: "Đã hủy",
@@ -209,19 +208,42 @@ const DoctorAppointments = () => {
       setError("");
       setSuccess("");
 
-      await api.put(`/appointments/${appointmentId}/status`, {
-        status: newStatus,
-      });
+      if (newStatus === "COMPLETED") {
+        await api.put(
+          `/doctors/${doctorId}/appointments/${appointmentId}/complete`
+        );
+        setSuccess("Xác nhận hoàn thành lịch hẹn thành công!");
 
-      setSuccess(`Cập nhật trạng thái thành công: ${formatStatus(newStatus)}`);
-      fetchAppointments();
-      setShowUpdateModal(false);
+        fetchAppointments();
+        setShowUpdateModal(false);
 
-      setTimeout(() => setSuccess(""), 3000);
+        setTimeout(() => setSuccess(""), 3000);
+      }
     } catch (err) {
       console.error("Error updating status:", err);
-      setError(err.response?.data?.message || "Không thể cập nhật trạng thái");
+
+      if (err.response?.status === 403) {
+        setError("Bạn chỉ có thể xác nhận lịch hẹn của chính mình");
+      } else if (err.response?.status === 400) {
+        const errorMsg = err.response?.data?.message || err.response?.data;
+        if (errorMsg.includes("đã được hoàn thành")) {
+          setError("Lịch hẹn này đã được hoàn thành trước đó");
+        } else if (errorMsg.includes("đã bị hủy")) {
+          setError("Không thể hoàn thành lịch hẹn đã bị hủy");
+        } else if (errorMsg.includes("không thuộc về bác sĩ")) {
+          setError("Lịch hẹn này không thuộc về bạn");
+        } else {
+          setError(errorMsg);
+        }
+      } else if (err.response?.status === 404) {
+        setError("Không tìm thấy lịch hẹn");
+      } else {
+        setError(
+          err.response?.data?.message || "Không thể cập nhật trạng thái"
+        );
+      }
     } finally {
+      setTimeout(() => setError(""), 5000);
       setUpdateLoading(false);
     }
   };
@@ -242,9 +264,7 @@ const DoctorAppointments = () => {
   const statusCounts = getStatusCounts();
 
   const canUpdateStatus = (appointment) => {
-    return (
-      appointment.status === "PENDING" || appointment.status === "CONFIRMED"
-    );
+    return appointment.status === "PENDING";
   };
 
   return (
@@ -334,7 +354,7 @@ const DoctorAppointments = () => {
                   }`}
                   onClick={() => setActiveFilter("PENDING")}
                 >
-                  Chờ xác nhận
+                  Chờ khám
                   <span className="tab-count">{statusCounts.PENDING}</span>
                 </button>
                 <button
@@ -463,7 +483,8 @@ const DoctorAppointments = () => {
                           </div>
 
                           {(appointment.symptoms ||
-                            appointment.suspectedDisease) && (
+                            appointment.suspectedDisease ||
+                            appointment.medicalHistory) && (
                             <div className="card-details">
                               {appointment.symptoms && (
                                 <>
@@ -480,6 +501,17 @@ const DoctorAppointments = () => {
                                     Bệnh nghi ngờ:
                                   </span>
                                   {" " + appointment.suspectedDisease}
+                                </>
+                              )}
+                              {appointment.medicalHistory && (
+                                <>
+                                  {(appointment.symptoms ||
+                                    appointment.suspectedDisease) &&
+                                    " • "}
+                                  <span className="details-label">
+                                    Tiền sử bệnh:
+                                  </span>
+                                  {" " + appointment.medicalHistory}
                                 </>
                               )}
                             </div>
@@ -523,7 +555,7 @@ const DoctorAppointments = () => {
                                   onClick={() =>
                                     handleUpdateStatus(
                                       appointment.id,
-                                      "CONFIRMED"
+                                      "COMPLETED"
                                     )
                                   }
                                   disabled={updateLoading}
@@ -537,7 +569,7 @@ const DoctorAppointments = () => {
                                       strokeLinejoin="round"
                                     />
                                   </svg>
-                                  Xác nhận
+                                  Hoàn thành khám
                                 </button>
                               )}
                               {appointment.status === "CONFIRMED" && (
