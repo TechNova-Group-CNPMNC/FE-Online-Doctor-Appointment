@@ -41,10 +41,18 @@ const About = () => {
   ];
 
   const stats = [
-    { icon: <Users size={32} />, number: "50,000+", label: "Bệnh nhân hài lòng" },
+    {
+      icon: <Users size={32} />,
+      number: "50,000+",
+      label: "Bệnh nhân hài lòng",
+    },
     { icon: <Award size={32} />, number: "200+", label: "Bác sĩ chuyên gia" },
     { icon: <Clock size={32} />, number: "15+", label: "Năm kinh nghiệm" },
-    { icon: <Shield size={32} />, number: "24/7", label: "Hỗ trợ luôn sẵn sàng" },
+    {
+      icon: <Shield size={32} />,
+      number: "24/7",
+      label: "Hỗ trợ luôn sẵn sàng",
+    },
   ];
 
   return (
@@ -130,7 +138,9 @@ const About = () => {
                 <div className="timeline-content">
                   <h3 className="timeline-title">Thành lập</h3>
                   <p className="timeline-text">
-                    TechNova được thành lập với tầm nhìn cách mạng hóa việc cung cấp dịch vụ chăm sóc sức khỏe, làm cho dịch vụ y tế chất lượng trở nên dễ tiếp cận với tất cả mọi người.
+                    TechNova được thành lập với tầm nhìn cách mạng hóa việc cung
+                    cấp dịch vụ chăm sóc sức khỏe, làm cho dịch vụ y tế chất
+                    lượng trở nên dễ tiếp cận với tất cả mọi người.
                   </p>
                 </div>
               </div>
@@ -139,7 +149,8 @@ const About = () => {
                 <div className="timeline-content">
                   <h3 className="timeline-title">Mở rộng</h3>
                   <p className="timeline-text">
-                    Chúng tôi mở rộng dịch vụ để bao gồm các khoa chuyên khoa, cung cấp chăm sóc toàn diện dưới một mái nhà.
+                    Chúng tôi mở rộng dịch vụ để bao gồm các khoa chuyên khoa,
+                    cung cấp chăm sóc toàn diện dưới một mái nhà.
                   </p>
                 </div>
               </div>
@@ -148,7 +159,8 @@ const About = () => {
                 <div className="timeline-content">
                   <h3 className="timeline-title">Đổi mới số hóa</h3>
                   <p className="timeline-text">
-                    Ra mắt nền tảng telemedicine và hệ thống đặt lịch hẹn trực tuyến để nâng cao sự tiện lợi cho bệnh nhân.
+                    Ra mắt nền tảng telemedicine và hệ thống đặt lịch hẹn trực
+                    tuyến để nâng cao sự tiện lợi cho bệnh nhân.
                   </p>
                 </div>
               </div>
@@ -157,7 +169,8 @@ const About = () => {
                 <div className="timeline-content">
                   <h3 className="timeline-title">Ngày nay</h3>
                   <p className="timeline-text">
-                    Tiếp tục phục vụ hàng nghìn bệnh nhân hàng năm với cơ sở vật chất hiện đại và công nghệ y tế tiên tiến.
+                    Tiếp tục phục vụ hàng nghìn bệnh nhân hàng năm với cơ sở vật
+                    chất hiện đại và công nghệ y tế tiên tiến.
                   </p>
                 </div>
               </div>

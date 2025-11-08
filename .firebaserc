@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "test-eb201"
-  }
+    "default": "clinic-teachnona"
+  },
+  "targets": {},
+  "etags": {}
 }

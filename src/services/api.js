@@ -1,16 +1,16 @@
-import axios from 'axios'
+import axios from "axios";
 
 // const API_BASE_URL = 'https://adoptional-julian-grovellingly.ngrok-free.dev/api'
-const API_BASE_URL = "http://localhost:8000/api"
+const API_BASE_URL = "http://localhost:8000/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': '69420',
+    "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "69420",
   },
   withCredentials: false,
-})
+});
 
 // Add request interceptor to include token and headers
 api.interceptors.request.use(
@@ -35,20 +35,20 @@ api.interceptors.request.use(
 // Add response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
-    console.log('Response:', response)
-    return response
+    console.log("Response:", response);
+    return response;
   },
   (error) => {
-    console.error('Response error:', error.response || error)
+    console.error("Response error:", error.response || error);
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 export const authAPI = {
   // login

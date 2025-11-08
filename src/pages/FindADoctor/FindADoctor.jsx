@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MainLayout from "../../layouts/MainLayout";
 import api from "../../services/api";
 import "./FindADoctor.css";
 import Header from "../../components/Header/Header";

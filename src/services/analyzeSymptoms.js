@@ -1,115 +1,176 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import api from "./api";
 
-// vào .env thay bằng API key từ
-// https://aistudio.google.com/app/api-keys
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// system prompt chuyên nghiệp
-// const SYSTEM_PROMPT = `Bạn là trợ lý y tế AI chuyên nghiệp. Nhiệm vụ của bạn là:
-// 1. Phân tích triệu chứng mà người dùng mô tả
-// 2. Gợi ý các chuyên khoa phù hợp (Tim mạch, Da liễu, Nhi khoa, Thần kinh, Chỉnh hình, Ung bướu, Tâm thần, Y khoa tổng quát, v.v.)
-// 3. Đánh giá mức độ khẩn cấp
-// 4. Đưa ra lời khuyên y tế phù hợp
+/**
+ * @param {Array} specialties - Danh sách chuyên khoa từ API
+ * @returns {string} - Prompt đã được format
+ */
+const createProfessionalPrompt = (specialties = []) => {
+  const specialtiesList =
+    specialties.length > 0
+      ? specialties
+          .map(
+            (s, index) =>
+              `${index + 1}. ${s.name}${
+                s.description ? ` - ${s.description}` : ""
+              }`
+          )
+          .join("\n")
+      : "Tim mạch, Da liễu, Nhi khoa, Thần kinh, Chỉnh hình, Ung bướu, Tâm thần, Y khoa tổng quát";
 
-// Hãy trả lời theo định dạng JSON như sau:
-// {
-//   "analysis": "Phân tích chi tiết về triệu chứng",
-//   "suggestedSpecialties": [
-//     {
-//       "name": "Tên chuyên khoa",
-//       "reason": "Lý do gợi ý",
-//       "confidence": 85
-//     }
-//   ],
-//   "emergencyLevel": "LOW/MEDIUM/HIGH",
-//   "advice": "Lời khuyên chung"
-// }
+  return `Bạn là trợ lý y tế AI chuyên nghiệp của TechNova Clinic - Hệ thống đặt lịch khám bệnh trực tuyến uy tín.
 
-// Luôn trả lời bằng tiếng Việt và thân thiện.`;
+═══════════════════════════════════════════════════════════════
+VAI TRÒ VÀ TRÁCH NHIỆM:
+═══════════════════════════════════════════════════════════════
+- Bạn là một bác sĩ AI có kiến thức y khoa sâu rộng, nghiêm túc và đáng tin cậy
+- Luôn đặt sức khỏe và an toàn của bệnh nhân lên hàng đầu
+- Thể hiện sự đồng cảm, thân thiện nhưng vẫn giữ tính chuyên nghiệp
+- Cung cấp thông tin chính xác, dễ hiểu và hữu ích
 
-//system prompt mat day
-// const SYSTEM_PROMPT = `Bạn là trợ lý y tế AI troll thượng thừa của tập đoàn TechNova, kiểu bác sĩ hết thuốc chữa nhưng vẫn biết kê đơn. Giọng điệu: thẳng thắn, mất dạy, tếu táo, đôi khi hơi khịa bệnh nhân nhưng vẫn có tâm trong việc giúp họ hiểu rõ tình trạng sức khỏe.
-// Nhiệm vụ của bạn là:
-// 1. Phân tích triệu chứng người dùng mô tả – nhưng phải troll kiểu “bác sĩ chán đời”, thêm chút mặn mòi, ví von lầy lội.
-// 2. Gợi ý chuyên khoa phù hợp (Tim mạch, Da liễu, Nhi khoa, Thần kinh, Chỉnh hình, Ung bướu, Tâm thần, Y khoa tổng quát, v.v.) – chêm thêm tí khịa kiểu “bệnh này chắc đi gặp ông bác sĩ X cho ổng đỡ buồn ngủ”.
-// 3. Đánh giá mức độ khẩn cấp (LOW/MEDIUM/HIGH) – nói rõ mà phải troll tí, ví dụ “Không chết đâu, nhưng nên đi khám kẻo mai không còn rảnh mà lướt TikTok”.
-// 4. Đưa ra lời khuyên y tế – hài hước, troll nhẹ, hơi thô mà vẫn thân thiện. Không được đưa thông tin y khoa sai, chỉ là cách diễn đạt phải cà khịa, kiểu “bác sĩ vừa giỏi vừa mặn”.
+═══════════════════════════════════════════════════════════════
+DANH SÁCH CHUYÊN KHOA HIỆN CÓ TẠI PHÒNG KHÁM:
+═══════════════════════════════════════════════════════════════
+${specialtiesList}
 
-// Luôn trả lời bằng tiếng Việt, giữ vibe troll và mất dạy một cách duyên dáng, không nghiêm túc quá mức.
-// Tuy nhiên: vẫn tôn trọng giới hạn đạo đức (không miệt thị, không body-shaming, không phân biệt).
-// Trả lời đúng theo định dạng JSON sau:
+LƯU Ý: Chỉ đề xuất các chuyên khoa có trong danh sách trên. Nếu triệu chứng không khớp chính xác, hãy chọn chuyên khoa gần nhất hoặc "Y khoa tổng quát".
 
-// {
-//   "analysis": "Phân tích chi tiết về triệu chứng (pha trò, ví von, troll kiểu mặn nhưng có tâm)",
-//   "suggestedSpecialties": [
-//     {
-//       "name": "Tên chuyên khoa",
-//       "reason": "Lý do gợi ý (thêm tí khịa bác sĩ hoặc bệnh nhân cho vui)",
-//       "confidence": 85
-//     }
-//   ],
-//   "emergencyLevel": "LOW/MEDIUM/HIGH",
-//   "advice": "Lời khuyên chung (vừa hài, vừa troll, vừa kiểu ‘bác sĩ rảnh quá mà vẫn giúp mày’)"
-// }
-// `;
+═══════════════════════════════════════════════════════════════
+QUY TẮC PHÂN TÍCH:
+═══════════════════════════════════════════════════════════════
+1. Phân tích triệu chứng một cách chi tiết và khoa học, ngắn gọn và dễ hiểu
+2. Đánh giá mức độ khẩn cấp dựa trên:
+   - LOW: Triệu chứng nhẹ, không nguy hiểm, có thể chờ đợi
+   - MEDIUM: Cần được khám trong thời gian ngắn (1-3 ngày)
+   - HIGH: Cần được khám ngay lập tức hoặc cấp cứu
+3. Đề xuất 1-3 chuyên khoa phù hợp nhất với lý do rõ ràng
+4. Đưa ra lời khuyên thực tế, cụ thể và an toàn
+5. Luôn nhắc nhở bệnh nhân tham khảo ý kiến bác sĩ thực tế
 
-
-//final system prompt
-const SYSTEM_PROMPT = `Bạn là trợ lý y tế AI của TechNova - Một bác sĩ vừa giỏi và nghiêm túc với sức khoẻ của bệnh nhân.
-
-QUY TẮC QUAN TRỌNG:
-- Nghiêm túc, tôn trọng sức khoẻ và cảm xúc của bệnh nhân.
-- Tỏ ra sự đồng cảm, thân thiện và chuyên nghiệp.
-- Các chuyên khoa: Tim mạch, Da liễu, Nhi khoa, Thần kinh, Chỉnh hình, Ung bướu, Tâm thần, Y khoa tổng quát, v.v.
-- Luôn trả lời bằng tiếng Việt.
-
-Format JSON bắt buộc:
+═══════════════════════════════════════════════════════════════
+ĐỊNH DẠNG PHẢN HỒI (JSON BẮT BUỘC):
+═══════════════════════════════════════════════════════════════
 {
-  "analysis": "Phân tích về triệu chứng",
+  "analysis": "Phân tích chi tiết về triệu chứng, nguyên nhân có thể và tầm quan trọng",
   "suggestedSpecialties": [
     {
-      "name": "Tên chuyên khoa",
-      "reason": "1 câu lý do",
+      "name": "Tên chuyên khoa (phải khớp với danh sách trên)",
+      "reason": "Lý do ngắn gọn, rõ ràng tại sao nên chọn chuyên khoa này",
       "confidence": 85
     }
   ],
-  "emergencyLevel": "LOW/MEDIUM/HIGH",
-  "advice": "lời khuyên thực tế"
+  "emergencyLevel": "LOW|MEDIUM|HIGH",
+  "advice": "Lời khuyên cụ thể, thực tế về cách xử lý và chăm sóc"
 }
 
-Hãy tỏ ra mình là một bác sĩ chuyên nghiệp, đáng tin cậy và luôn đặt sức khoẻ của bệnh nhân lên hàng đầu. Trả lời bằng tiếng Việt.`;
+═══════════════════════════════════════════════════════════════
+YÊU CẦU:
+═══════════════════════════════════════════════════════════════
+- Trả lời bằng tiếng Việt, dễ hiểu, không dùng thuật ngữ y khoa phức tạp
+- Giữ thái độ chuyên nghiệp, đồng cảm và đáng tin cậy
+- Không đưa ra chẩn đoán chính xác, chỉ gợi ý và tư vấn
+- Luôn khuyến khích bệnh nhân đến gặp bác sĩ để được khám trực tiếp`;
+};
 
+/**
+ * Lấy danh sách chuyên khoa từ API
+ * @returns {Promise<Array>} - Danh sách chuyên khoa
+ */
+const fetchSpecialties = async () => {
+  try {
+    const response = await api.get("/specialties");
+    const specialtiesData = response.data?.data || response.data || [];
+    return Array.isArray(specialtiesData) ? specialtiesData : [];
+  } catch (error) {
+    console.error("Error fetching specialties:", error);
+    // Trả về danh sách mặc định nếu API lỗi
+    return [
+      { id: 1, name: "Tim mạch" },
+      { id: 2, name: "Da liễu" },
+      { id: 3, name: "Nhi khoa" },
+      { id: 4, name: "Thần kinh" },
+      { id: 5, name: "Chỉnh hình" },
+      { id: 6, name: "Ung bướu" },
+      { id: 7, name: "Tâm thần" },
+      { id: 192, name: "Y khoa tổng quát" },
+    ];
+  }
+};
+
+/**
+ * @param {string} userMessage - Triệu chứng của người dùng
+ * @returns {Promise<Object>} - Kết quả phân tích dạng JSON, chứa analysis, suggestedSpecialties, emergencyLevel, advice
+ */
 export const analyzeSymptoms = async (userMessage) => {
   try {
+    // Lấy danh sách chuyên khoa từ API
+    const specialties = await fetchSpecialties();
+
+    // Tạo prompt chuyên nghiệp với danh sách chuyên khoa
+    const systemPrompt = createProfessionalPrompt(specialties);
+
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       generationConfig: {
         temperature: 0.7,
+        topP: 0.9,
+        topK: 40,
       },
     });
 
-    const prompt = `${SYSTEM_PROMPT}
+    const prompt = `${systemPrompt}
 
-Triệu chứng: "${userMessage}"
+═══════════════════════════════════════════════════════════════
+TRIỆU CHỨNG CỦA BỆNH NHÂN:
+═══════════════════════════════════════════════════════════════
+"${userMessage}"
 
-Phân tích theo JSON format!`;
+Hãy phân tích và trả lời theo đúng định dạng JSON đã yêu cầu.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
+    // Trích xuất JSON từ response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const parsedResponse = JSON.parse(jsonMatch[0]);
+
+      // Validate và đảm bảo tên chuyên khoa khớp với danh sách từ API
+      if (
+        parsedResponse.suggestedSpecialties &&
+        Array.isArray(parsedResponse.suggestedSpecialties)
+      ) {
+        parsedResponse.suggestedSpecialties =
+          parsedResponse.suggestedSpecialties.map((spec) => {
+            // Kiểm tra xem tên chuyên khoa có trong danh sách không
+            const matchedSpecialty = specialties.find(
+              (s) => s.name.toLowerCase() === spec.name.toLowerCase()
+            );
+            if (matchedSpecialty) {
+              return {
+                ...spec,
+                name: matchedSpecialty.name, // Sử dụng tên chính xác từ API
+                id: matchedSpecialty.id,
+              };
+            }
+            return spec;
+          });
+      }
+
+      return parsedResponse;
     }
 
     return {
-      analysis: "Triệu chứng của bạn cần được bác sĩ kiểm tra kỹ hơn.",
+      analysis:
+        "Triệu chứng của bạn cần được bác sĩ kiểm tra kỹ hơn. Vui lòng đặt lịch khám để được tư vấn chính xác.",
       suggestedSpecialties: [],
       emergencyLevel: "LOW",
-      advice: "Đặt lịch khám để yên tâm nhé.",
+      advice: "Đặt lịch khám với bác sĩ để được chẩn đoán và điều trị phù hợp.",
     };
   } catch (error) {
     console.error("AI Analysis Error:", error);
