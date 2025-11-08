@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { isAuthenticated, isDoctor, isPatient } from "../../util/jwtdecoder";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -60,8 +61,16 @@ const LoginForm = () => {
         localStorage.setItem("user", JSON.stringify(user));
         console.log("User stored:", user);
       }
+      console.log("USER: ", user);
 
-      navigate("/find-a-doctor");
+      // navigate("/find-a-doctor");
+      if (isDoctor()) {
+        navigate("/doctor/my-availability");
+      } else if (isPatient()) {
+        navigate("/find-a-doctor");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Login error:", err);
       console.error("Error response:", err.response);

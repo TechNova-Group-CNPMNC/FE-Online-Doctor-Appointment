@@ -28,7 +28,7 @@ const FindADoctor = () => {
     const dates = [];
     const today = new Date();
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 10; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
 
@@ -353,7 +353,7 @@ const FindADoctor = () => {
                       style={{ cursor: "pointer" }}
                     >
                       <div className="card-header">
-                        <button className="favorite-btn">
+                        {/* <button className="favorite-btn">
                           <svg
                             width="20"
                             height="18"
@@ -365,7 +365,7 @@ const FindADoctor = () => {
                               fill="#E0E0E0"
                             />
                           </svg>
-                        </button>
+                        </button> */}
                       </div>
 
                       <div className="doctor-image">

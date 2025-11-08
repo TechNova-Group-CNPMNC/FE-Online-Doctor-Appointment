@@ -19,8 +19,8 @@ const Contact = () => {
           <div className="container">
             <h1 className="contact-title">Liên hệ với chúng tôi</h1>
             <p className="contact-subtitle">
-              Có câu hỏi? Gửi tin nhắn cho chúng tôi và chúng tôi sẽ phản hồi sớm
-              nhất có thể.
+              Có câu hỏi? Gửi tin nhắn cho chúng tôi và chúng tôi sẽ phản hồi
+              sớm nhất có thể.
             </p>
           </div>
         </section>
@@ -28,7 +28,7 @@ const Contact = () => {
         <section className="contact-section">
           <div className="container">
             <div className="contact-wrapper">
-              <div className="contact-form-container">
+              {/* <div className="contact-form-container">
                 <h2 className="form-title">Gửi tin nhắn cho chúng tôi</h2>
                 <form className="contact-form">
                   <div className="form-group">
@@ -68,7 +68,7 @@ const Contact = () => {
                     Gửi tin nhắn
                   </button>
                 </form>
-              </div>
+              </div> */}
 
               <div className="contact-info-container">
                 <h2 className="info-title">Liên hệ</h2>
