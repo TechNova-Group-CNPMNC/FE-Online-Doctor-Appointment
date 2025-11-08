@@ -59,17 +59,18 @@ const Footer = () => {
           <div className="footer-column">
             <h4 className="footer-title">Dịch vụ</h4>
             <ul className="footer-links">
-              <li>
-                <Link to="/find-a-doctor">Đặt lịch hẹn</Link>
-              </li>
+              <li>{/* <Link to="/find-a-doctor">Đặt lịch hẹn</Link> */}</li>
               <li>
                 {/* <Link to="/find-a-doctor">Tư vấn trực tuyến</Link> */}
+              </li>
+              <li>
+                <Link to="/profile">Hồ sơ của tôi</Link>
               </li>
               <li>
                 <Link to="/find-a-doctor">Tìm chuyên gia</Link>
               </li>
               <li>
-                <Link to="/profile">Lịch hẹn của tôi</Link>
+                <Link to="/appointments">Lịch khám của tôi</Link>
               </li>
             </ul>
           </div>

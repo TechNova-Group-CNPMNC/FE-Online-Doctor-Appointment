@@ -69,7 +69,7 @@ const Home = () => {
     {
       number: "04",
       title: "Nhận tư vấn",
-      description: "Gặp bác sĩ trực tuyến hoặc đến khám trực tiếp",
+      description: "Nhận tư vấn từ trợ lí AI và gặp bác sĩ trực tiếp",
       icon: <Hospital size={48} />,
     },
   ];

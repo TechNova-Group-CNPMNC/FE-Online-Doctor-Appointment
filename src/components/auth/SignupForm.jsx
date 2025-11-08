@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
+import { isDoctor, isPatient } from "../../util/jwtdecoder";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -149,7 +150,17 @@ const SignupForm = () => {
         console.log("User stored after registration:", user);
       }
 
-      navigate("/find-a-doctor");
+      if (isDoctor()) {
+        alert(
+          "Đăng ký thành công!. Chuyển hướng đến trang Lịch trình của tôi."
+        );
+        navigate("/doctor/my-availability");
+      } else if (isPatient()) {
+        alert("Đăng ký thành công!. Chuyển hướng đến trang Tìm bác sĩ.");
+        navigate("/find-a-doctor");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Registration error:", err);
       console.error("Error response:", err.response);
