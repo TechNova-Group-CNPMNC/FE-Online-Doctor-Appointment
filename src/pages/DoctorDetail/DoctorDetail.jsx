@@ -440,14 +440,14 @@ const DoctorDetail = () => {
                 </div>
               )}
 
-              <div className="appointment-fee">
+              {/* <div className="appointment-fee">
                 <span>Phí tư vấn:</span>
                 <span className="fee-amount">
                   {doctor.consultationFee
                     ? `${doctor.consultationFee.toLocaleString("vi-VN")} VNĐ`
                     : "600,000 VNĐ"}
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
 

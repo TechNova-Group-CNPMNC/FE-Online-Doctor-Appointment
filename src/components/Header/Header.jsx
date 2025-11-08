@@ -41,15 +41,15 @@ const Header = () => {
           <Link to="/" className="header-logo">
             <img src={logo} alt="Đặt lịch bác sĩ" />
           </Link>
-          {!isDoctorUser && (
-            <Link
-              to="/"
-              className={`nav-link ${isActive("/") ? "active" : ""}`}
-            >
-              Trang chủ
-            </Link>
-          )}
           <nav className="header-nav desktop-nav">
+            {!isDoctorUser && (
+              <Link
+                to="/"
+                className={`nav-link ${isActive("/") ? "active" : ""}`}
+              >
+                Trang chủ
+              </Link>
+            )}
             {isAuth && !isDoctorUser && (
               <Link
                 to="/profile"
