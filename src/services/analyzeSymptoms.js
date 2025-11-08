@@ -102,11 +102,149 @@ const fetchSpecialties = async () => {
 };
 
 /**
+ * Kiểm tra xem message có phải là lời chào không
+ * @param {string} message - Message từ người dùng
+ * @returns {boolean} - true nếu là lời chào
+ */
+const isGreeting = (message) => {
+  const normalizedMessage = message.toLowerCase().trim();
+
+  const greetings = [
+    "hi",
+    "hello",
+    "xin chào",
+    "chào",
+    "chào bạn",
+    "hey",
+    "hế lô",
+    "bạn khỏe không",
+    "bạn ổn không",
+    "bạn sao rồi",
+  ];
+
+  // Kiểm tra nếu message quá ngắn (dưới 10 ký tự) và chỉ chứa lời chào
+  if (normalizedMessage.length < 10) {
+    return greetings.some((greeting) => normalizedMessage.includes(greeting));
+  }
+
+  // Kiểm tra nếu message bắt đầu bằng lời chào
+  return greetings.some((greeting) => normalizedMessage.startsWith(greeting));
+};
+
+/**
+ * Kiểm tra xem message có phải là lời tạm biệt không
+ * @param {string} message - Message từ người dùng
+ * @returns {boolean} - true nếu là lời tạm biệt
+ */
+const isGoodbye = (message) => {
+  const normalizedMessage = message.toLowerCase().trim();
+
+  const goodbyes = [
+    "tạm biệt",
+    "bye",
+    "goodbye",
+    "see you",
+    "hẹn gặp lại",
+    "chào nhé",
+    "chào bạn",
+  ];
+
+  return goodbyes.some((goodbye) => normalizedMessage.includes(goodbye));
+};
+
+/**
+ * Kiểm tra xem message có phải là lời cảm ơn không
+ * @param {string} message - Message từ người dùng
+ * @returns {boolean} - true nếu là lời cảm ơn
+ */
+const isThankYou = (message) => {
+  const normalizedMessage = message.toLowerCase().trim();
+
+  const thanks = [
+    "cảm ơn",
+    "thanks",
+    "thank you",
+    "cám ơn",
+    "cảm ơn bạn",
+    "thank",
+  ];
+
+  return thanks.some((thank) => normalizedMessage.includes(thank));
+};
+
+/**
+ * Kiểm tra xem message có phải là câu hỏi thông thường không
+ * @param {string} message - Message từ người dùng
+ * @returns {boolean} - true nếu là câu hỏi thông thường
+ */
+const isGeneralQuestion = (message) => {
+  const normalizedMessage = message.toLowerCase().trim();
+
+  const questions = [
+    "làm gì",
+    "làm sao",
+    "như thế nào",
+    "thế nào",
+    "bạn là ai",
+    "bạn làm gì",
+  ];
+
+  return questions.some((question) => normalizedMessage.includes(question));
+};
+
+/**
  * @param {string} userMessage - Triệu chứng của người dùng
  * @returns {Promise<Object>} - Kết quả phân tích dạng JSON, chứa analysis, suggestedSpecialties, emergencyLevel, advice
  */
 export const analyzeSymptoms = async (userMessage) => {
   try {
+    // Kiểm tra nếu là lời chào
+    if (isGreeting(userMessage)) {
+      return {
+        analysis:
+          "Xin chào! Tôi là trợ lý y tế AI của TechNova. Tôi có thể giúp bạn phân tích triệu chứng và đề xuất chuyên khoa phù hợp. Hãy mô tả các triệu chứng bạn đang gặp phải nhé! 😊",
+        suggestedSpecialties: [],
+        emergencyLevel: "LOW",
+        advice:
+          "Vui lòng mô tả chi tiết các triệu chứng bạn đang gặp phải để tôi có thể tư vấn tốt hơn.",
+      };
+    }
+
+    // Kiểm tra nếu là lời tạm biệt
+    if (isGoodbye(userMessage)) {
+      return {
+        analysis:
+          "Tạm biệt bạn! Chúc bạn sức khỏe tốt. Nếu bạn có bất kỳ triệu chứng nào cần tư vấn, đừng ngần ngại quay lại nhé! 👋",
+        suggestedSpecialties: [],
+        emergencyLevel: "LOW",
+        advice:
+          "Hãy chăm sóc sức khỏe của mình và đừng quên đặt lịch khám nếu cần thiết.",
+      };
+    }
+
+    // Kiểm tra nếu là lời cảm ơn
+    if (isThankYou(userMessage)) {
+      return {
+        analysis:
+          "Không có gì! Tôi rất vui được giúp đỡ bạn. Nếu bạn còn bất kỳ câu hỏi nào về sức khỏe, cứ hỏi tôi nhé! 😊",
+        suggestedSpecialties: [],
+        emergencyLevel: "LOW",
+        advice: "Chúc bạn luôn khỏe mạnh!",
+      };
+    }
+
+    // Kiểm tra nếu là câu hỏi thông thường
+    if (isGeneralQuestion(userMessage)) {
+      return {
+        analysis:
+          "Tôi là trợ lý y tế AI của TechNova Clinic. Tôi có thể giúp bạn phân tích triệu chứng và đề xuất chuyên khoa phù hợp. Hãy mô tả các triệu chứng bạn đang gặp phải để tôi có thể hỗ trợ bạn tốt nhất!",
+        suggestedSpecialties: [],
+        emergencyLevel: "LOW",
+        advice:
+          "Vui lòng mô tả chi tiết các triệu chứng bạn đang gặp phải (ví dụ: đau đầu, sốt, ho, đau bụng...) để tôi có thể tư vấn chính xác hơn.",
+      };
+    }
+
     // Lấy danh sách chuyên khoa từ API
     const specialties = await fetchSpecialties();
 
@@ -128,6 +266,8 @@ export const analyzeSymptoms = async (userMessage) => {
 TRIỆU CHỨNG CỦA BỆNH NHÂN:
 ═══════════════════════════════════════════════════════════════
 "${userMessage}"
+
+LƯU Ý: Nếu đây chỉ là lời chào hoặc câu hỏi thông thường (không phải triệu chứng), hãy trả lời thân thiện và hướng dẫn người dùng mô tả triệu chứng.
 
 Hãy phân tích và trả lời theo đúng định dạng JSON đã yêu cầu.`;
 
