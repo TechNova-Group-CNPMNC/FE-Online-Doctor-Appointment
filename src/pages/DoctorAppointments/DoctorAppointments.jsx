@@ -17,6 +17,7 @@ const DoctorAppointments = () => {
   const [groupedAppointments, setGroupedAppointments] = useState({});
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [selectedDate, setSelectedDate] = useState("");
+  const [availableDates, setAvailableDates] = useState([]);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -45,6 +46,7 @@ const DoctorAppointments = () => {
     }
 
     setDoctorId(id);
+    generateNext7Days();
   }, [navigate]);
 
   useEffect(() => {
@@ -61,46 +63,64 @@ const DoctorAppointments = () => {
     groupAppointmentsByDate();
   }, [filteredAppointments]);
 
+  const generateNext7Days = () => {
+    const dates = [];
+    const today = new Date();
+
+    for (let i = -9; i < 9; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+
+      const dateStr = date.toISOString().split("T")[0];
+      const dayName = date.toLocaleDateString("vi-VN", { weekday: "short" });
+      const dayNum = date.getDate();
+      const monthName = date.toLocaleDateString("vi-VN", { month: "short" });
+
+      dates.push({
+        value: dateStr,
+        label: `${dayName}, ${monthName} ${dayNum}`,
+        dayName: dayName,
+        dayNum: dayNum,
+        monthName: monthName,
+        isToday: i === 0,
+      });
+    }
+
+    setAvailableDates(dates);
+    setSelectedDate(dates[0].value);
+  };
+
   const fetchAppointments = async () => {
-    if (!doctorId) return;
+    if (!doctorId || !selectedDate) return;
 
     try {
       setLoading(true);
       setError("");
 
-      // Nếu không chọn ngày, sử dụng ngày hôm nay
-      const dateToUse = selectedDate || new Date().toISOString().split("T")[0];
-
       const params = {
-        date: dateToUse,
+        date: selectedDate,
       };
 
-      try {
-        // Endpoint đúng từ backend: /api/doctors/{doctorId}/appointments?date={date}
-        const url = `/doctors/${doctorId}/appointments`;
-        const response = await api.get(url, { params });
-        const appointments = response.data?.data || response.data || [];
-        setAllAppointments(Array.isArray(appointments) ? appointments : []);
-      } catch (err) {
-        console.error("Failed to fetch appointments:", err);
-
-        // Nếu 404, có thể là chưa có appointments trong ngày đó
-        if (err.response?.status === 404) {
-          setAllAppointments([]);
-        } else {
-          throw err;
-        }
-      }
+      const url = `/doctors/${doctorId}/appointments`;
+      const response = await api.get(url, { params });
+      const appointments = response.data?.data || response.data || [];
+      setAllAppointments(Array.isArray(appointments) ? appointments : []);
     } catch (err) {
       console.error("Error fetching appointments:", err);
-      setError(
-        err.response?.data?.message || "Không thể tải danh sách lịch hẹn"
-      );
+
+      if (err.response?.status === 404) {
+        setAllAppointments([]);
+      } else {
+        setError(
+          err.response?.data?.message || "Không thể tải danh sách lịch hẹn"
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // ...existing code... (keep all other functions unchanged)
   const filterAppointments = () => {
     if (activeFilter === "ALL") {
       setFilteredAppointments(allAppointments);
@@ -267,70 +287,84 @@ const DoctorAppointments = () => {
           )}
 
           <div className="filter-section">
-            <div className="date-filter">
-              <label htmlFor="dateFilter">Lọc theo ngày:</label>
-              <input
-                type="date"
-                id="dateFilter"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-              {selectedDate && (
-                <button
-                  className="clear-date-btn"
-                  onClick={() => setSelectedDate("")}
-                >
-                  Xóa
-                </button>
-              )}
+            {/* Date Picker Grid - Card riêng */}
+            <div className="form-group date-group">
+              <label className="form-label">
+                Chọn ngày xem lịch hẹn
+                {/* <span className="label-hint"> (10 ngày tiếp theo)</span> */}
+              </label>
+              <div className="date-picker-grid">
+                {availableDates.map((dateObj) => (
+                  <button
+                    key={dateObj.value}
+                    type="button"
+                    className={`date-picker-btn ${
+                      selectedDate === dateObj.value ? "active" : ""
+                    } ${dateObj.isToday ? "today" : ""}`}
+                    onClick={() => setSelectedDate(dateObj.value)}
+                    disabled={loading}
+                  >
+                    <span className="date-day">{dateObj.dayName}</span>
+                    <span className="date-number">{dateObj.dayNum}</span>
+                    <span className="date-month">{dateObj.monthName}</span>
+                    {dateObj.isToday && (
+                      <span className="today-badge">Hôm nay</span>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="filter-tabs">
-              <button
-                className={`filter-tab ${
-                  activeFilter === "ALL" ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter("ALL")}
-              >
-                Tất cả
-                <span className="tab-count">{statusCounts.ALL}</span>
-              </button>
-              <button
-                className={`filter-tab ${
-                  activeFilter === "PENDING" ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter("PENDING")}
-              >
-                Chờ xác nhận
-                <span className="tab-count">{statusCounts.PENDING}</span>
-              </button>
-              <button
-                className={`filter-tab ${
-                  activeFilter === "CONFIRMED" ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter("CONFIRMED")}
-              >
-                Đã xác nhận
-                <span className="tab-count">{statusCounts.CONFIRMED}</span>
-              </button>
-              <button
-                className={`filter-tab ${
-                  activeFilter === "COMPLETED" ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter("COMPLETED")}
-              >
-                Hoàn thành
-                <span className="tab-count">{statusCounts.COMPLETED}</span>
-              </button>
-              <button
-                className={`filter-tab ${
-                  activeFilter === "CANCELLED" ? "active" : ""
-                }`}
-                onClick={() => setActiveFilter("CANCELLED")}
-              >
-                Đã hủy
-                <span className="tab-count">{statusCounts.CANCELLED}</span>
-              </button>
+            {/* Filter Tabs - Card riêng */}
+            <div className="filter-tabs-container">
+              <label className="filter-tabs-label">Lọc theo trạng thái</label>
+              <div className="filter-tabs">
+                <button
+                  className={`filter-tab ${
+                    activeFilter === "ALL" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter("ALL")}
+                >
+                  Tất cả
+                  <span className="tab-count">{statusCounts.ALL}</span>
+                </button>
+                <button
+                  className={`filter-tab ${
+                    activeFilter === "PENDING" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter("PENDING")}
+                >
+                  Chờ xác nhận
+                  <span className="tab-count">{statusCounts.PENDING}</span>
+                </button>
+                <button
+                  className={`filter-tab ${
+                    activeFilter === "CONFIRMED" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter("CONFIRMED")}
+                >
+                  Đã xác nhận
+                  <span className="tab-count">{statusCounts.CONFIRMED}</span>
+                </button>
+                <button
+                  className={`filter-tab ${
+                    activeFilter === "COMPLETED" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter("COMPLETED")}
+                >
+                  Hoàn thành
+                  <span className="tab-count">{statusCounts.COMPLETED}</span>
+                </button>
+                <button
+                  className={`filter-tab ${
+                    activeFilter === "CANCELLED" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter("CANCELLED")}
+                >
+                  Đã hủy
+                  <span className="tab-count">{statusCounts.CANCELLED}</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -353,7 +387,7 @@ const DoctorAppointments = () => {
                 />
               </svg>
               <h3>Không có lịch hẹn nào</h3>
-              <p>Chưa có lịch hẹn nào trong khoảng thời gian này</p>
+              <p>Chưa có lịch hẹn nào trong ngày này</p>
             </div>
           )}
 
